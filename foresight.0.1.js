@@ -6,9 +6,9 @@
 	// properties
 	var fs = window.foresight;
 	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
-	fs.isHighSpeedConnection = false;
-	fs.connectionKbps = undefined;
-	fs.connectionTestMethod = undefined;
+	fs.isHighSpeedConn = false;
+	fs.connKbps = 1;
+	fs.connTestMethod = undefined;
 	fs.images = [];
 	fs.oncomplete = fs.oncomplete || undefined;
 
@@ -17,8 +17,8 @@
 	var opts = fs.options;
 	opts.srcModification = opts.srcModification || 'rebuildSrc';
 	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
-	opts.checkConnection = opts.checkConnection || true;
-	opts.minKbpsForHighSpeedConnection = opts.minKbpsForHighSpeedConnection || 400;
+	opts.testConn = opts.testConn || true;
+	opts.minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 400;
 	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K.jpg';
 	opts.speedTestKB = opts.speedTestKB || 100;
 	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
@@ -74,7 +74,7 @@
 
 		// if the device pixel ratio is 1, then no need to check
 		if ( fs.devicePixelRatio == 1 ) {
-			fs.connectionTestMethod = 'devicePixelRatio1';
+			fs.connTestMethod = 'skip';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
@@ -84,12 +84,12 @@
 		// localStorage.removeItem( lsKey );
 		try {
 			var fsData = JSON.parse( localStorage.getItem( lsKey ) );
-			if ( fsData && fsData.isHighSpeedConnection ) {
+			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < opts.speedTestExpireMinutes ) {
-					fs.isHighSpeedConnection = true;
-					fs.connectionKbps = fsData.connectionKbps;
-					fs.connectionTestMethod = 'localStorage';
+					fs.isHighSpeedConn = true;
+					fs.connKbps = fsData.connKbps;
+					fs.connTestMethod = 'localStorage';
 					speedConnectionStatus = STATUS_COMPLETE;
 					return;
 				}
@@ -110,30 +110,30 @@
 
 			var bitsLoaded = ( opts.speedTestKB * 1024 * 8 );
 
-			fs.connectionKbps = ( Math.round( bitsLoaded / duration ) / 1024 );
+			fs.connKbps = ( Math.round( bitsLoaded / duration ) / 1024 );
 
-			fs.isHighSpeedConnection = ( fs.connectionKbps >= opts.minKbpsForHighSpeedConnection );
+			fs.isHighSpeedConn = ( fs.connKbps >= opts.minKbpsForHighSpeedConn );
 
 			try {
 				var fsDataToSet = {
-					connectionKbps: fs.connectionKbps,
-					isHighSpeedConnection: fs.isHighSpeedConnection,
+					connKbps: fs.connKbps,
+					isHighSpeedConn: fs.isHighSpeedConn,
 					timestamp: endTime
 				};
 				localStorage.setItem( lsKey, JSON.stringify( fsDataToSet ) );
 			} catch( e ) { }
 
-			fs.connectionTestMethod = 'network';
+			fs.connTestMethod = 'network';
 			speedConnectionStatus = STATUS_COMPLETE;
 			initImageRebuild();
 		};
 
 		speedTestImg.onerror = function() {
 			// fallback incase there was an error getting the test image
-			fs.connectionKbps = 0;
-			fs.isHighSpeedConnection = false;
+			fs.connKbps = 0;
+			fs.isHighSpeedConn = false;
 
-			fs.connectionTestMethod = 'networkError';
+			fs.connTestMethod = 'networkError';
 			speedConnectionStatus = STATUS_COMPLETE;
 			initImageRebuild();
 		};
