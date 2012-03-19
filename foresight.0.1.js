@@ -26,13 +26,15 @@
 	var
 	imageIterateStatus,
 	speedConnectionStatus,
+	STATUS_LOADING = 'loading',
+	STATUS_COMPLETE = 'complete',
 
 	initScan = function() {
 		if ( imageIterateStatus ) return;
 
-		imageIterateStatus = 'LOADING';
+		imageIterateStatus = STATUS_LOADING;
 		iterateChildElements( document.body );
-		imageIterateStatus = 'COMPLETE';
+		imageIterateStatus = STATUS_COMPLETE;
 
 		if ( fs.images.length > 0 ) {
 			initImageRebuild();
@@ -73,7 +75,7 @@
 		// if the device pixel ratio is 1, then no need to check
 		if ( fs.devicePixelRatio == 1 ) {
 			fs.connectionTestMethod = 'devicePixelRatio1';
-			speedConnectionStatus = 'COMPLETE';
+			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
 
@@ -87,7 +89,7 @@
 					fs.isHighSpeedConnection = true;
 					fs.connectionKbps = fsData.connectionKbps;
 					fs.connectionTestMethod = 'localStorage';
-					speedConnectionStatus = 'COMPLETE';
+					speedConnectionStatus = STATUS_COMPLETE;
 					return;
 				}
 			}
@@ -121,7 +123,7 @@
 			} catch( e ) { }
 
 			fs.connectionTestMethod = 'network';
-			speedConnectionStatus = 'COMPLETE';
+			speedConnectionStatus = STATUS_COMPLETE;
 			initImageRebuild();
 		};
 
@@ -131,13 +133,13 @@
 			fs.isHighSpeedConnection = false;
 
 			fs.connectionTestMethod = 'networkError';
-			speedConnectionStatus = 'COMPLETE';
+			speedConnectionStatus = STATUS_COMPLETE;
 			initImageRebuild();
 		};
 
 		// begin the speed test image download
 		startTime = ( new Date() ).getTime();
-		speedConnectionStatus = 'LOADING';
+		speedConnectionStatus = STATUS_LOADING;
 		speedTestImg.src = opts.speedTestUri + "?r=" + Math.random();
 	},
 
@@ -176,7 +178,7 @@
 	},
 
 	initImageRebuild = function() {
-		if ( speedConnectionStatus !== 'COMPLETE' || imageIterateStatus !== 'COMPLETE' ) return;
+		if ( speedConnectionStatus !== STATUS_COMPLETE || imageIterateStatus !== STATUS_COMPLETE ) return;
 
 		var
 		x,
@@ -261,7 +263,7 @@
 		}
 	};
 
-	if ( document.readyState === "complete" ) {
+	if ( document.readyState === STATUS_COMPLETE ) {
 		initScan();
 
 	} else {
