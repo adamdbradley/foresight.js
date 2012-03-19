@@ -79,10 +79,11 @@
 			return;
 		}
 
+		var lsKey = 'foresight.js';
 		// set if a speed test has recently been completed in the global storage
-		// localStorage.removeItem('foresight.js')
+		// localStorage.removeItem( lsKey );
 		try {
-			var fsData = JSON.parse( localStorage.getItem( "foresight.js" ) );
+			var fsData = JSON.parse( localStorage.getItem( lsKey ) );
 			if ( fsData && fsData.isHighSpeedConnection ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < opts.speedTestExpireMinutes ) {
@@ -119,7 +120,7 @@
 					isHighSpeedConnection: fs.isHighSpeedConnection,
 					timestamp: endTime
 				};
-				localStorage.setItem( "foresight.js", JSON.stringify( fsDataToSet ) );
+				localStorage.setItem( lsKey, JSON.stringify( fsDataToSet ) );
 			} catch( e ) { }
 
 			fs.connectionTestMethod = 'network';
@@ -162,7 +163,7 @@
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
 		fillProp( img, 'id', 'id', false, ('fsImg' + Math.floor( Math.random() * 1000000000) ) );
 
-		foresight.images.push( img );
+		fs.images.push( img );
 	},
 
 	fillProp = function( img, attrName, propName, getFloat, defaultValue ) {
@@ -184,8 +185,8 @@
 		x,
 		img;
 
-		for ( x = 0; x < foresight.images.length; x++ ) {
-			img = foresight.images[ x ];
+		for ( x = 0; x < fs.images.length; x++ ) {
+			img = fs.images[ x ];
 
 			img.requestWidth = Math.round( img.width * img.pixelRatio );
 			img.requestHeight = Math.round( img.height * img.pixelRatio );
@@ -253,13 +254,13 @@
 		x,
 		img;
 
-		for ( x = 0; x < foresight.images.length; x++ ) {
-			img = foresight.images[ x ];
+		for ( x = 0; x < fs.images.length; x++ ) {
+			img = fs.images[ x ];
 			img.noScriptEle.parentElement.insertBefore( img, img.noScriptEle );
 		}
 
-		if ( foresight.oncomplete ) {
-			foresight.oncomplete();
+		if ( fs.oncomplete ) {
+			fs.oncomplete();
 		}
 	};
 
