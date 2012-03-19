@@ -6,34 +6,34 @@
 
 	<!-- Foresight Config-->
     <script>
-        foresight = {
-            options: { 
-                resizeMethod: 'rebuildSrc',
-                resizeSrcFormat: '{protocol}://{host}{directory}{file}',
-                checkConnection: true, 
-                minKbpsForHighSpeedConnection:400,
-                speedTestUri: 'speed-test/100K.jpg',
-                speedTestKB: 100},
-				
- 			oncomplete: function () {
-					// oncomplete only being use to print out log info, demo purposes only
-		            var info = [];
-		            info.push('Images: ' + foresight.images.length);
-		            info.push('Device Pixel Ratio: ' + foresight.devicePixelRatio);
-		            info.push('Check Connection Speed: ' + foresight.options.checkConnection);
-		            info.push('Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConnection + ' Kbps');
-		            info.push('Estimated Connection Speed: ' + foresight.connectionKbps + ' Kbps');
-		            info.push('Is Considered High Speed Connection: ' + foresight.isHighSpeedConnection);
+		foresight = {
+			options: { 
+				resizeMethod: 'rebuildSrc',
+				resizeSrcFormat: '{protocol}://{host}{directory}{file}',
+				checkConnection: true, 
+				minKbpsForHighSpeedConnection:400,
+				speedTestUri: '../speed-test/100K.jpg',
+				speedTestKB: 100
+			},
 
-		            document.getElementById('info').innerHTML = info.join('<br>');
+			oncomplete: function () {
+				// oncomplete only being use to print out log info, demo purposes only
+				var info = [];
+				info.push('Images: ' + foresight.images.length);
+				info.push('Device Pixel Ratio: ' + foresight.devicePixelRatio);
+				info.push('Check Connection Speed: ' + foresight.options.checkConnection);
+				info.push('Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConnection + ' Kbps');
+				info.push('Estimated Connection Speed: ' + foresight.connectionKbps + ' Kbps');
+				info.push('Is Considered High Speed Connection: ' + foresight.isHighSpeedConnection);
 
-		            document.getElementById('log').innerHTML = foresight.log.join('<br>');
-		        }
-        };
-    </script>
-	<script src="foresight.0.1.js"></script>
+				document.getElementById('info').innerHTML = info.join('<br>');
+				document.getElementById('log').innerHTML = foresight.log.join('<br>');
+			}
+		};
+	</script>
+	<script src="../foresight.0.1.js"></script>
 	<!--End Foresight-->
-	
+
 </head>
 <body>
 

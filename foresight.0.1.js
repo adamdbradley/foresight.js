@@ -123,9 +123,18 @@
 				localStorage.setItem("foresight.js", JSON.stringify( fsDataToSet ) );
 			} catch( e ) { }
 
+			log('success speed test');
 			speedConnectionStatus = 'COMPLETE';
+			initImageRebuild();
+		};
+		
+		speedTestImg.onerror = function() {
+			// fallback incase there was an error getting the test image
+			foresight.connectionKbps = 0;
+			foresight.isHighSpeedConnection = false;
 
-			log('completed speed test');
+			log('failed speed test');
+			speedConnectionStatus = 'COMPLETE';
 			initImageRebuild();
 		};
 
