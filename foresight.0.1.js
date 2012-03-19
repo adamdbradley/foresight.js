@@ -11,7 +11,6 @@
 	fs.connectionTestMethod = undefined;
 	fs.images = [];
 	fs.oncomplete = fs.oncomplete || undefined;
-	fs.debug = fs.debug || false;
 
 	// options
 	fs.options = fs.options || {};
