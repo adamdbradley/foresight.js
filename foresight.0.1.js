@@ -155,9 +155,9 @@
 		if ( !img.orgSrc || !img.width || !img.height ) return;
 
 		fillProp( img, 'class', 'className', false, '' );
-		fillProp( img, 'src-modification', 'srcModification', false, foresight.options.srcModification );
-		fillProp( img, 'src-format', 'resizeSrcFormat', false, foresight.options.resizeSrcFormat );
-		fillProp( img, 'pixel-ratio', 'pixelRatio', true, foresight.devicePixelRatio );
+		fillProp( img, 'src-modification', 'srcModification', false, opts.srcModification );
+		fillProp( img, 'src-format', 'resizeSrcFormat', false, opts.resizeSrcFormat );
+		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
 		fillProp( img, 'id', 'id', false, ('fsImg' + Math.floor( Math.random() * 1000000000) ) );
 
 		foresight.images.push( img );
