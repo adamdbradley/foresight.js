@@ -166,7 +166,7 @@
 	fillProp = function( img, attrName, propName, getFloat, defaultValue ) {
 		var value = img.noScriptEle.getAttribute( 'data-img-' + attrName );
 		if ( value && value !== '' ) {
-			if ( getFloat ) {
+			if ( getFloat && !isNaN( value ) ) {
 				value = parseFloat( value, 10 );
 			}
 		} else {
