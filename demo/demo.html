@@ -8,8 +8,6 @@
 	<script>
 		foresight = {
 			options: { 
-				resizeMethod: 'rebuildSrc',
-				resizeSrcFormat: '{protocol}://{host}{directory}{file}',
 				checkConnection: true, 
 				minKbpsForHighSpeedConnection:400,
 				speedTestUri: '../speed-test/100K.jpg',
@@ -22,11 +20,11 @@
 				var info = [];
 				info.push( 'Images: ' + foresight.images.length );
 				info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
-				info.push( 'Check Connection Speed: ' + foresight.options.checkConnection );
-				info.push( 'Connection Test Method: ' + foresight.connectionTestMethod );
-				info.push( 'Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConnection + 'Kbps' );
-				info.push( 'Estimated Connection Speed: ' + foresight.connectionKbps + 'Kbps' );
-				info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConnection );
+				info.push( 'Check Connection Speed: ' + foresight.options.testConn );
+				info.push( 'Connection Test Method: ' + foresight.connTestMethod );
+				info.push( 'Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConn + 'Kbps' );
+				info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
+				info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
 				document.getElementById('info').innerHTML = info.join('<br>');
 
 				// print out img info above each foresight image
