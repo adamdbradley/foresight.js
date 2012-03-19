@@ -248,7 +248,7 @@
 					.replace( img.height, img.requestHeight );
 	},
 
-	insertImages = function() {	
+	insertImages = function() {
 		var
 		x,
 		img;
