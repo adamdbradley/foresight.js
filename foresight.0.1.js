@@ -19,7 +19,7 @@
 	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
 	opts.checkConnection = opts.checkConnection || true;
 	opts.minKbpsForHighSpeedConnection = opts.minKbpsForHighSpeedConnection || 400;
-	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K';
+	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K.jpg';
 	opts.speedTestKB = opts.speedTestKB || 100;
 	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
 
