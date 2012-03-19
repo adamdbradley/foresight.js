@@ -13,7 +13,6 @@
 				speedTestUri: '../speed-test/100K.jpg',
 				speedTestKB: 100
 			},
-			debug: true,
 
 			oncomplete: function () {
 				// oncomplete only being use to print out info, demo purposes only
@@ -22,9 +21,13 @@
 				info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
 				info.push( 'Check Connection Speed: ' + foresight.options.testConn );
 				info.push( 'Connection Test Method: ' + foresight.connTestMethod );
-				info.push( 'Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConn + 'Kbps' );
-				info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
-				info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
+				if( foresight.connTestMethod === 'skip' ) {
+					info.push( 'No speed test completed because this device has a pixel ratio of 1, so no need' );
+				} else {
+					info.push( 'Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConn + 'Kbps' );
+					info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
+					info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
+				}
 				document.getElementById('info').innerHTML = info.join('<br>');
 
 				// print out img info above each foresight image
