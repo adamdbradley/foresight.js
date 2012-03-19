@@ -16,7 +16,7 @@
 	fs.options = fs.options || {};
 	var opts = fs.options;
 	opts.srcModification = opts.srcModification || 'rebuildSrc';
-	opts.resizeSrcFormat = opts.resizeSrcFormat || '{protocol}://{host}{directory}{file}';
+	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
 	opts.checkConnection = opts.checkConnection || true;
 	opts.minKbpsForHighSpeedConnection = opts.minKbpsForHighSpeedConnection || 400;
 	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K';
@@ -158,7 +158,7 @@
 
 		fillProp( img, 'class', 'className', false, '' );
 		fillProp( img, 'src-modification', 'srcModification', false, opts.srcModification );
-		fillProp( img, 'src-format', 'resizeSrcFormat', false, opts.resizeSrcFormat );
+		fillProp( img, 'src-format', 'srcFormat', false, opts.srcFormat );
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
 		fillProp( img, 'id', 'id', false, ('fsImg' + Math.floor( Math.random() * 1000000000) ) );
 
@@ -190,7 +190,7 @@
 			img.requestWidth = Math.round( img.width * img.pixelRatio );
 			img.requestHeight = Math.round( img.height * img.pixelRatio );
 
-			if ( img.srcModification === 'rebuildSrc' && img.resizeSrcFormat ) {
+			if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
 				rebuildSrc( img );
 			} else if ( img.srcModification === 'replaceDimensions' ) {
 				replaceDimensions( img );
@@ -209,7 +209,7 @@
 		img.uri.height = img.requestHeight;
 		img.uri.pixelRatio = img.pixelRatio;
 		var formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'query', 'width', 'height', 'pixelRatio' ];
-		var newSrc = img.resizeSrcFormat;
+		var newSrc = img.srcFormat;
 		for ( var f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
