@@ -5,7 +5,7 @@
 
 	// properties
 	var fs = window.foresight;
-	fs.devicePixelRatio = 2;//( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
+	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
 	fs.isHighSpeedConnection = false;
 	fs.connectionKbps = undefined;
 	fs.connectionTestMethod = undefined;
