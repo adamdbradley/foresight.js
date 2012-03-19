@@ -1,1 +1,4 @@
-The foresight.js plugin helps to provide quality images to users with high-resolution displays (such as the 3rd generation iPad). Device display technology has recently exploded allowing users to view extremely high-quality images, however, current web standards fall short in providing the ability to view these beautiful images on high-res displays.
+#### Introduction
+The foresight.js plugin helps to provide quality images to users with high-resolution displays (such as the 3rd generation iPad). 
+Additionally, foresight.js detects the device's network connection speed to determine if they should receive the high-resolution 
+images or not.
