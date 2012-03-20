@@ -226,7 +226,8 @@
 			// decide how the src should be modified for the new image request
 			if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
 				rebuildSrc( img );
-			} else if ( img.srcModification === 'replaceDimensions' ) {
+			} else {
+				// default: replaceDimensions
 				replaceDimensions( img );
 			}
 
@@ -261,12 +262,12 @@
 		// rebuild the <img> src using the supplied format and image data
 		var
 		f,
-		formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'query', 'width', 'height', 'pixelRatio' ],
+		formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', 'requestWidth', 'requestHeight', 'pixelRatio' ],
 		newSrc = img.srcFormat;
 
 		img.uri = parseUri( img.orgSrc );
-		img.uri.width = img.requestWidth;
-		img.uri.height = img.requestHeight;
+		img.uri.requestWidth = img.requestWidth;
+		img.uri.requestHeight = img.requestHeight;
 		img.uri.pixelRatio = img.pixelRatio;
 		
 		for ( f = 0; f < formatReplace.length; f++ ) {
@@ -297,6 +298,10 @@
 		uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
 			if ($1) uri[o.q.name][$1] = $2;
 		});
+
+		var fileSplt = uri.file.split('.');
+		uri.filename = fileSplt[ 0 ];
+		uri.ext = ( fileSplt.length > 1 ? fileSplt[ 1 ] : '' );
 
 		return uri;
 	},
