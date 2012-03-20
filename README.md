@@ -116,21 +116,29 @@ Foresight comes with default settings, but using the _foresight.options_ object 
 	</script>
 	<script src="foresight.js"></script>
 
-__srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
+__foresight.options.srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
-__srcFormat__: The format in which a src should be rebuilt. See the Src Format section for more info.
+__foresight.options.srcFormat__: The format in which a src should be rebuilt. See the Src Format section for more info.
 
-__testConn__: Either _true_ or _false_ determining if foresight should test the network connection speed or not. Default is _true_.
+__foresight.options.testConn__: Either _true_ or _false_ determining if foresight should test the network connection speed or not. Default is _true_
 
-__minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. High-speed connections requests hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is 800.
+__foresight.options.minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. High-speed connections requests hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _800_
 
-__speedTestUri__: You can determine the URI for the speed test. By default it will use a foresight hosted image, but you can always choose your own URI for the test image.
+__foresight.options.speedTestUri__: You can determine the URI for the speed test. By default it will use a foresight hosted image, but you can always choose your own URI for the test image. Default value is _//foresightjs.appspot.com/speed-test/100K_
 
-__speedTestKB__: Foresight needs to know the filesize speed test file is so it can calculate the approximate network connection speed. The value should be a number representing KiloBytes. By default it is downloading a 100KB file. Default value is 100.
+__foresight.options.speedTestKB__: Foresight needs to know the filesize speed test file is so it can calculate the approximate network connection speed. By default it is downloading a 100KB file. The value should be a number representing KiloBytes. Default value is _100_
 
-__speedTestExpireMinutes__: Speed tests do not need to be performed on every page. Instead you can set how often a speed test should be completed, and in between test you can rely on past test information. The value should be a number representing minutes. Default value is 30.
+__foresight.options.speedTestExpireMinutes__: Speed tests do not need to be performed on every page. Instead you can set how often a speed test should be completed, and in between test you can rely on past test information. The value should be a number representing minutes. Default value is _30_
 
+__foresight.options.maxImgWidth__: A max pixel size can be set on images. This is in reference to browser pixels. Default value is _1200_
 
+__foresight.options.maxImgHeight__: A max pixel size can be set on images. This is in reference to browser pixels. Default value is _1200_
+
+__foresight.options.maxImgRequestWidth__: A max pixel size can be set on how large of images can be requested from the server. Default value is _2048_
+
+__foresight.options.maxImgRequestHeight__: A max pixel size can be set on how large of images can be requested from the server. Default value is _2048_
+
+__foresight.options.forcedPixelRatio__: You can force the pixel ratio and override the device pixel ratio value. Default value undefined and falls back to the device pixel ratio.
 
 Additionally, the foresight global options can be overwritten by each individual _noscript_ element if need be.
 
@@ -157,3 +165,24 @@ __data-img-max-height__: _(Optional)_ Maximum browser pixel height this image sh
 
 __data-img-pixel-ratio__: _(Optional)_ By default an image's pixel ratio is figured out using the devices pixel ratio. You can however manually assign an image's pixel ratio which will override the default.
 
+
+
+## Foresight Properties
+
+After foresight executes there are a handful of properties viewable.
+
+__foresight.images__: An array containing each of the foresight _img_ elements.
+
+__foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If the browser does not know the pixel ratio, such as old browsers, it defaults to 1.
+
+__foresight.connTestMethod__: The connection test method provides info on how the device received its speed-test information. 
+
+* _network_: The speed test information came directly from a network test.
+* _networkSlow_: A 100KB file should be downloaded within 1 second on a 800Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
+* _networkError_: When a speed-test network error occurrs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
+* _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
+* _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight doesn't bother testing the network connection.
+
+__foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStoreage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
+
+__foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's connection is considered a high-speed connection or not.
