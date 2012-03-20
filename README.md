@@ -24,6 +24,8 @@ One of the largest problems faced with dynamically deciding image quality is tha
         <img src="imagefile.jpg" width="320" height="240"/>
     </noscript>
 
+Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines an javascript disabled browsers to view the images.
+
 
 
 ## NoScript Element
