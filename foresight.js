@@ -6,11 +6,12 @@
 	// properties
 	var fs = window.foresight;
 	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
+	fs.availWidth = window.screen.availWidth || 320;
+	fs.availHeight = window.screen.availHeight || 480;
 	fs.isHighSpeedConn = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
 	fs.images = [];
-	fs.oncomplete = fs.oncomplete || undefined;
 
 	// options
 	fs.options = fs.options || {};
@@ -22,6 +23,10 @@
 	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K.jpg';
 	opts.speedTestKB = opts.speedTestKB || 100;
 	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
+	opts.maxImgWidth = opts.maxImgWidth || 1200;
+	opts.maxImgHeight = opts.maxImgHeight || opts.maxImgWidth;
+	opts.maxImgRequestWidth = opts.maxImgRequestWidth || 2048;
+	opts.maxImgRequestHeight = opts.maxImgRequestHeight || opts.maxImgRequestWidth;
 	opts.forcedPixelRatio = opts.forcedPixelRatio;
 
 	var
@@ -89,11 +94,11 @@
 			// speed test image download completed
 			endTime = ( new Date() ).getTime();
 
-			var duration = Math.round( ( endTime - startTime ) / 1000 );
+			var duration = round( ( endTime - startTime ) / 1000 );
 			duration = ( duration > 1 ? duration : 1 );
 
 			var bitsLoaded = ( opts.speedTestKB * 1024 * 8 );
-			fs.connKbps = ( Math.round( bitsLoaded / duration ) / 1024 );
+			fs.connKbps = ( round( bitsLoaded / duration ) / 1024 );
 			fs.isHighSpeedConn = ( fs.connKbps >= opts.minKbpsForHighSpeedConn );
 
 			speedTestComplete( 'network' );
@@ -145,14 +150,29 @@
 		fillProp( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
 		fillProp( img, 'width', 'width', true );
 		fillProp( img, 'height', 'height', true );
+		img.orgWidth = img.width;
+		img.orgHeight = img.height;
 
 		if ( !img.orgSrc || !img.width || !img.height ) return; // missing required attributes
 
+		fillProp( img, 'max-width', 'maxWidth', true, opts.maxImgWidth );
+		fillProp( img, 'max-height', 'maxHeight', true, opts.maxImgHeight );
+
+		fillProp( img, 'max-request-width', 'maxRequestWidth', true, opts.maxImgRequestWidth );
+		fillProp( img, 'max-request-height', 'maxRequestHeight', true, opts.maxImgRequestHeight );
+
+		fillProp( img, 'win-width-percent', 'winWidthPercent', true, 0 );
+		fillProp( img, 'win-height-percent', 'winHeightPercent', true, 0 );
+		setDimensionsFromPercent( img );
+
+		// ensure the img dimensions do not exceed the max, scale proportionally
+		maxDimensionScaling( img, 'width', 'maxWidth', 'height', 'maxHeight' );
+
+		fillProp( img, 'id', 'id', false, ( 'fsImg' + Math.floor( Math.random() * 1000000000 ) ) );
 		fillProp( img, 'class', 'className', false, '' );
 		fillProp( img, 'src-modification', 'srcModification', false, opts.srcModification );
 		fillProp( img, 'src-format', 'srcFormat', false, opts.srcFormat );
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
-		fillProp( img, 'id', 'id', false, ( 'fsImg' + Math.floor( Math.random() * 1000000000 ) ) );
 
 		// add this image to the collection, but do not add it to the DOM yet
 		fs.images.push( img );
@@ -162,13 +182,28 @@
 		// standard function to fill up an <img> with data from the <noscript>
 		var value = img.noScriptEle.getAttribute( 'data-img-' + attrName );
 		if ( value && value !== '' ) {
-			if ( getFloat && !isNaN( value ) ) {
-				value = parseFloat( value, 10 );
+			if ( getFloat ) {
+				value = value.replace( '%', '' );
+				if( !isNaN( value ) ) {
+					value = parseFloat( value, 10 );
+				}
 			}
 		} else {
 			value = defaultValue;
 		}
 		img[ propName ] = value;
+	},
+
+	setDimensionsFromPercent = function( img ) {
+		if ( img.winWidthPercent > 0 ) {
+			var orgW = img.width;
+			img.width = round( (img.winWidthPercent / 100) * fs.availWidth );
+			img.height = round( img.height * ( img.width / orgW ) );
+		} else if ( img.winHeightPercent > 0 ) {
+			var orgH = img.height;
+			img.height = round( (img.winHeightPercent / 100) * fs.availHeight );
+			img.width = round( img.width * ( img.height / orgH ) );
+		}
 	},
 
 	initImageRebuild = function() {
@@ -182,22 +217,44 @@
 		for ( x = 0; x < fs.images.length; x++ ) {
 			img = fs.images[ x ];
 
-			img.requestWidth = Math.round( img.width * img.pixelRatio );
-			img.requestHeight = Math.round( img.height * img.pixelRatio );
+			img.requestWidth = round( img.width * img.pixelRatio );
+			img.requestHeight = round( img.height * img.pixelRatio );
+
+			// ensure the request dimensions do not exceed the max, scale proportionally
+			maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
 
 			// decide how the src should be modified for the new image request
 			if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
 				rebuildSrc( img );
 			} else if ( img.srcModification === 'replaceDimensions' ) {
 				replaceDimensions( img );
-			} else {
-				return;
 			}
 
 		}
-		
+
 		// the image collection now has a list of <img> ready to be inserted into the DOM
 		insertImages();
+	},
+
+	maxDimensionScaling = function( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
+		// used to ensure both the width and height do not go over the max allowed
+		// this function is reusable for both the img width/height, and the request width/height
+		var orgD;
+		if ( img[ widthProp ] > img[ maxWidthProp ] ) {
+			orgD = img[ widthProp ];
+			img[ widthProp ] = img[ maxWidthProp ];
+			img[ heightProp ] = round( img[ heightProp ] * ( img[ widthProp ] / orgD ) );
+		}
+		if ( img[ heightProp ] > img[ maxHeightProp ] ) {
+			orgD = img[ heightProp ];
+			img[ heightProp ] = img[ maxHeightProp ];
+			img[ widthProp ] = round( img[ widthProp ] * ( img[ heightProp ] / orgD ) );
+			if ( img[ widthProp ] > img[ maxWidthProp ] ) {
+				orgD = img.img[ widthProp ];
+				img[ widthProp ] = img[ maxWidthProp ];
+				img[ heightProp ] = round( img[ heightProp ] * ( img[ widthProp ] / orgD ) );
+			}
+		}
 	},
 
 	rebuildSrc = function( img ) {
@@ -248,8 +305,8 @@
 		// replace image dimensions already in the src with new dimensions
 		// set the new src, begin downloading this image
 		img.src = img.orgSrc
-					.replace( img.width, img.requestWidth )
-					.replace( img.height, img.requestHeight );
+					.replace( img.orgWidth, img.requestWidth )
+					.replace( img.orgHeight, img.requestHeight );
 	},
 
 	insertImages = function() {
@@ -266,9 +323,15 @@
 		if ( fs.oncomplete ) {
 			fs.oncomplete();
 		}
-	};
+	},
 
+	round = function( value ) {
+		// used just for smaller javascript after minify
+		return Math.round( value );
+	};
+	
 	if( opts.forcedPixelRatio ) {
+		// force a certain pixel ratio in the options
 		fs.devicePixelRatio = opts.forcedPixelRatio;
 	}
 
