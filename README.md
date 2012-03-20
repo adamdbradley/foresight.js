@@ -32,9 +32,9 @@ Currently most devices capable of hi-res displays are mobile devices, such as ne
 
 __data-img-src__: _(Required)_ The src attribute of the image, which is the location image on the server.
 
-__data-img-width__: _(Required)_ The width in the number of pixels. This should be the width according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted.
+__data-img-width__: _(Required)_ The width in the number of pixels. This should be the width according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _data-img-width_ and _data-img-height_ are required so we can always proportionally scale the image.
 
-__data-img-height__: _(Required)_ The height in the number of pixels. This should be the height according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted.
+__data-img-height__: _(Required)_ The height in the number of pixels. This should be the height according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _data-img-width_ and _data-img-height_ are required so we can always proportionally scale the image.
 
 __data-img-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
 
