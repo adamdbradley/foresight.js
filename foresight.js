@@ -36,37 +36,18 @@
 		if ( imageIterateStatus ) return;
 
 		imageIterateStatus = STATUS_LOADING;
-		iterateChildElements( document.body );
+
+		var noScriptElements = document.getElementsByTagName( 'noscript' );
+		for ( var x = 0, l = noScriptElements.length; x < l; x++ ) {
+			setImage( noScriptElements[ x ] );
+		}
+
 		imageIterateStatus = STATUS_COMPLETE;
 
 		if ( fs.images.length > 0 ) {
 			initImageRebuild();
-		} else {
-			if ( fs.oncomplete ) {
-				fs.oncomplete();
-			}
-		}
-	},
-
-	iterateChildElements = function ( parentEle ) {
-		// recursively drill down through the elements looking for <noscript>'s with img data
-		var
-		x,
-		l = parentEle.childNodes.length,
-		childEle;
-
-		for ( x = 0; x < l; x++ ) {
-			childEle = parentEle.childNodes[ x ];
-
-			if ( childEle.nodeName !== '#text' ) {
-				if ( childEle.nodeName === 'NOSCRIPT' ) {
-					if ( childEle.getAttribute( 'data-img-src' ) !== null ) {
-						setImage( childEle );
-					}
-				} else if ( childEle.hasChildNodes ) {
-					iterateChildElements( childEle );
-				}
-			}
+		} else if ( fs.oncomplete ) {
+			fs.oncomplete(); // still run oncomplete even if no images were found
 		}
 	},
 
@@ -157,9 +138,6 @@
 	},
 
 	setImage = function ( noScriptEle ) {
-		// this will only run once if there are images and will not run at all if there are no images
-		initSpeedTest();
-
 		// create an <img> and fill it up with data from the <noscript> attributes
 		var img = document.createElement( 'img' );
 		img.noScriptEle = noScriptEle;
@@ -307,5 +285,8 @@
 			window.attachEvent( "onload", initElementIteration );
 		}
 	};
+
+	// DOM does not need to be ready to begin the network connection speed test
+	initSpeedTest();
 
 } ( this, document ) );
