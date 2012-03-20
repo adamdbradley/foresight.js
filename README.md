@@ -51,13 +51,27 @@ __rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding 
 ## Src Format
 The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight with how the request image should be built. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _noscript data-img-src-format_ attribute. Below are the various keys which are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys which help build the src request for the server.
 
-__{protocol}__: Example - _http_ or _https_
+__{protocol}__: The protocol of the request. ie: _http_ or _https_
 
-__{host}__: Example - _www.wikipedia.com_ or _cdn.mysite.com_
+__{host}__: The host. ie: _www.wikipedia.com_ or _cdn.mysite.com_
 
-__{port}__: Example - _80_
+__{port}__: The port number, but production systems will rarely use this. ie: _80_
 
-__{directory}__: Example - _/images/_
+__{directory}__: The directory (folder) within the path. ie: _/images/_
+
+__{file}__: The filename of the image. ie: _myimage.jpg_
+
+__{query}__: The querystring. ie: _page=1&size=10_
+
+__{requestWidth}__: The requested width of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _320_
+
+__{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
+
+__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
+
+__Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles request URIs.__
+
+#### Src Format Examples
 
 
 ## NoScript Attributes
