@@ -5,7 +5,7 @@
 
 	// properties
 	var fs = window.foresight;
-	fs.devicePixelRatio = 2;//( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
+	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
 	fs.isHighSpeedConn = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
@@ -18,10 +18,11 @@
 	opts.srcModification = opts.srcModification || 'rebuildSrc';
 	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
 	opts.testConn = opts.testConn || true;
-	opts.minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 400;
+	opts.minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800;
 	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K.jpg';
 	opts.speedTestKB = opts.speedTestKB || 100;
 	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
+	opts.forcedPixelRatio = opts.forcedPixelRatio;
 
 	var
 	imageIterateStatus,
@@ -49,8 +50,6 @@
 
 	iterateChildElements = function ( parentEle ) {
 		// recursively drill down through the elements looking for <noscript>'s with img data
-		if ( !parentEle ) return;
-
 		var
 		x,
 		l = parentEle.childNodes.length,
@@ -132,7 +131,7 @@
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
 		// set a timeout so that if the speed testdownload takes too long 
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
-		speedTestTimeoutMS = opts.speedTestKB;
+		speedTestTimeoutMS = ( ( opts.speedTestKB * 8 ) / opts.minKbpsForHighSpeedConn ) * 1000;
 		setTimeout( function() {
 			speedTestComplete( 'networkSlow' );
 		}, speedTestTimeoutMS );
@@ -145,8 +144,7 @@
 		fs.connTestMethod = connTestMethod;
 
 		try {
-		
-		var fsDataToSet = {
+			var fsDataToSet = {
 				connKbps: fs.connKbps,
 				isHighSpeedConn: fs.isHighSpeedConn,
 				timestamp: ( new Date() ).getTime()
@@ -226,13 +224,17 @@
 
 	rebuildSrc = function( img ) {
 		// rebuild the <img> src using the supplied format and image data
+		var
+		f,
+		formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'query', 'width', 'height', 'pixelRatio' ],
+		newSrc = img.srcFormat;
+
 		img.uri = parseUri( img.orgSrc );
 		img.uri.width = img.requestWidth;
 		img.uri.height = img.requestHeight;
 		img.uri.pixelRatio = img.pixelRatio;
-		var formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'query', 'width', 'height', 'pixelRatio' ];
-		var newSrc = img.srcFormat;
-		for ( var f = 0; f < formatReplace.length; f++ ) {
+		
+		for ( f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
 		img.src = newSrc; // set the new src, begin downloading this image
@@ -287,6 +289,10 @@
 			fs.oncomplete();
 		}
 	};
+
+	if( opts.forcedPixelRatio ) {
+		fs.devicePixelRatio = opts.forcedPixelRatio;
+	}
 
 	// when the DOM is ready, begin iterating through each element in the DOM
 	if ( document.readyState === STATUS_COMPLETE ) {

@@ -4,7 +4,7 @@ var foresight_debugger = function () {
 	// oncomplete only being use to print out debugger info, demo purposes only
 	var info = [];
 
-	info.push( 'Images: ' + foresight.images.length );
+	info.push( 'Foresight Images: ' + foresight.images.length );
 	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
 	info.push( 'Check Connection Speed: ' + foresight.options.testConn );
 	info.push( 'Connection Test Method: ' + foresight.connTestMethod );
@@ -31,12 +31,12 @@ var foresight_debugger = function () {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
 		imgInfo.push( 'Image: ' + x + ', ID: ' + img.id + ', ClassName: ' + img.className );
-		imgInfo.push( 'Orginal Src: ' + img.orgSrc );
+		imgInfo.push( 'Orginal Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Pixel Ratio: ' + img.pixelRatio );
 		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 		imgInfo.push( 'Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Requested Src: ' + img.src );
+		imgInfo.push( 'Requested Src: <a href="' + img.src +'">' + img.src +'</a>' );
 		
 		var imgPre = document.createElement( 'pre' );
 		imgPre.innerHTML = imgInfo.join( '<br>' );
