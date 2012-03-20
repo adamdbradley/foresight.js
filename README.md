@@ -35,3 +35,9 @@ __data-img-src__: _(Required)_ The src attribute of the image, which is the loca
 __data-img-width__: _(Required)_ The width in the number of pixels. This should be the width according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted.
 
 __data-img-height__: _(Required)_ The height in the number of pixels. This should be the height according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted.
+
+__data-img-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
+
+__data-img-max-height__: _(Optional)_ Maximum browser pixel height this image should take. If this value is greater than the height it will scale the image proportionally.
+
+
