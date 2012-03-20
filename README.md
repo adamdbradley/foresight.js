@@ -73,7 +73,7 @@ __{requestWidth}__: The requested width of the image to load. This value will au
 
 __{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
 
-__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
+__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _2_
 
 _Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles image requests._
 
@@ -102,7 +102,37 @@ _Again, not all of these keys are required inside your src URI. Src format is en
     SrcFormat: {protocol}://{host}{directory}{requestWidth}px-{file}
 
 
-## Foresight Configuration
+
+## Foresight Global Configuration
+Foresight comes with default settings, but using the _foresight.options_ object allows you to customize it as needed. The easiest way to configure foresight.js is to include the _foresight.options_ configuration before the foresight.js script, such as:
+
+    <script>
+		foresight = {
+			options: {
+				srcModification: 'rebuildSrc',
+                srcFormat: '{directory}{requestWidth}px-{file}'
+			}
+		};
+	</script>
+	<script src="foresight.js"></script>
+
+__srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
+
+__srcFormat__: The format in which a src should be rebuilt. See the Src Format section for more info.
+
+__testConn__: Either _true_ or _false_ determining if foresight should test the network connection speed or not. Default is _true_.
+
+__minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. High-speed connections requests hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is 800.
+
+__speedTestUri__: You can determine the URI for the speed test. By default it will use a foresight hosted image, but you can always choose your own URI for the test image.
+
+__speedTestKB__: Foresight needs to know the filesize speed test file is so it can calculate the approximate network connection speed. The value should be a number representing KiloBytes. By default it is downloading a 100KB file. Default value is 100.
+
+__speedTestExpireMinutes__: Speed tests do not need to be performed on every page. Instead you can set how often a speed test should be completed, and in between test you can rely on past test information. The value should be a number representing minutes. Default value is 30.
+
+
+
+Additionally, the foresight global options can be overwritten by each individual _noscript_ element if need be.
 
 
 
@@ -113,7 +143,9 @@ __data-img-width__: _(Required)_ The pixel width according to the browser. Any a
 
 __data-img-height__: _(Required)_ The pixel height according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _data-img-width_ and _data-img-height_ are required so we can always proportionally scale the image.
 
-__data-img-src-modification__: _(Optional)_ An image's src 
+__data-img-src-modification__: _(Optional)_ Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
+
+__data-img-src-format__: _(Optional)_ The format in which a src should be rebuilt. See the Src Format section for more info.
 
 __data-img-id__: _(Optional)_ The _img id_ attribute. If one is not assigned it will be assigned an _id_ attribute starting with 'fsImg' then followed by a random number.
 
