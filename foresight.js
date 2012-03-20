@@ -34,7 +34,7 @@
 	speedConnectionStatus,
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
-	localStoreKey = 'foresight.js',
+	localStorageKey = 'foresight.js',
 
 	initElementIteration = function() {
 		// Iterate through each element in the DOM looking for <noscript>'s with img data
@@ -68,9 +68,9 @@
 		}
 
 		// check if a speed test has recently been completed and data saved in the local storage
-		// localStorage.removeItem( localStoreKey );
+		// localStorage.removeItem( localStorageKey );
 		try {
-			var fsData = JSON.parse( localStorage.getItem( localStoreKey ) );
+			var fsData = JSON.parse( localStorage.getItem( localStorageKey ) );
 			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < opts.speedTestExpireMinutes ) {
@@ -135,7 +135,7 @@
 				isHighSpeedConn: fs.isHighSpeedConn,
 				timestamp: ( new Date() ).getTime()
 			};
-			localStorage.setItem( localStoreKey, JSON.stringify( fsDataToSet ) );
+			localStorage.setItem( localStorageKey, JSON.stringify( fsDataToSet ) );
 		} catch( e ) { }
 
 		speedConnectionStatus = STATUS_COMPLETE;
