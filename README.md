@@ -36,7 +36,7 @@ The child _img_ element within the _noscript_ is the fallback image incase javas
 
 
 ## High-Speed Network Connection Test
-Currently most devices capable of hi-res displays are mobile devices, such as new iPhones or iPads. However, since they are "mobile" in nature and their data may be relying on cell towers, even if the device has a hi-res display,  users with slow connectivity probably do not want to wait a long time while images download. In these cases, foresight.js does a quick network speed test to make sure your the user's device can handle hi-res images. Additionally, it stores the devices network connection speed information for 30 minutes (or any customizable to any expiration period you'd like) so it does not continually perform speed tests. You can host your own speed test file to be downloaded, or you can use the default URI available for public use found in the foresight configuration.
+Currently most devices capable of hi-res displays are mobile devices, such as new iPhones or iPads. However, since they are "mobile" in nature and their data may be relying on cell towers, even if the device has a hi-res display, users with slow connectivity probably do not want to wait a long time while images download. In these cases, foresight.js does a quick network speed test to make sure the user's device can handle hi-res images. Additionally, it stores the devices network connection speed information for 30 minutes (or any customizable to any expiration period you'd like) so it does not continually perform speed tests. You can host your own speed test file to be downloaded, or you can use the default URI available for public use found in the foresight configuration.
 
 
 
@@ -69,13 +69,13 @@ __{ext}__: Only the file-extension of the image. ie: _jpg_
 
 __{query}__: The querystring. ie: _page=1&size=10_
 
-__{requestWidth}__: The requested width of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _320_
+__{requestWidth}__: The requested width of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the request width in the src. ie: _320_
 
-__{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
+__{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the request height in the src. ie: _480_
 
 __{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _2_
 
-_Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles image requests._
+_Again, not all of these keys are required inside your src URI. Src format is entirely dependent on how the server handles image requests._
 
 
 
@@ -179,11 +179,11 @@ __foresight.connTestMethod__: The connection test method provides info on how th
 
 * _network_: The speed test information came directly from a network test.
 * _networkSlow_: A 100KB file should be downloaded within 1 second on a 800Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
-* _networkError_: When a speed-test network error occurrs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
+* _networkError_: When a speed-test network error occurs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
 * _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight doesn't bother testing the network connection.
 
-__foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStoreage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
+__foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStorage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
 
 __foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's connection is considered a high-speed connection or not.
 
@@ -196,7 +196,7 @@ __foresight.oncomplete__: Executed after foresight rebuilt each of the image src
 
 
 ## Foresight Debugging
-Instead of including debuggin code directly in the foresight.js, an additional javascript file has been included to help debug. By using the _foresight.oncomplete_ event and existing _foresight_ properties, the _foresight-debug.js_ file prints out relivate information to help debug. This is particularily useful for mobile devices since it is more difficult to view source code. Below is sample code to include the foresight-debugger.js file and calling it when foresight completes:
+Instead of including debugging code directly in the foresight.js, an additional javascript file has been included to help developers debug. By using the _foresight.oncomplete_ event and existing _foresight_ properties, the _foresight-debug.js_ file prints out relivate information to help debug. This is particularly useful for mobile devices since it is more difficult to view source code. Below is sample code to include the _foresight-debugger.js_ file and calling it when foresight completes:
 
     <script src="foresight-debugger.js"></script>
     <script>
@@ -204,7 +204,7 @@ Instead of including debuggin code directly in the foresight.js, an additional j
             options: {
                 srcModification: 'rebuildSrc',
                 srcFormat: '{directory}{requestWidth}px-{file}'
-            }
+            },
             oncomplete: foresight_debugger
         };
     </script>
