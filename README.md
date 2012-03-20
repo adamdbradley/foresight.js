@@ -43,12 +43,17 @@ An _img src_ needs to be modified so the browser can request the correct image a
 
 Src modification types can be assigned in the _foresight.options.srcModification_ config, or individually for each image using the _noscript data-img-src-modification_ attribute. The possible values are __replaceDimensions__ or __rebuildSrc__ and described below.
 
-#### Replace Dimensions:
 __replaceDimensions__: The current src may already have dimensions within the URI. Instead of rebuilding the src entirely, just find and replace the original dimensions with the new dimensions. 
 
-#### Rebuild Src:
-__rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src format_. The src format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _noscript data-img-src-format_ attribute.
+__rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src format_. Review the Src Format section to see how to format the image URI's.
 
+
+## Src Format
+The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight with how the request image should be built. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _noscript data-img-src-format_ attribute. Below are the various keys which are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys which help build the src request for the server.
+__{protocol}__: Example - _http_ or _https_
+__{host}__: Example - _www.wikipedia.com_ or _cdn.mysite.com_
+__{port}__: Example - _80_
+__{directory}__: Example - _/images/_
 
 
 ## NoScript Attributes
