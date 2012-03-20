@@ -9,7 +9,11 @@
 			options: {
 				speedTestUri: '../speed-test/100K.jpg',
 				forcedPixelRatio: 2,
-				speedTestExpireMinutes: 5
+				speedTestExpireMinutes: 5//,
+				//maxImgWidth: 200,
+				//maxImgHeight: 100,
+				//maxImgRequestWidth: 400,
+				//maxImgRequestHeight: 200
 			},
 			oncomplete: foresight_debugger
 		};
@@ -17,10 +21,16 @@
 	<script src="../foresight.js"></script>
 
 </head>
-<body>
+<body style="margin:0;padding:0;">
 
 	<p>
-		<noscript data-img-src-modification="rebuildSrc" data-img-src-format="{protocol}://{host}{directory}{file}?w={width}&h={height}" data-img-src="http://m.remingtonproducts.com/~/media/Remington/Images/Mobile%20Banners/Mobile_HairTherapy.ashx" data-img-width="315" data-img-height="236">
+		<noscript data-img-src-modification="rebuildSrc" data-img-src-format="{protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}" data-img-src="http://m.remingtonproducts.com/~/media/Remington/Images/Mobile%20Banners/Mobile_HairTherapy.ashx" data-img-win-width-percent="100%" data-img-width="315" data-img-height="236">
+			<img src="http://m.remingtonproducts.com/~/media/Remington/Images/Mobile%20Banners/Mobile_HairTherapy.ashx?w=315&h=236&bc=white" width="315" height="236" class="thumbimage">
+		</noscript>
+	</p>
+
+	<p>
+		<noscript data-img-src-modification="rebuildSrc" data-img-src-format="{protocol}://{host}{directory}{filename}_{pixelRatio}x.{ext}" data-img-src="http://images.apple.com/home/images/ipad_hero.jpg" data-img-width="1454" data-img-height="605">
 			<img src="http://m.remingtonproducts.com/~/media/Remington/Images/Mobile%20Banners/Mobile_HairTherapy.ashx?w=315&h=236&bc=white" width="315" height="236" class="thumbimage">
 		</noscript>
 	</p>
