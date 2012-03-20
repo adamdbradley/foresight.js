@@ -103,18 +103,18 @@ _Again, not all of these keys are required inside your src URI. Src format is en
 
 
 
-## Foresight Global Configuration
+## Foresight Options
 Foresight comes with default settings, but using the _foresight.options_ object allows you to customize it as needed. The easiest way to configure foresight.js is to include the _foresight.options_ configuration before the foresight.js script, such as:
 
     <script>
-		foresight = {
-			options: {
-				srcModification: 'rebuildSrc',
+        foresight = {
+            options: {
+                srcModification: 'rebuildSrc',
                 srcFormat: '{directory}{requestWidth}px-{file}'
-			}
-		};
-	</script>
-	<script src="foresight.js"></script>
+            }
+        };
+    </script>
+    <script src="foresight.js"></script>
 
 __foresight.options.srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
@@ -144,7 +144,7 @@ Additionally, the foresight global options can be overwritten by each individual
 
 
 
-## NoScript Attributes
+## NoScript data-img Attributes
 __data-img-src__: _(Required)_ The src attribute of the image, which is the location image on the server.
 
 __data-img-width__: _(Required)_ The pixel width according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _data-img-width_ and _data-img-height_ are required so we can always proportionally scale the image.
@@ -186,3 +186,26 @@ __foresight.connTestMethod__: The connection test method provides info on how th
 __foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStoreage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
 
 __foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's connection is considered a high-speed connection or not.
+
+
+
+## Foresight Events
+
+__foresight.oncomplete__: Executed after foresight rebuilt each of the image src's and inserted them into the DOM.
+
+
+
+## Foresight Debugging
+Instead of including debuggin code directly in the foresight.js, an additional javascript file has been included to help debug. By using the _foresight.oncomplete_ event and existing _foresight_ properties, the _foresight-debug.js_ file prints out relivate information to help debug. This is particularily useful for mobile devices since it is more difficult to view source code. Below is sample code to include the foresight-debugger.js file and calling it when foresight completes:
+
+    <script src="foresight-debugger.js"></script>
+    <script>
+        foresight = {
+            options: {
+                srcModification: 'rebuildSrc',
+                srcFormat: '{directory}{requestWidth}px-{file}'
+            }
+            oncomplete: foresight_debugger
+        };
+    </script>
+    <script src="foresight.js"></script>
