@@ -1,7 +1,7 @@
 ## Introduction
-The __foresight.js__ gives webpages the ability to see if the user's device is capable of viewing high-resolution displays (such as the 3rd generation iPad) before the image is requested. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image.
+The __foresight.js__ gives webpages the ability to see if the user's device is capable of viewing high-resolution displays (such as the 3rd generation iPad) before the image is requested. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage.
 
-This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight is used to modify _img src_ attributes so browsers can request the correct image for the device, it does not however, resize the images themselves. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information.
+This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight is used to modify _img src_ attributes so browsers can request the correct image for the device, it does not however, resize the images themselves. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
 
 
 
@@ -59,7 +59,11 @@ __{port}__: The port number, but production systems will rarely use this. ie: _8
 
 __{directory}__: The directory (folder) within the path. ie: _/images/_
 
-__{file}__: The filename of the image. ie: _myimage.jpg_
+__{file}__: Includes both the file-name and file-extension of the image. ie: _myimage.jpg_
+
+__{filename}__: Only the file-name of the image. ie: _myimage_
+
+__{ext}__: Only the file-extension of the image. ie: _jpg_
 
 __{query}__: The querystring. ie: _page=1&size=10_
 
@@ -69,7 +73,9 @@ __{requestHeight}__: The requested height of the image to load. This value will 
 
 __{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
 
-_Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles request URIs._
+_Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles image requests._
+
+
 
 #### Src Format Examples
 
