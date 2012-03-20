@@ -53,7 +53,7 @@ The src format is only required when using the _rebuildSrc_ src modification. Th
 
 __{protocol}__: The protocol of the request. ie: _http_ or _https_
 
-__{host}__: The host. ie: _www.wikipedia.com_ or _cdn.mysite.com_
+__{host}__: The host. ie: _cdn.mysite.com_ or _www.wikipedia.com_
 
 __{port}__: The port number, but production systems will rarely use this. ie: _80_
 
@@ -69,10 +69,29 @@ __{requestHeight}__: The requested height of the image to load. This value will 
 
 __{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _480_
 
-__Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles request URIs.__
+_Again, not all of these keys are required inside your src URI. Src format is entirely dependant on how the server handles request URIs._
 
 #### Src Format Examples
 
+    Example A: Width and height in their own folder:
+    Output Src: http://cdn.mysite.com/images/640/480/myimage.jpg
+    SrcFormat: {protocol}://{host}{directory}{requestWidth}/{requestHeight}/{file}
+
+    Example B: Width and height in the querystring
+    Output Src: http://cdn.mysite.com/images/myimage.jpg?w=640&h=480
+    SrcFormat: {protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}
+
+    Example C: Width in the filename, request to the same host
+    Output Src: /images/320px-myimage.jpg
+    SrcFormat: {directory}{requestWidth}px-{file}
+
+    Example D: Width in the filename, actual Wikipedia.org src format
+    Output Src: http://upload.wikimedia.org/wikipedia/commons/thumb/5/57/AmericanBadger.JPG/1024px-AmericanBadger.JPG
+    SrcFormat: {protocol}://{host}{directory}{requestWidth}px-{file}
+
+    Example E: Pixel ratio in the filename, actual Apple.com src format
+    Output Src: http://images.apple.com/home/images/ipad_hero_2x.jpg
+    SrcFormat: {protocol}://{host}{directory}{file}_{pixelRatio}x.jpg
 
 ## NoScript Attributes
 __data-img-src__: _(Required)_ The src attribute of the image, which is the location image on the server.
