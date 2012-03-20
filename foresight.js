@@ -301,7 +301,7 @@
 
 		var fileSplt = uri.file.split('.');
 		uri.filename = fileSplt[ 0 ];
-		uri.ext = ( fileSplt.length > 1 ? fileSplt[ 1 ] : '' );
+		uri.ext = ( fileSplt.length > 1 ? fileSplt[ fileSplt.length -1 ] : '' );
 
 		return uri;
 	},
