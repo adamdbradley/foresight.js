@@ -120,27 +120,27 @@ __foresight.options.srcModification__: Which type of src modification to use, ei
 
 __foresight.options.srcFormat__: The format in which a src should be rebuilt. See the Src Format section for more info.
 
-__foresight.options.testConn__: Either _true_ or _false_ determining if foresight should test the network connection speed or not. Default is _true_
+__foresight.options.testConn__: Boolean value determining if foresight should test the network connection speed or not. Default is _true_
 
-__foresight.options.minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. High-speed connections requests hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _800_
+__foresight.options.minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _800_
 
-__foresight.options.speedTestUri__: You can determine the URI for the speed test. By default it will use a foresight hosted image, but you can always choose your own URI for the test image. Default value is _//foresightjs.appspot.com/speed-test/100K_
+__foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight hosted image, but you can always choose your own URI for the test image. Default value is _//foresightjs.appspot.com/speed-test/100K_
 
-__foresight.options.speedTestKB__: Foresight needs to know the filesize speed test file is so it can calculate the approximate network connection speed. By default it is downloading a 100KB file. The value should be a number representing KiloBytes. Default value is _100_
+__foresight.options.speedTestKB__: Foresight needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 100KB file. The value should be a number representing KiloBytes. Default value is _100_
 
-__foresight.options.speedTestExpireMinutes__: Speed tests do not need to be performed on every page. Instead you can set how often a speed test should be completed, and in between test you can rely on past test information. The value should be a number representing minutes. Default value is _30_
+__foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing minutes. Default value is _30_
 
-__foresight.options.maxImgWidth__: A max pixel size can be set on images. This is in reference to browser pixels. Default value is _1200_
+__foresight.options.maxImgWidth__: A max pixel width can be set on images. This is in reference to browser pixels. Default value is _1200_
 
-__foresight.options.maxImgHeight__: A max pixel size can be set on images. This is in reference to browser pixels. Default value is _1200_
+__foresight.options.maxImgHeight__: A max pixel height can be set on images. This is in reference to browser pixels. Default value is _1200_
 
-__foresight.options.maxImgRequestWidth__: A max pixel size can be set on how large of images can be requested from the server. Default value is _2048_
+__foresight.options.maxImgRequestWidth__: A max pixel request width can be set on how large of images can be requested from the server. Default value is _2048_
 
-__foresight.options.maxImgRequestHeight__: A max pixel size can be set on how large of images can be requested from the server. Default value is _2048_
+__foresight.options.maxImgRequestHeight__: A max pixel request height can be set on how large of images can be requested from the server. Default value is _2048_
 
-__foresight.options.forcedPixelRatio__: You can force the pixel ratio and override the device pixel ratio value. Default value undefined and falls back to the device pixel ratio.
+__foresight.options.forcedPixelRatio__: You can override the device pixel ratio value. Default value is _undefined_ 
 
-Additionally, the foresight global options can be overwritten by each individual _noscript_ element if need be.
+Additionally, the _foresight.options_ configurations can be overridden by each individual _noscript_ element if need be.
 
 
 
