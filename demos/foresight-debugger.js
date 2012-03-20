@@ -33,10 +33,15 @@ var foresight_debugger = function () {
 		imgInfo.push( 'Image: ' + x + ', ID: ' + img.id + ', ClassName: ' + img.className );
 		imgInfo.push( 'Orginal Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Pixel Ratio: ' + img.pixelRatio );
-		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 		imgInfo.push( 'Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		
+		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
+		if( img.srcModification === 'rebuildSrc' ) {
+			imgInfo.push( 'Src Format: ' + img.srcFormat );
+		}
 		imgInfo.push( 'Requested Src: <a href="' + img.src +'">' + img.src +'</a>' );
+		img.setAttribute( 'title', 'Org: ' + img.width + 'x' + img.height + ', Requested: ' + img.requestWidth + 'x' + img.requestHeight  );
 		
 		var imgPre = document.createElement( 'pre' );
 		imgPre.innerHTML = imgInfo.join( '<br>' );
