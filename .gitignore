@@ -4,3 +4,4 @@ favicon.ico
 main.py
 .*
 !/.gitignore
+.gitignore
