@@ -1,7 +1,0 @@
-app.yaml
-index.yaml
-favicon.ico
-main.py
-.*
-!/.gitignore
-.gitignore
