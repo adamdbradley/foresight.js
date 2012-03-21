@@ -20,7 +20,7 @@
 	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
 	opts.testConn = opts.testConn || true;
 	opts.minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800;
-	opts.speedTestUri = opts.speedTestUri || 'speed-test/100K.jpg';
+	opts.speedTestUri = opts.speedTestUri || '//foresightjs.appspot.com/speed-test/100K.jpg';
 	opts.speedTestKB = opts.speedTestKB || 100;
 	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
 	opts.maxImgWidth = opts.maxImgWidth || 1200;
