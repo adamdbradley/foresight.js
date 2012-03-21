@@ -16,6 +16,11 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Minifies down to roughly 5K
 
 
+## Demos
+Before we get too far into the nitty-gritty, it's probably best to view foresight in action. Currently most desktop and laptops do not have high-resolution displays and only have a devicePixel Ratio = 1, so you will not be able to see the effects on a standard monitor. Make sure you view the demos from multiple devices, such as your mobile phone, iPad and desktop computer.
+
+* [Foresight.js Demos](http://foresightjs.appspot.com/demos/index.html)
+
 
 ## HTML
 One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image has already been requested from the server. And on the flip side to that, if _img_ elements are built by javascript then they probably won't be viewed by search engines and browsers without javascript enabled will not be able to view the images. To overcome both of these challenges foresight.js uses the _noscript_ element with a child _img_ element.
