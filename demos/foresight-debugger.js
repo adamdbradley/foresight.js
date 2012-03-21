@@ -47,4 +47,10 @@ var foresight_debugger = function () {
 		imgPre.innerHTML = imgInfo.join( '<br>' );
 		img.parentElement.insertBefore( imgPre, img );
 	}
+	
+	// print out a QR code of the current page so its easier to load on a mobile phone
+	var qrImg = document.createElement( 'img' );
+	qrImg.src = 'http://chart.apis.google.com/chart?cht=qr&chs=300x300&chld=H|0&chl=' + escape(window.location);
+	document.body.insertBefore(qrImg, document.body.lastChild);
+	
 };

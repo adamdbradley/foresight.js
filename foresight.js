@@ -115,9 +115,9 @@
 		speedTestImg.src = opts.speedTestUri + "?r=" + Math.random();
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
-		// set a timeout so that if the speed testdownload takes too long 
+		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
-		speedTestTimeoutMS = ( ( opts.speedTestKB * 8 ) / opts.minKbpsForHighSpeedConn ) * 1000;
+		speedTestTimeoutMS = ( ( ( opts.speedTestKB * 8 ) / opts.minKbpsForHighSpeedConn ) * 1000 ) + 250;
 		setTimeout( function() {
 			speedTestComplete( 'networkSlow' );
 		}, speedTestTimeoutMS );
