@@ -185,7 +185,7 @@ __foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If t
 
 __foresight.connTestMethod__: The connection test value provides info on how the device received its speed-test information. 
 
-* _network_: The speed test information came directly from a network test.
+* _networkSuccess_: The speed test information came directly from a network test.
 * _networkSlow_: A 100KB file should be downloaded within 1 second on a 800Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
 * _networkError_: When a speed-test network error occurs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
