@@ -22,7 +22,7 @@ Before we get too far into the nitty-gritty, it's probably best to view foresigh
 * [Foresight.js Demos](http://foresightjs.appspot.com/demos/index.html)
 
 
-## HTML
+## Img Element
 One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image file has already been requested from the server. And on the flip side, if _img_ elements are built by javascript then they probably won't be viewed by search engines and browsers without javascript enabled will not be able to view the images. To overcome both of these challenges foresight.js uses the an _img_ element, but without the _src_ attribute set, and a _noscript_ element with a child _img_ element.
 
     <img data-src="imagefile.jpg" width="320" height="240" class="responsive-img">
@@ -30,10 +30,21 @@ One of the largest problems faced with dynamically deciding image quality is tha
         <img src="imagefile.jpg" width="320" height="240">
     </noscript>
 
-Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Notice how the first image does not have an _src_ attribute, but instead a _data-src_ attribute. Because this _img_ element is missing the _src_ attribute the browser will not attempt to download the file. The foresight.js code does the magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity.
+Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity.
 
-Until the web community comes up with a better method, the new standard becomes widely adopted by all the major browsers, and the modern browsers are installed on the billions of devices in the world, foresight's approach is actually one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_
+Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. 
 
+
+## NoScript Element
+Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_
+
+Additionally, if javascript is not enabled and the _noscript_ element is shown by the browser, the webpage should also hide the first _img_ so it doesn't show as a large blank image. The head element of the document should contain:
+
+    <noscript>
+        <style> .responsive-img { display:none }</style>
+    </noscript>
+    
+_If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements._
 
 
 ## High-Speed Network Connection Test
