@@ -31,7 +31,7 @@ var foresight_debugger = function () {
 	for( var x = 0; x < foresight.images.length; x++ ) {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
-		imgInfo.push( 'Orginal Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
+		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Pixel Ratio: ' + img.pixelRatio );
 		imgInfo.push( 'Browser Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
