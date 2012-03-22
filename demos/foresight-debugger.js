@@ -5,6 +5,8 @@ var foresight_debugger = function () {
 	var info = [];
 
 	info.push( 'Foresight Images: ' + foresight.images.length );
+	info.push( 'Screen Available Width: ' + foresight.availWidth );
+	info.push( 'Screen Available Height: ' + foresight.availHeight );
 	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
 	info.push( 'Check Connection Speed: ' + foresight.options.testConn );
 	info.push( 'Connection Test Method: ' + foresight.connTestMethod );
@@ -23,13 +25,14 @@ var foresight_debugger = function () {
 	info.push( '<hr>' );
 
 	var docPre = document.createElement( 'pre' );
-	docPre.innerHTML = info.join( '<br>' );
+	docPre.innerHTML = info.join( '<br>' ) + foresight.log.join('<br>');
 	document.body.insertBefore(docPre, document.body.firstChild);
 
 	// print out img info above each foresight image
 	for( var x = 0; x < foresight.images.length; x++ ) {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
+		imgInfo.push( '<hr>' );
 		imgInfo.push( 'Image: ' + x + ', ID: ' + img.id + ', ClassName: ' + img.className );
 		imgInfo.push( 'Orginal Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Pixel Ratio: ' + img.pixelRatio );

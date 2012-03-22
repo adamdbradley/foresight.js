@@ -6,11 +6,12 @@
 	// properties
 	var fs = window.foresight;
 	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
-	fs.availWidth = window.screen.availWidth || 320;
-	fs.availHeight = window.screen.availHeight || 480;
+	fs.availWidth = window.screen.availWidth;
+	fs.availHeight = window.screen.availHeight;
 	fs.isHighSpeedConn = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
+	fs.log = [],
 	fs.images = [];
 
 	// options
@@ -28,6 +29,7 @@
 	opts.maxImgRequestWidth = opts.maxImgRequestWidth || 2048;
 	opts.maxImgRequestHeight = opts.maxImgRequestHeight || opts.maxImgRequestWidth;
 	opts.forcedPixelRatio = opts.forcedPixelRatio;
+	opts.debug = opts.debug || false; 
 
 	var
 	imageIterateStatus,
@@ -37,26 +39,41 @@
 	localStorageKey = 'foresight.js',
 
 	initElementIteration = function() {
-		// Iterate through each element in the DOM looking for <noscript>'s with img data
+		// Iterate through each node in the DOM looking for <noscript>'s with img data
 		if ( imageIterateStatus ) return;
+		log('initElementIteration');
 
 		imageIterateStatus = STATUS_LOADING;
 
-		var noScriptElements = document.getElementsByTagName( 'noscript' );
-		for ( var x = 0, l = noScriptElements.length; x < l; x++ ) {
-			setImage( noScriptElements[ x ] );
-		}
+		iterateChildNodes( document.body );
 
 		imageIterateStatus = STATUS_COMPLETE;
 
 		if ( fs.images.length > 0 ) {
 			initImageRebuild();
 		} else if ( fs.oncomplete ) {
+			log('fs.images.length == 0');
 			fs.oncomplete(); // still run oncomplete even if no images were found
 		}
 	},
 
+	iterateChildNodes = function( node ) {
+		log( node.nodeName );
+		log( node.hasChildNodes() );
+		log( node.childNodes.length );
+		if ( node.nodeName !== '#text' ) {
+			if( node.nodeName === 'NOSCRIPT' ) {
+				setImage( node );
+			} else if ( node.hasChildNodes() ) {
+				for ( var x = 0, l = node.childNodes.length; x < l; x++ ) {
+					iterateChildNodes( node.childNodes[ x ] );
+				}
+			}
+		}
+	},
+
 	initSpeedTest = function() {
+		log('initSpeedTest');
 		// only check the connection speed once, if there is a status we already got info or it already started
 		if ( speedConnectionStatus ) return;
 
@@ -126,6 +143,7 @@
 	speedTestComplete = function( connTestMethod ) {
 		// if we haven't already gotten a speed connection status then save the info
 		if(speedConnectionStatus === STATUS_COMPLETE) return;
+		log('speedTestComplete: ' + connTestMethod);
 
 		fs.connTestMethod = connTestMethod;
 
@@ -143,6 +161,7 @@
 	},
 
 	setImage = function ( noScriptEle ) {
+		log('setImage');
 		// create an <img> and fill it up with data from the <noscript> attributes
 		var img = document.createElement( 'img' );
 		img.noScriptEle = noScriptEle;
@@ -207,6 +226,7 @@
 	},
 
 	initImageRebuild = function() {
+		log('initImageRebuild');
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
 		if ( speedConnectionStatus !== STATUS_COMPLETE || imageIterateStatus !== STATUS_COMPLETE ) return;
 
@@ -315,6 +335,7 @@
 	},
 
 	insertImages = function() {
+		log('insertImages');
 		// images all created w/ new src attributes, now insert <img>'s into the webpage
 		var
 		x,
@@ -333,6 +354,13 @@
 	round = function( value ) {
 		// used just for smaller javascript after minify
 		return Math.round( value );
+	},
+
+	log = function( msg ) {
+		if( !opts.debug ) return;
+		var dt = new Date();
+		msg += ' -- ' + dt.getMinutes() + ':' +  dt.getSeconds() + ':' +  dt.getMilliseconds();
+		fs.log.push( msg );
 	};
 	
 	if( opts.forcedPixelRatio ) {
@@ -342,13 +370,16 @@
 
 	// when the DOM is ready, begin iterating through each element in the DOM
 	if ( document.readyState === STATUS_COMPLETE ) {
+		log('document.readyState === STATUS_COMPLETE');
 		initElementIteration();
 	} else {
 		if ( document.addEventListener ) {
+			log('document.addEventListener');
 			document.addEventListener( "DOMContentLoaded", initElementIteration, false );
 			window.addEventListener( "load", initElementIteration, false );
 
 		} else if ( document.attachEvent ) {
+			log('document.attachEvent');
 			document.attachEvent( "onreadystatechange", initElementIteration );
 			window.attachEvent( "onload", initElementIteration );
 		}
