@@ -13,7 +13,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Fully customizable through configuration options
 * Does not make multiple requests for the same image
 * Default images load without javascript enabled
-* Minifies down to roughly 5K
+* Minifies down to roughly 4K
 
 
 ## Demos
