@@ -6,8 +6,6 @@
 	// properties
 	var fs = window.foresight;
 	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
-	fs.availWidth = window.screen.availWidth;
-	fs.availHeight = window.screen.availHeight;
 	fs.isHighSpeedConn = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
@@ -28,9 +26,8 @@
 	maxImgHeight = opts.maxImgHeight || maxImgWidth,
 	maxImgRequestWidth = opts.maxImgRequestWidth || 2048,
 	maxImgRequestHeight = opts.maxImgRequestHeight || maxImgRequestWidth,
-	forcedPixelRatio = opts.forcedPixelRatio;
+	forcedPixelRatio = opts.forcedPixelRatio,
 
-	var
 	imageIterateStatus,
 	speedConnectionStatus,
 	STATUS_LOADING = 'loading',
@@ -102,7 +99,7 @@
 			fs.connKbps = ( round( bitsLoaded / duration ) / 1024 );
 			fs.isHighSpeedConn = ( fs.connKbps >= minKbpsForHighSpeedConn );
 
-			speedTestComplete( 'network' );
+			speedTestComplete( 'networkSuccess' );
 		};
 
 		speedTestImg.onerror = function() {
@@ -190,11 +187,11 @@
 	setDimensionsFromPercent = function( img ) {
 		if ( img.winWidthPercent > 0 ) {
 			var orgW = img.width;
-			img.width = round( (img.winWidthPercent / 100) * fs.availWidth );
+			img.width = round( (img.winWidthPercent / 100) * fs.availWidth() );
 			img.height = round( img.height * ( img.width / orgW ) );
 		} else if ( img.winHeightPercent > 0 ) {
 			var orgH = img.height;
-			img.height = round( (img.winHeightPercent / 100) * fs.availHeight );
+			img.height = round( (img.winHeightPercent / 100) * fs.availHeight() );
 			img.width = round( img.width * ( img.height / orgH ) );
 		}
 	},
@@ -311,6 +308,18 @@
 	round = function( value ) {
 		// used just for smaller javascript after minify
 		return Math.round( value );
+	};
+
+	// methods
+	fs.availWidth = function() {
+		return window.screen.availWidth;
+	};
+	fs.availHeight = function() {
+		return window.screen.availHeight;
+	};
+	fs.reload = function() {
+		imageIterateStatus = undefined;
+		initIterateImages();
 	};
 
 	if( forcedPixelRatio ) {
