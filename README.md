@@ -44,7 +44,7 @@ Additionally, if javascript is not enabled and the _noscript_ element is shown b
         <style> .responsive-img { display:none }</style>
     </noscript>
     
-_If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements._
+_If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._
 
 
 ## High-Speed Network Connection Test
