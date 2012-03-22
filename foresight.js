@@ -11,26 +11,24 @@
 	fs.isHighSpeedConn = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
-	fs.log = [],
 	fs.images = [];
 
 	// options
 	fs.options = fs.options || {};
-	var opts = fs.options;
-	opts.imgClassName = opts.imgClassName || 'responsive-img';
-	opts.srcModification = opts.srcModification || 'rebuildSrc';
-	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
-	opts.testConn = opts.testConn || true;
-	opts.minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800;
-	opts.speedTestUri = opts.speedTestUri || '//foresightjs.appspot.com/speed-test/100K.jpg';
-	opts.speedTestKB = opts.speedTestKB || 100;
-	opts.speedTestExpireMinutes = opts.speedTestExpireMinutes || 30;
-	opts.maxImgWidth = opts.maxImgWidth || 1200;
-	opts.maxImgHeight = opts.maxImgHeight || opts.maxImgWidth;
-	opts.maxImgRequestWidth = opts.maxImgRequestWidth || 2048;
-	opts.maxImgRequestHeight = opts.maxImgRequestHeight || opts.maxImgRequestWidth;
-	opts.forcedPixelRatio = opts.forcedPixelRatio;
-	opts.debug = opts.debug || false; 
+	var opts = fs.options,
+	imgClassName = opts.imgClassName || 'responsive-img',
+	srcModification = opts.srcModification || 'rebuildSrc',
+	srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}',
+	testConn = opts.testConn || true,
+	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800,
+	speedTestUri = opts.speedTestUri || '//foresightjs.appspot.com/speed-test/100K.jpg',
+	speedTestKB = opts.speedTestKB || 100,
+	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
+	maxImgWidth = opts.maxImgWidth || 1200,
+	maxImgHeight = opts.maxImgHeight || maxImgWidth,
+	maxImgRequestWidth = opts.maxImgRequestWidth || 2048,
+	maxImgRequestHeight = opts.maxImgRequestHeight || maxImgRequestWidth,
+	forcedPixelRatio = opts.forcedPixelRatio;
 
 	var
 	imageIterateStatus,
@@ -41,7 +39,6 @@
 
 	initIterateImages = function() {
 		if ( imageIterateStatus ) return;
-		log('initElementIteration');
 
 		imageIterateStatus = STATUS_LOADING;
 
@@ -50,7 +47,7 @@
 		img;
 		for( x = 0; x < document.images.length; x++ ) {
 			img = document.images[ x ];
-			if ( img.className.indexOf(opts.imgClassName) > -1 ) {
+			if ( img.className.indexOf(imgClassName) > -1 ) {
 				setImage( img );
 			}
 		}
@@ -61,7 +58,6 @@
 	},
 
 	initSpeedTest = function() {
-		log('initSpeedTest');
 		// only check the connection speed once, if there is a status we already got info or it already started
 		if ( speedConnectionStatus ) return;
 
@@ -78,7 +74,7 @@
 			var fsData = JSON.parse( localStorage.getItem( localStorageKey ) );
 			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
-				if ( minuteDifference < opts.speedTestExpireMinutes ) {
+				if ( minuteDifference < speedTestExpireMinutes ) {
 					// already have connection data without our desired timeframe, use this instead of another test
 					fs.isHighSpeedConn = true;
 					fs.connKbps = fsData.connKbps;
@@ -102,9 +98,9 @@
 			var duration = round( ( endTime - startTime ) / 1000 );
 			duration = ( duration > 1 ? duration : 1 );
 
-			var bitsLoaded = ( opts.speedTestKB * 1024 * 8 );
+			var bitsLoaded = ( speedTestKB * 1024 * 8 );
 			fs.connKbps = ( round( bitsLoaded / duration ) / 1024 );
-			fs.isHighSpeedConn = ( fs.connKbps >= opts.minKbpsForHighSpeedConn );
+			fs.isHighSpeedConn = ( fs.connKbps >= minKbpsForHighSpeedConn );
 
 			speedTestComplete( 'network' );
 		};
@@ -117,12 +113,12 @@
 		// begin the speed test image download
 		startTime = ( new Date() ).getTime();
 		speedConnectionStatus = STATUS_LOADING;
-		speedTestImg.src = opts.speedTestUri + "?r=" + Math.random();
+		speedTestImg.src = speedTestUri + "?r=" + Math.random();
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
 		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
-		speedTestTimeoutMS = ( ( ( opts.speedTestKB * 8 ) / opts.minKbpsForHighSpeedConn ) * 1000 ) + 250;
+		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
 		setTimeout( function() {
 			speedTestComplete( 'networkSlow' );
 		}, speedTestTimeoutMS );
@@ -131,7 +127,6 @@
 	speedTestComplete = function( connTestMethod ) {
 		// if we haven't already gotten a speed connection status then save the info
 		if(speedConnectionStatus === STATUS_COMPLETE) return;
-		log('speedTestComplete: ' + connTestMethod);
 
 		fs.connTestMethod = connTestMethod;
 
@@ -149,19 +144,17 @@
 	},
 
 	setImage = function ( img ) {
-		log('setImage');
-
 		fillProp( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
 		img.orgWidth = img.width;
 		img.orgHeight = img.height;
 
 		if ( !img.orgSrc || !img.width || !img.height ) return; // missing required attributes
 
-		fillProp( img, 'max-width', 'maxWidth', true, opts.maxImgWidth );
-		fillProp( img, 'max-height', 'maxHeight', true, opts.maxImgHeight );
+		fillProp( img, 'max-width', 'maxWidth', true, maxImgWidth );
+		fillProp( img, 'max-height', 'maxHeight', true, maxImgHeight );
 
-		fillProp( img, 'max-request-width', 'maxRequestWidth', true, opts.maxImgRequestWidth );
-		fillProp( img, 'max-request-height', 'maxRequestHeight', true, opts.maxImgRequestHeight );
+		fillProp( img, 'max-request-width', 'maxRequestWidth', true, maxImgRequestWidth );
+		fillProp( img, 'max-request-height', 'maxRequestHeight', true, maxImgRequestHeight );
 
 		fillProp( img, 'win-width-percent', 'winWidthPercent', true, 0 );
 		fillProp( img, 'win-height-percent', 'winHeightPercent', true, 0 );
@@ -170,8 +163,8 @@
 		// ensure the img dimensions do not exceed the max, scale proportionally
 		maxDimensionScaling( img, 'width', 'maxWidth', 'height', 'maxHeight' );
 
-		fillProp( img, 'src-modification', 'srcModification', false, opts.srcModification );
-		fillProp( img, 'src-format', 'srcFormat', false, opts.srcFormat );
+		fillProp( img, 'src-modification', 'srcModification', false, srcModification );
+		fillProp( img, 'src-format', 'srcFormat', false, srcFormat );
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
 
 		// add this image to the collection, but do not add it to the DOM yet
@@ -207,7 +200,6 @@
 	},
 
 	initImageRebuild = function() {
-		log('initImageRebuild');
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
@@ -319,32 +311,22 @@
 	round = function( value ) {
 		// used just for smaller javascript after minify
 		return Math.round( value );
-	},
-
-	log = function( msg ) {
-		if( !opts.debug ) return;
-		var dt = new Date();
-		msg += ' -- ' + dt.getMinutes() + ':' +  dt.getSeconds() + ':' +  dt.getMilliseconds();
-		fs.log.push( msg );
 	};
-	
-	if( opts.forcedPixelRatio ) {
+
+	if( forcedPixelRatio ) {
 		// force a certain pixel ratio in the options
-		fs.devicePixelRatio = opts.forcedPixelRatio;
+		fs.devicePixelRatio = forcedPixelRatio;
 	}
 
 	// when the DOM is ready, begin iterating through each element in the DOM
 	if ( document.readyState === STATUS_COMPLETE ) {
-		log('document.readyState === STATUS_COMPLETE');
 		initIterateImages();
 	} else {
 		if ( document.addEventListener ) {
-			log('document.addEventListener');
 			document.addEventListener( "DOMContentLoaded", initIterateImages, false );
 			window.addEventListener( "load", initIterateImages, false );
 
 		} else if ( document.attachEvent ) {
-			log('document.attachEvent');
 			document.attachEvent( "onreadystatechange", initIterateImages );
 			window.attachEvent( "onload", initIterateImages );
 		}
