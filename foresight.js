@@ -17,6 +17,7 @@
 	// options
 	fs.options = fs.options || {};
 	var opts = fs.options;
+	opts.imgClassName = opts.imgClassName || 'responsive-img';
 	opts.srcModification = opts.srcModification || 'rebuildSrc';
 	opts.srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}';
 	opts.testConn = opts.testConn || true;
@@ -38,38 +39,25 @@
 	STATUS_COMPLETE = 'complete',
 	localStorageKey = 'foresight.js',
 
-	initElementIteration = function() {
-		// Iterate through each node in the DOM looking for <noscript>'s with img data
+	initIterateImages = function() {
 		if ( imageIterateStatus ) return;
 		log('initElementIteration');
 
 		imageIterateStatus = STATUS_LOADING;
 
-		iterateChildNodes( document.body );
+		var 
+		x,
+		img;
+		for( x = 0; x < document.images.length; x++ ) {
+			img = document.images[ x ];
+			if ( img.className.indexOf(opts.imgClassName) > -1 ) {
+				setImage( img );
+			}
+		}
 
 		imageIterateStatus = STATUS_COMPLETE;
 
-		if ( fs.images.length > 0 ) {
-			initImageRebuild();
-		} else if ( fs.oncomplete ) {
-			log('fs.images.length == 0');
-			fs.oncomplete(); // still run oncomplete even if no images were found
-		}
-	},
-
-	iterateChildNodes = function( node ) {
-		log( node.nodeName );
-		log( node.hasChildNodes() );
-		log( node.childNodes.length );
-		if ( node.nodeName !== '#text' ) {
-			if( node.nodeName === 'NOSCRIPT' ) {
-				setImage( node );
-			} else if ( node.hasChildNodes() ) {
-				for ( var x = 0, l = node.childNodes.length; x < l; x++ ) {
-					iterateChildNodes( node.childNodes[ x ] );
-				}
-			}
-		}
+		initImageRebuild();
 	},
 
 	initSpeedTest = function() {
@@ -160,15 +148,10 @@
 		initImageRebuild();
 	},
 
-	setImage = function ( noScriptEle ) {
+	setImage = function ( img ) {
 		log('setImage');
-		// create an <img> and fill it up with data from the <noscript> attributes
-		var img = document.createElement( 'img' );
-		img.noScriptEle = noScriptEle;
 
 		fillProp( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
-		fillProp( img, 'width', 'width', true );
-		fillProp( img, 'height', 'height', true );
 		img.orgWidth = img.width;
 		img.orgHeight = img.height;
 
@@ -187,8 +170,6 @@
 		// ensure the img dimensions do not exceed the max, scale proportionally
 		maxDimensionScaling( img, 'width', 'maxWidth', 'height', 'maxHeight' );
 
-		fillProp( img, 'id', 'id', false, ( 'fsImg' + Math.floor( Math.random() * 1000000000 ) ) );
-		fillProp( img, 'class', 'className', false, '' );
 		fillProp( img, 'src-modification', 'srcModification', false, opts.srcModification );
 		fillProp( img, 'src-format', 'srcFormat', false, opts.srcFormat );
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
@@ -199,7 +180,7 @@
 
 	fillProp = function( img, attrName, propName, getFloat, defaultValue ) {
 		// standard function to fill up an <img> with data from the <noscript>
-		var value = img.noScriptEle.getAttribute( 'data-img-' + attrName );
+		var value = img.getAttribute( 'data-' + attrName );
 		if ( value && value !== '' ) {
 			if ( getFloat ) {
 				value = value.replace( '%', '' );
@@ -228,33 +209,34 @@
 	initImageRebuild = function() {
 		log('initImageRebuild');
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
-		if ( speedConnectionStatus !== STATUS_COMPLETE || imageIterateStatus !== STATUS_COMPLETE ) return;
+		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
-		var
-		x,
-		img;
+			var
+			x,
+			img;
 
-		for ( x = 0; x < fs.images.length; x++ ) {
-			img = fs.images[ x ];
+			for ( x = 0; x < fs.images.length; x++ ) {
+				img = fs.images[ x ];
 
-			img.requestWidth = round( img.width * img.pixelRatio );
-			img.requestHeight = round( img.height * img.pixelRatio );
+				img.requestWidth = round( img.width * img.pixelRatio );
+				img.requestHeight = round( img.height * img.pixelRatio );
 
-			// ensure the request dimensions do not exceed the max, scale proportionally
-			maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
+				// ensure the request dimensions do not exceed the max, scale proportionally
+				maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
 
-			// decide how the src should be modified for the new image request
-			if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
-				rebuildSrc( img );
-			} else {
-				// default: replaceDimensions
-				replaceDimensions( img );
+				// decide how the src should be modified for the new image request
+				if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
+					rebuildSrc( img );
+				} else {
+					// default: replaceDimensions
+					replaceDimensions( img );
+				}
 			}
 
+			if ( fs.oncomplete ) {
+				fs.oncomplete();
+			}
 		}
-
-		// the image collection now has a list of <img> ready to be inserted into the DOM
-		insertImages();
 	},
 
 	maxDimensionScaling = function( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
@@ -334,23 +316,6 @@
 					.replace( img.orgHeight, img.requestHeight );
 	},
 
-	insertImages = function() {
-		log('insertImages');
-		// images all created w/ new src attributes, now insert <img>'s into the webpage
-		var
-		x,
-		img;
-
-		for ( x = 0; x < fs.images.length; x++ ) {
-			img = fs.images[ x ];
-			img.noScriptEle.parentElement.insertBefore( img, img.noScriptEle );
-		}
-
-		if ( fs.oncomplete ) {
-			fs.oncomplete();
-		}
-	},
-
 	round = function( value ) {
 		// used just for smaller javascript after minify
 		return Math.round( value );
@@ -371,17 +336,17 @@
 	// when the DOM is ready, begin iterating through each element in the DOM
 	if ( document.readyState === STATUS_COMPLETE ) {
 		log('document.readyState === STATUS_COMPLETE');
-		initElementIteration();
+		initIterateImages();
 	} else {
 		if ( document.addEventListener ) {
 			log('document.addEventListener');
-			document.addEventListener( "DOMContentLoaded", initElementIteration, false );
-			window.addEventListener( "load", initElementIteration, false );
+			document.addEventListener( "DOMContentLoaded", initIterateImages, false );
+			window.addEventListener( "load", initIterateImages, false );
 
 		} else if ( document.attachEvent ) {
 			log('document.attachEvent');
-			document.attachEvent( "onreadystatechange", initElementIteration );
-			window.attachEvent( "onload", initElementIteration );
+			document.attachEvent( "onreadystatechange", initIterateImages );
+			window.attachEvent( "onload", initIterateImages );
 		}
 	};
 
