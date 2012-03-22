@@ -17,7 +17,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 
 
 ## Demos
-Before we get too far into the nitty-gritty, it's probably best to view foresight.js in action. Currently most desktop and laptops do not have high-resolution displays and are limited to only a devicePixel Ratio = 1, so you will not be able to see the effects on a standard monitor. Make sure you view the demos from multiple devices, such as your mobile phone, iPad and desktop computer.
+Before we get too far into the nitty-gritty, it's probably best to view foresight.js in action. Currently most desktop and laptops do not have high-resolution displays and are limited to a device pixel ratio of only 1, so you will not be able to see the effects on a standard monitor. Make sure you view the demos from multiple devices, such as your mobile phone, tablet and traditional computer.
 
 * [Foresight.js Demos](http://foresightjs.appspot.com/demos/index.html)
 
