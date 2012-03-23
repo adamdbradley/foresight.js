@@ -182,7 +182,7 @@ After foresight executes there are a handful of properties viewable.
 
 __foresight.images__: An array containing each of the foresight _img_ elements.
 
-__foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If the browser does not know the pixel ratio, which older browsers will not know, the devicePixelRatio__ defaults to 1.
+__foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If the browser does not know the pixel ratio, which older browsers will not, the _devicePixelRatio_ defaults to 1.
 
 __foresight.connTestMethod__: The connection test value provides info on how the device received its speed-test information. 
 
@@ -192,7 +192,7 @@ __foresight.connTestMethod__: The connection test value provides info on how the
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
 * _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight doesn't bother testing the network connection.
 
-__foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStorage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
+__foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStorage if the last test was within the _foresight.options.speedTestExpireMinutes_ option. Note that _foresight.connKbps_ is not an extremely accurate assessment of the device's connection speed, but rather provides a fast look to see if it can download a file quickly (and then remembers that test info for a configurable number of minutes). 
 
 __foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's connection is considered a high-speed connection or not. You can use the _foresight.options.minKbpsForHighSpeedConn_ configuration option to help determine what is considered _high-speed_. See the minKbpsForHighSpeedConn config description for more info.
 
