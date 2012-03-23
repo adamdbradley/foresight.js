@@ -168,7 +168,7 @@ __data-src-modification__: _(Optional)_ Which type of src modification to use, e
 
 __data-src-format__: _(Optional)_ The format in which a src should be rebuilt. See the Src Format section for more info.
 
-__data-src high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution, so both a pixel ratio of 1.5 and 2 will receive the same image.
+__data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution, so both a pixel ratio of 1.5 and 2 will receive the same image.
 
 __data-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
 
