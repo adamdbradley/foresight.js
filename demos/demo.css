@@ -1,4 +1,4 @@
-body { margin:0;padding:0; }
+body { margin:0; padding:0; font:12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif }
 
 body.index { padding:2px 15px; }
 
@@ -10,8 +10,8 @@ h3 { margin:25px 0 0; }
 
 pre { font-size: 0.9em; }
 
-.fs-standard-resolution { border-top:3px solid red; border-bottom:3px solid red; }
+.fs-standard-resolution { border-top:5px solid red; border-bottom:5px solid red; }
 
-.fs-high-resolution { border-top:3px solid green; border-bottom:3px solid green; }
+.fs-high-resolution { border-top:5px solid green; border-bottom:5px solid green; }
 
-#qr { margin-top:50px; width:300px; }
+#qr { margin-top:90px; width:200px; font-size:10px; text-align:center; }
