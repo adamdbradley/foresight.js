@@ -14,7 +14,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Image dimensions set by percents will scale to the device's available width and display pixel ratio
 * Fully customizable through global configuration options and individual img options
 * Default images load without javascript enabled
-* Minifies down to roughly 4K
+* Minifies down to roughly 5K
 
 
 ## Demos
@@ -143,9 +143,9 @@ __foresight.options.speedTestKB__: Foresight needs to know the filesize of the s
 
 __foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing how many minutes a speed test is valid until it expires. Default value is _30_
 
-__foresight.options.maxImgWidth__: A max pixel width can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1200_
+__foresight.options.maxImgWidth__: A max pixel width can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
 
-__foresight.options.maxImgHeight__: A max pixel height can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1200_
+__foresight.options.maxImgHeight__: A max pixel height can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
 
 __foresight.options.maxImgRequestWidth__: A max pixel request width can be set on how large of images can be requested from the server. Default value is _2048_
 
@@ -195,6 +195,26 @@ __foresight.connTestMethod__: The connection test value provides info on how the
 __foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStorage if the last test was within the _foresight.options.speedTestExpireMinutes_ option.
 
 __foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's connection is considered a high-speed connection or not. You can use the _foresight.options.minKbpsForHighSpeedConn_ configuration option to help determine what is considered _high-speed_. See the minKbpsForHighSpeedConn config description for more info.
+
+
+
+## jQuery Mobile Integration
+Foresight.js does not require the jQuery library or jQuery Mobile framework, but it can still be easily integrated into jQuery Mobile. Below is a sample of what the head element would contain so foresight can be used:
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+    <script>
+        foresight = {
+            options: {
+                srcModification: 'replaceDimensions',
+                maxBrowserWidth: 640
+            }
+        };
+        $(document).bind("pagechange", foresight.reload);
+    </script>
+    <script src="foresight.js"></script>
+
+Notice how it binds the _foresight.reload_ method when there is a page change. Take a look at the jQuery Mobile demo pages to see it in action.
 
 
 
