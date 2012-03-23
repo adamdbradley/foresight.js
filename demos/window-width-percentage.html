@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<script src="foresight-debugger.js"></script>
+	<script>
+		foresight = {
+			options: {
+				srcModification: 'replaceDimensions'
+			},
+			oncomplete: foresight_debugger
+		};
+	</script>
+	<script src="../foresight.js"></script>
+
+	<noscript>
+		<style>
+		.fs-img { display:none; }
+		</style>
+	</noscript>
+	
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+</head>
+<body>
+
+	<h2>
+		Demo 2: Window Width Percentage
+	</h2>
+	
+	<p>
+		
+	</p>
+
+	<pre></pre>
+
+	<!-- Start Foresight Image -->
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Hellyer_Gorge%2C_Tasmania.jpg/320px-Hellyer_Gorge%2C_Tasmania.jpg" width="320" height="240" class="fs-img" />
+	<noscript>
+		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Hellyer_Gorge%2C_Tasmania.jpg/320px-Hellyer_Gorge%2C_Tasmania.jpg" width="320" height="240">
+	</noscript>
+	<!-- End Foresight Image -->
+	
+	<!-- This is a standard image that does not get enhanced by foresight -->
+	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Hellyer_Gorge%2C_Tasmania.jpg/320px-Hellyer_Gorge%2C_Tasmania.jpg" width="320" height="240" class="fs-standard-resolution" />
+
+	<p>
+		<a href="index.html">Demo Homepage</a>
+	</p>
+	
+</body>
+</html>

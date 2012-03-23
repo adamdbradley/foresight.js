@@ -1,5 +1,13 @@
 body { margin:0;padding:0; }
 
+body.index { padding:2px 15px; }
+
+h1 { margin: 5px 0 10px; }
+h2 { margin: 5px 0 10px; font-size:1.1em; }
+h3 { margin:25px 0 0; }
+
+.index p { margin-top:2px; }
+
 pre { font-size: 0.9em; }
 
 .fs-standard-resolution { border-top:3px solid red; border-bottom:3px solid red; }
