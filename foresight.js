@@ -18,13 +18,13 @@
 	srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}',
 	testConn = opts.testConn || true,
 	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800,
-	speedTestUri = opts.speedTestUri || '//foresightjs.appspot.com/speed-test/100K.jpg',
+	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/100K.jpg',
 	speedTestKB = opts.speedTestKB || 100,
 	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
-	maxImgWidth = opts.maxImgWidth || 1200,
-	maxImgHeight = opts.maxImgHeight || maxImgWidth,
-	maxImgRequestWidth = opts.maxImgRequestWidth || 2048,
-	maxImgRequestHeight = opts.maxImgRequestHeight || maxImgRequestWidth,
+	maxBrowserWidth = opts.maxBrowserWidth || 1024,
+	maxBrowserHeight = opts.maxBrowserHeight || maxBrowserWidth,
+	maxRequestWidth = opts.maxRequestWidth || 2048,
+	maxRequestHeight = opts.maxRequestHeight || maxRequestWidth,
 	forcedPixelRatio = opts.forcedPixelRatio,
 
 	imageIterateStatus,
@@ -32,14 +32,15 @@
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
 	localStorageKey = 'foresight.js',
+	isReload = false,
 
-	initIterateImages = function() {
+	initForesight = function() {
 		if ( imageIterateStatus ) return;
 
 		imageIterateStatus = STATUS_LOADING;
 
 		for ( var x = 0; x < document.images.length; x++ ) {
-			setImage( document.images[ x ] );
+			initImage( document.images[ x ] );
 		}
 
 		imageIterateStatus = STATUS_COMPLETE;
@@ -100,9 +101,12 @@
 			speedTestComplete( 'networkError' );
 		};
 
-		// begin the speed test image download
+		// begin the network connection speed test image download
 		startTime = ( new Date() ).getTime();
 		speedConnectionStatus = STATUS_LOADING;
+		if ( document.location.protocol === 'https:' ) {
+			speedTestUri = speedTestUri.replace( 'http:', 'https:' );
+		}
 		speedTestImg.src = speedTestUri + "?r=" + Math.random();
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
@@ -133,45 +137,56 @@
 		initImageRebuild();
 	},
 
-	setImage = function ( img ) {
+	initImage = function ( img ) {
 		fillProp( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
-		img.orgWidth = img.width;
-		img.orgHeight = img.height;
 
-		if ( !img.orgSrc || !img.width || !img.height ) return; // missing required attributes
+		 // missing required attributes or the parent is not visible
+		if ( !img.orgSrc || img.width == 0 || img.height == 0 || img.parentElement.clientWidth == 0 || img.parentElement.clientHeight == 0 ) return;
 
-		fillProp( img, 'max-width', 'maxWidth', true, maxImgWidth );
-		fillProp( img, 'max-height', 'maxHeight', true, maxImgHeight );
+		// initialize some properties the image will use
+		if( !img.initalized ) {
+			img.initalized = true;
+			img.orgWidth = img.width;
+			img.orgHeight = img.height;
+			img.requestWidth = 0;
+			img.requestHeight = 0;
+			img.orgClassName = img.className;
 
-		fillProp( img, 'max-request-width', 'maxRequestWidth', true, maxImgRequestWidth );
-		fillProp( img, 'max-request-height', 'maxRequestHeight', true, maxImgRequestHeight );
+			// fill in the image's properties from the element's attributes
+			fillProp( img, 'max-width', 'maxWidth', true, maxBrowserWidth );
+			fillProp( img, 'max-height', 'maxHeight', true, maxBrowserHeight );
 
-		fillProp( img, 'win-width-percent', 'winWidthPercent', true, 0 );
-		fillProp( img, 'win-height-percent', 'winHeightPercent', true, 0 );
+			fillProp( img, 'max-request-width', 'maxRequestWidth', true, maxRequestWidth );
+			fillProp( img, 'max-request-height', 'maxRequestHeight', true, maxRequestHeight );
+
+			fillProp( img, 'width-percent', 'widthPercent', true, 0 );
+			fillProp( img, 'height-percent', 'heightPercent', true, 0 );
+
+			fillProp( img, 'src-modification', 'srcModification', false, srcModification );
+			fillProp( img, 'src-format', 'srcFormat', false, srcFormat );
+			fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
+
+			// set the img's id if there isn't one already
+			if ( !img.id ) {
+				img.id = 'fsImg' + Math.round( Math.random() * 10000000 );
+			}
+
+			// add this image to the collection, but do not add it to the DOM yet
+			fs.images.push( img );
+		}
+
+		// set the image according to its properties
 		setDimensionsFromPercent( img );
 
 		// ensure the img dimensions do not exceed the max, scale proportionally
 		maxDimensionScaling( img, 'width', 'maxWidth', 'height', 'maxHeight' );
 
-		fillProp( img, 'src-modification', 'srcModification', false, srcModification );
-		fillProp( img, 'src-format', 'srcFormat', false, srcFormat );
-		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
-
 		// build a list of Css Classnames for the <img> which may be useful for designers
-		var className = [];
-		if ( img.className && img.className !== '' ) {
-			className.push( img.className );
-		}
-		if ( img.pixelRatio > 1 ) {
-			className.push( 'fs-high-resolution' );
-		} else {
-			className.push( 'fs-standard-resolution' );
-		}
-		className.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed(1).replace('.', '_' ) );
-		img.className = className.join( ' ' ); 
+		var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
+		classNames.push( ( img.pixelRatio > 1 ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
+		classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed(1).replace('.', '_' ) );
+		img.className = classNames.join( ' ' ); 
 
-		// add this image to the collection, but do not add it to the DOM yet
-		fs.images.push( img );
 	},
 
 	fillProp = function( img, attrName, propName, getFloat, defaultValue ) {
@@ -191,13 +206,13 @@
 	},
 
 	setDimensionsFromPercent = function( img ) {
-		if ( img.winWidthPercent > 0 ) {
+		if ( img.widthPercent > 0 ) {
 			var orgW = img.width;
-			img.width = round( (img.winWidthPercent / 100) * fs.availWidth() );
+			img.width = round( (img.widthPercent / 100) * img.parentElement.clientWidth );
 			img.height = round( img.height * ( img.width / orgW ) );
-		} else if ( img.winHeightPercent > 0 ) {
+		} else if ( img.heightPercent > 0 ) {
 			var orgH = img.height;
-			img.height = round( (img.winHeightPercent / 100) * fs.availHeight() );
+			img.height = round( (img.heightPercent / 100) * img.parentElement.clientHeight );
 			img.width = round( img.width * ( img.height / orgH ) );
 		}
 	},
@@ -208,23 +223,40 @@
 
 			var
 			x,
-			img;
+			img,
+			newRequestWidth,
+			newRequestHeight,
+			requestDimensionChange;
 
 			for ( x = 0; x < fs.images.length; x++ ) {
 				img = fs.images[ x ];
+				requestDimensionChange = false;
 
-				img.requestWidth = round( img.width * img.pixelRatio );
-				img.requestHeight = round( img.height * img.pixelRatio );
+				// only update the request width/height the new dimension is large than the one already loaded
+				newRequestWidth = round( img.width * img.pixelRatio );
+				if( newRequestWidth > img.requestWidth ) {
+					img.requestWidth = newRequestWidth;
+					requestDimensionChange = true;
+				}
 
-				// ensure the request dimensions do not exceed the max, scale proportionally
-				maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
+				newRequestHeight = round( img.height * img.pixelRatio );
+				if( newRequestHeight > img.requestHeight ) {
+					img.requestHeight = newRequestHeight;
+					requestDimensionChange = true;
+				}
 
 				// decide how the src should be modified for the new image request
-				if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
-					rebuildSrc( img );
-				} else {
-					// default: replaceDimensions
-					replaceDimensions( img );
+				if( requestDimensionChange ) {
+
+					// ensure the request dimensions do not exceed the max, scale proportionally
+					maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
+
+					if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
+						rebuildSrc( img );
+					} else {
+						// default: replaceDimensions
+						replaceDimensions( img );
+					}
 				}
 			}
 
@@ -314,18 +346,35 @@
 	round = function( value ) {
 		// used just for smaller javascript after minify
 		return Math.round( value );
+	},
+
+	addWindowResizeEvent = function() {
+		if ( window.addEventListener ) {
+			window.addEventListener( 'resize', fs.reload, false );
+		} else if ( window.attachEvent ) {
+			window.attachEvent( 'onresize', fs.reload );
+		}
+	},
+
+	reloadTimeoutId,
+	executeReload = function () {
+		// actually execute the reload. This is governed by a timeout so it isn't abused by many events
+		if( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
+
+		isReload = true;
+
+		for ( var x = 0; x < document.images.length; x++ ) {
+			initImage( document.images[ x ] );
+		}
+
+		initImageRebuild();
 	};
 
-	// methods
-	fs.availWidth = function() {
-		return window.screen.availWidth;
-	};
-	fs.availHeight = function() {
-		return window.screen.availHeight;
-	};
 	fs.reload = function() {
-		imageIterateStatus = undefined;
-		initIterateImages();
+		// if the window resizes or this function is called by external events (like a hashchange)
+		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
+		window.clearTimeout( reloadTimeoutId ); 
+		reloadTimeoutId = window.setTimeout( executeReload, 250 ); 
 	};
 
 	if( forcedPixelRatio ) {
@@ -333,21 +382,23 @@
 		fs.devicePixelRatio = forcedPixelRatio;
 	}
 
-	// when the DOM is ready, begin iterating through each element in the DOM
+	// when the DOM is ready begin finding img's and updating their src's
 	if ( document.readyState === STATUS_COMPLETE ) {
-		initIterateImages();
+		initForesight();
 	} else {
 		if ( document.addEventListener ) {
-			document.addEventListener( "DOMContentLoaded", initIterateImages, false );
-			window.addEventListener( "load", initIterateImages, false );
-
+			document.addEventListener( "DOMContentLoaded", initForesight, false );
+			window.addEventListener( "load", initForesight, false );
 		} else if ( document.attachEvent ) {
-			document.attachEvent( "onreadystatechange", initIterateImages );
-			window.attachEvent( "onload", initIterateImages );
+			document.attachEvent( "onreadystatechange", initForesight );
+			window.attachEvent( "onload", initForesight );
 		}
 	};
 
 	// DOM does not need to be ready to begin the network connection speed test
 	initSpeedTest();
+
+	// add a listen to the window.resize event
+	addWindowResizeEvent();
 
 } ( this, document ) );
