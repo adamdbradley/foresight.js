@@ -25,7 +25,7 @@ Before we get too far into the nitty-gritty, it's probably best to view foresigh
 ## Img Element
 One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image file has already been requested from the server. And on the flip side, if _img_ elements are built by javascript then they probably won't be viewed by search engines and browsers without javascript enabled will not be able to view the images. To overcome both of these challenges foresight.js uses the an _img_ element, but without the _src_ attribute set, and a _noscript_ element with a child _img_ element.
 
-    <img data-src="imagefile.jpg" width="320" height="240" class="responsive-img">
+    <img data-src="imagefile.jpg" width="320" height="240" class="fs-img">
     <noscript>
         <img src="imagefile.jpg" width="320" height="240">
     </noscript>
@@ -41,7 +41,7 @@ Immediately you'll notice that the _noscript_ element and its child _img_ is red
 Additionally, if javascript is not enabled and the _noscript_ element is shown by the browser, the webpage should also hide the first _img_ so it doesn't show as a large blank image. The head element of the document should contain:
 
     <noscript>
-        <style> .responsive-img { display:none }</style>
+        <style> .foresight-img{ display:none }</style>
     </noscript>
     
 _If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._

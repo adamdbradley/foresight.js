@@ -17,26 +17,30 @@
 
 	<noscript>
 		<style>
-		.responsive-img { display:none; }
+		.fs-img { display:none; }
 		</style>
 	</noscript>
+
+	<style>
+		/* Used to quickly highlight if the image is high-resolution or standard-resolution */
+		img.fs-standard-resolution { border-top:2px solid red; border-bottom:2px solid red; }
+		img.fs-high-resolution { border-top:2px solid green; border-bottom:2px solid green; }
+	</style>
 
 </head>
 <body style="margin:0;padding:0;">
 
-	<h4>Foresight Image</h4>
 	<p>
-		<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nephtheidae_komodo.jpg/320px-Nephtheidae_komodo.jpg" width="320" height="240" class="responsive-img" />
+		
+	</p>
+
+	<p>
+		<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nephtheidae_komodo.jpg/320px-Nephtheidae_komodo.jpg" width="320" height="240" class="fs-img" />
 		<noscript>
 			<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nephtheidae_komodo.jpg/320px-Nephtheidae_komodo.jpg" width="320" height="240">
 		</noscript>
-	</p>
-
-	<hr>
-
-	<h4>Standard Image</h4>
-	<p>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nephtheidae_komodo.jpg/320px-Nephtheidae_komodo.jpg" width="320" height="240" />
+		
+		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Nephtheidae_komodo.jpg/320px-Nephtheidae_komodo.jpg" width="320" height="240" class="fs-standard-resolution" />
 	</p>
 
 </body>

@@ -14,7 +14,6 @@
 	// options
 	fs.options = fs.options || {};
 	var opts = fs.options,
-	imgClassName = opts.imgClassName || 'responsive-img',
 	srcModification = opts.srcModification || 'rebuildSrc',
 	srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}',
 	testConn = opts.testConn || true,
@@ -39,14 +38,8 @@
 
 		imageIterateStatus = STATUS_LOADING;
 
-		var 
-		x,
-		img;
-		for( x = 0; x < document.images.length; x++ ) {
-			img = document.images[ x ];
-			if ( img.className.indexOf(imgClassName) > -1 ) {
-				setImage( img );
-			}
+		for ( var x = 0; x < document.images.length; x++ ) {
+			setImage( document.images[ x ] );
 		}
 
 		imageIterateStatus = STATUS_COMPLETE;
@@ -163,6 +156,19 @@
 		fillProp( img, 'src-modification', 'srcModification', false, srcModification );
 		fillProp( img, 'src-format', 'srcFormat', false, srcFormat );
 		fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
+
+		// build a list of Css Classnames for the <img> which may be useful for designers
+		var className = [];
+		if ( img.className && img.className !== '' ) {
+			className.push( img.className );
+		}
+		if ( img.pixelRatio > 1 ) {
+			className.push( 'fs-high-resolution' );
+		} else {
+			className.push( 'fs-standard-resolution' );
+		}
+		className.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed(1).replace('.', '_' ) );
+		img.className = className.join( ' ' ); 
 
 		// add this image to the collection, but do not add it to the DOM yet
 		fs.images.push( img );
