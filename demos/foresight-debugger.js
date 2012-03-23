@@ -23,16 +23,14 @@ var foresight_debugger = function () {
 	info.push( 'Foresight Duration: ' + duration + 'ms' );
 	info.push( '<hr>' );
 
-	var docPre = document.createElement( 'pre' );
+	var docPre = document.getElementsByTagName( 'pre' )[ 0 ];
 	docPre.innerHTML = info.join( '<br>' );
-	document.body.insertBefore( docPre, document.body.firstChild );
 
 	// print out img info above each foresight image
 	for( var x = 0; x < foresight.images.length; x++ ) {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
-		imgInfo.push( 'Pixel Ratio: ' + img.pixelRatio );
 		imgInfo.push( 'Browser Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
 
@@ -56,12 +54,13 @@ var foresight_debugger = function () {
 	}
 
 	// print out a QR code of the current page so its easier to test this page on a mobile device
-	var qrPre = document.createElement( 'pre' );
-	var qrTxt = document.createTextNode( 'QR code available just to make it easier to test this page on a mobile device' );
+	var qrInfo = document.createElement( 'div' );
+	qrInfo.id = 'qr';
+	var qrTxt = document.createTextNode( 'QR code  to make it easier to test on a mobile device' );
 	var qrImg = document.createElement( 'img' );
 	qrImg.src = 'http://chart.apis.google.com/chart?cht=qr&chs=300x300&chld=H|0&chl=' + escape( window.location );
-	qrPre.appendChild( qrTxt );
-	document.body.appendChild( qrPre );
+	qrInfo.appendChild( qrTxt );
+	document.body.appendChild( qrInfo );
 	document.body.appendChild( qrImg );
 
 };

@@ -1,0 +1,9 @@
+body { margin:0;padding:0; }
+
+pre { font-size: 0.9em; }
+
+.fs-standard-resolution { border-top:3px solid red; border-bottom:3px solid red; }
+
+.fs-high-resolution { border-top:3px solid green; border-bottom:3px solid green; }
+
+#qr { margin-top:50px; width:300px; font-size:13px; text-align:center; }
