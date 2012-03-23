@@ -12,8 +12,6 @@ var foresight_debugger = function () {
 	if( foresight.connTestMethod === 'skip' ) {
 		info.push( 'No speed test because this device has a pixel ratio of 1, so no need' );
 	} else {
-		info.push( 'Check Connection Speed: ' + foresight.options.testConn );
-		info.push( 'Min Kbps For High Speed Connection: ' + foresight.options.minKbpsForHighSpeedConn + 'Kbps' );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
 		info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
 	}
