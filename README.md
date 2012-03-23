@@ -1,7 +1,7 @@
 ## Introduction
-__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. Foresight deals with modifying context images, specifically _img_ elements. Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements.
+__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. Foresight deals with modifying context images, specifically _img_ elements. Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements.
 
-This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight is used to modify _img src_ attributes so browsers can request the correct image for the device, it does not however, resize the images themselves. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
+This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. 
 
 
 
@@ -10,6 +10,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Detect network connection speed
 * Does not make multiple requests for the same image
 * Javascript Framework independent (ie: jQuery not required)
+* Cross browser/platform (works on all desktop and mobile browsers)
 * Image dimensions set by percents will scale to the device's available width and display pixel ratio
 * Fully customizable through global configuration options and individual img options
 * Default images load without javascript enabled
@@ -53,7 +54,7 @@ Currently most devices capable of hi-res displays are mobile devices, such as ne
 
 
 ## Src Modification
-An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is formatted is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various formats.
+An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is formatted is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various formats. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
 
 Src modification types can be assigned in the _foresight.options.srcModification_ config, or individually for each image using the _img data-src-modification_ attribute. The possible values are __replaceDimensions__ or __rebuildSrc__ and described below.
 
