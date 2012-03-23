@@ -1,6 +1,5 @@
 // DEMO JAVASCRIPT ONLY
 // this is not required to use foresight.js, this is here only to help view info about the images
-var foresightStart = new Date();
 
 var foresight_debugger = function () {
 	// oncomplete only being use to print out debugger info, demo purposes only
@@ -15,10 +14,7 @@ var foresight_debugger = function () {
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
 		info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
 	}
-
-	var foresightEnd = new Date();
-	var duration = ( foresightEnd ).getTime() - ( foresightStart ).getTime();
-	info.push( 'Foresight Duration: ' + duration + 'ms' );
+	info.push( 'High-Resolution Enabled: ' + foresight.hiResEnabled );
 	info.push( '<hr>' );
 
 	var docPre = document.getElementsByTagName( 'pre' )[ 0 ];
@@ -53,14 +49,5 @@ var foresight_debugger = function () {
 		}
 		img.preElement.innerHTML = imgInfo.join( '<br>' );
 	}
-
-	// print out a QR code of the current page so its easier to test this page on a mobile device
-	var qrInfo = document.createElement( 'div' );
-	qrInfo.id = 'qr';
-	qrInfo.innerHTML = '<div style="font-size:11px;">QR code here just to make it easier to test on a mobile device</div>';
-	var qrImg = document.createElement( 'img' );
-	qrImg.src = 'http://chart.apis.google.com/chart?cht=qr&chs=300x300&chld=H|0&chl=' + escape( window.location );
-	document.body.appendChild( qrInfo );
-	document.body.appendChild( qrImg );
 
 };
