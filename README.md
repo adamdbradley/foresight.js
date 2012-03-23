@@ -37,7 +37,7 @@ Using this structure allows us to still place _img_ elements within the context 
 
 
 ## NoScript Element
-Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_
+Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_.
 
 Additionally, if javascript is not enabled and the _noscript_ element is shown by the browser, the webpage should also hide the first _img_ so it doesn't show as a large blank image. The head element of the document should contain:
 
@@ -198,6 +198,11 @@ __foresight.isHighSpeedConn__: Boolean used to tell foresight if this device's c
 
 
 
+## Foresight Methods
+__foresight.reload__: Call this method when your code changes the DOM. However, _foresight.reload_ is automatically executed on any window resize event. Take a look at the jQuery Mobile integration and the demos on an example of how it would be used.
+
+
+
 ## jQuery Mobile Integration
 Foresight.js does not require the jQuery library or jQuery Mobile framework, but it can still be easily integrated into jQuery Mobile. Below is a sample of what the head element would contain so foresight can be used:
 
@@ -214,8 +219,7 @@ Foresight.js does not require the jQuery library or jQuery Mobile framework, but
     </script>
     <script src="foresight.js"></script>
 
-Notice how it binds the _foresight.reload_ method when there is a page change. Take a look at the jQuery Mobile demo pages to see it in action.
-
+Notice how it binds the _foresight.reload_ method when a page change happens, this ensures all new images to the DOM are correctly loaded. Take a look at the [jQuery Mobile demo pages](http://foresightjs.appspot.com/demos/jquery-mobile-page-1.html) to see it in action.
 
 
 ## Foresight Events
