@@ -1,3 +1,5 @@
+// DEMO JAVASCRIPT ONLY
+// this is not required to use foresight.js, this is here only to help view info about the images
 var foresightStart = new Date();
 
 var foresight_debugger = function () {
@@ -5,8 +7,6 @@ var foresight_debugger = function () {
 	var info = [];
 
 	info.push( 'Foresight Images: ' + foresight.images.length );
-	info.push( 'Screen Available Width: ' + foresight.availWidth() );
-	info.push( 'Screen Available Height: ' + foresight.availHeight() );
 	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
 	info.push( 'Connection Test Method: ' + foresight.connTestMethod );
 	if( foresight.connTestMethod === 'skip' ) {
@@ -29,8 +29,9 @@ var foresight_debugger = function () {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
-		imgInfo.push( 'Browser Width/Height: ' + img.width + 'x' + img.height );
-		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		imgInfo.push( 'Image\'s Browser Width/Height: ' + img.width + 'x' + img.height );
+		imgInfo.push( 'Image\'s Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		imgInfo.push( 'Image\'s Parent Width/Height: ' + img.parentElement.clientWidth + 'x' + img.parentElement.clientHeight );
 
 		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 		if( img.srcModification === 'rebuildSrc' ) {
@@ -46,18 +47,19 @@ var foresight_debugger = function () {
 
 		img.setAttribute( 'title', 'Org: ' + img.width + 'x' + img.height + ', Requested: ' + img.requestWidth + 'x' + img.requestHeight  );
 
-		var imgPre = document.createElement( 'pre' );
-		imgPre.innerHTML = imgInfo.join( '<br>' );
-		img.parentElement.insertBefore( imgPre, img );
+		if ( !img.preElement ) {
+			img.preElement = document.createElement( 'pre' );
+			img.parentElement.insertBefore( img.preElement, img );
+		}
+		img.preElement.innerHTML = imgInfo.join( '<br>' );
 	}
 
 	// print out a QR code of the current page so its easier to test this page on a mobile device
 	var qrInfo = document.createElement( 'div' );
 	qrInfo.id = 'qr';
-	var qrTxt = document.createTextNode( 'QR code  to make it easier to test on a mobile device' );
+	qrInfo.innerHTML = '<div style="font-size:11px;">QR code here just to make it easier to test on a mobile device</div>';
 	var qrImg = document.createElement( 'img' );
 	qrImg.src = 'http://chart.apis.google.com/chart?cht=qr&chs=300x300&chld=H|0&chl=' + escape( window.location );
-	qrInfo.appendChild( qrTxt );
 	document.body.appendChild( qrInfo );
 	document.body.appendChild( qrImg );
 
