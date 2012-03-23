@@ -7,6 +7,7 @@
 	var fs = window.foresight;
 	fs.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
 	fs.isHighSpeedConn = false;
+	fs.hiResEnabled = false;
 	fs.connKbps = 0;
 	fs.connTestMethod = undefined;
 	fs.images = [];
@@ -14,7 +15,7 @@
 	// options
 	fs.options = fs.options || {};
 	var opts = fs.options,
-	srcModification = opts.srcModification || 'rebuildSrc',
+	srcModification = opts.srcModification || 'replaceDimensions',
 	srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}',
 	testConn = opts.testConn || true,
 	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800,
@@ -29,10 +30,13 @@
 
 	imageIterateStatus,
 	speedConnectionStatus,
+
+	 //for minification purposes
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
-	localStorageKey = 'foresight.js',
-	isReload = false,
+	LOCAL_STORAGE_KEY = 'fsjs',
+	TRUE = true,
+	FALSE = false,
 
 	initForesight = function() {
 		if ( imageIterateStatus ) return;
@@ -60,14 +64,14 @@
 		}
 
 		// check if a speed test has recently been completed and data saved in the local storage
-		// localStorage.removeItem( localStorageKey );
+		// localStorage.removeItem( LOCAL_STORAGE_KEY );
 		try {
-			var fsData = JSON.parse( localStorage.getItem( localStorageKey ) );
+			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
 			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < speedTestExpireMinutes ) {
 					// already have connection data without our desired timeframe, use this instead of another test
-					fs.isHighSpeedConn = true;
+					fs.isHighSpeedConn = TRUE;
 					fs.connKbps = fsData.connKbps;
 					fs.connTestMethod = 'localStorage';
 					speedConnectionStatus = STATUS_COMPLETE;
@@ -130,7 +134,7 @@
 				isHighSpeedConn: fs.isHighSpeedConn,
 				timestamp: ( new Date() ).getTime()
 			};
-			localStorage.setItem( localStorageKey, JSON.stringify( fsDataToSet ) );
+			localStorage.setItem( LOCAL_STORAGE_KEY, JSON.stringify( fsDataToSet ) );
 		} catch( e ) { }
 
 		speedConnectionStatus = STATUS_COMPLETE;
@@ -138,14 +142,14 @@
 	},
 
 	initImage = function ( img ) {
-		fillProp( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
+		fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
 
 		 // missing required attributes or the parent is not visible
 		if ( !img.orgSrc || img.width == 0 || img.height == 0 || img.parentElement.clientWidth == 0 || img.parentElement.clientHeight == 0 ) return;
 
 		// initialize some properties the image will use
 		if( !img.initalized ) {
-			img.initalized = true;
+			img.initalized = TRUE;
 			img.orgWidth = img.width;
 			img.orgHeight = img.height;
 			img.requestWidth = 0;
@@ -153,19 +157,21 @@
 			img.orgClassName = img.className;
 
 			// fill in the image's properties from the element's attributes
-			fillProp( img, 'max-width', 'maxWidth', true, maxBrowserWidth );
-			fillProp( img, 'max-height', 'maxHeight', true, maxBrowserHeight );
+			fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
+			fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
 
-			fillProp( img, 'max-request-width', 'maxRequestWidth', true, maxRequestWidth );
-			fillProp( img, 'max-request-height', 'maxRequestHeight', true, maxRequestHeight );
+			fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
+			fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
 
-			fillProp( img, 'width-percent', 'widthPercent', true, 0 );
-			fillProp( img, 'height-percent', 'heightPercent', true, 0 );
+			fillImgProperty( img, 'width-percent', 'widthPercent', TRUE, 0 );
+			fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
 
-			fillProp( img, 'src-modification', 'srcModification', false, srcModification );
-			fillProp( img, 'src-format', 'srcFormat', false, srcFormat );
-			fillProp( img, 'pixel-ratio', 'pixelRatio', true, fs.devicePixelRatio );
+			fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
+			fillImgProperty( img, 'src-format', 'srcFormat', FALSE, srcFormat );
+			fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, fs.devicePixelRatio );
 
+			fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
+			
 			// set the img's id if there isn't one already
 			if ( !img.id ) {
 				img.id = 'fsImg' + Math.round( Math.random() * 10000000 );
@@ -189,7 +195,7 @@
 
 	},
 
-	fillProp = function( img, attrName, propName, getFloat, defaultValue ) {
+	fillImgProperty = function( img, attrName, propName, getFloat, defaultValue ) {
 		// standard function to fill up an <img> with data from the <noscript>
 		var value = img.getAttribute( 'data-' + attrName );
 		if ( value && value !== '' ) {
@@ -221,6 +227,10 @@
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
+			if( fs.isHighSpeedConn && fs.devicePixelRatio > 1 ) {
+				fs.hiResEnabled = TRUE;
+			}
+
 			var
 			x,
 			img,
@@ -230,19 +240,19 @@
 
 			for ( x = 0; x < fs.images.length; x++ ) {
 				img = fs.images[ x ];
-				requestDimensionChange = false;
+				requestDimensionChange = FALSE;
 
 				// only update the request width/height the new dimension is large than the one already loaded
 				newRequestWidth = round( img.width * img.pixelRatio );
 				if( newRequestWidth > img.requestWidth ) {
 					img.requestWidth = newRequestWidth;
-					requestDimensionChange = true;
+					requestDimensionChange = TRUE;
 				}
 
 				newRequestHeight = round( img.height * img.pixelRatio );
 				if( newRequestHeight > img.requestHeight ) {
 					img.requestHeight = newRequestHeight;
-					requestDimensionChange = true;
+					requestDimensionChange = TRUE;
 				}
 
 				// decide how the src should be modified for the new image request
@@ -251,7 +261,9 @@
 					// ensure the request dimensions do not exceed the max, scale proportionally
 					maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
 
-					if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
+					if( img.highResolution && fs.hiResEnabled ) {
+						img.src = img.highResolution;
+					} else if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
 						rebuildSrc( img );
 					} else {
 						// default: replaceDimensions
@@ -349,8 +361,9 @@
 	},
 
 	addWindowResizeEvent = function() {
+		// attach an the fs.reload event that executes when the window resizes
 		if ( window.addEventListener ) {
-			window.addEventListener( 'resize', fs.reload, false );
+			window.addEventListener( 'resize', fs.reload, FALSE );
 		} else if ( window.attachEvent ) {
 			window.attachEvent( 'onresize', fs.reload );
 		}
@@ -358,10 +371,8 @@
 
 	reloadTimeoutId,
 	executeReload = function () {
-		// actually execute the reload. This is governed by a timeout so it isn't abused by many events
+		// execute the reload. This is governed by a timeout so it isn't abused by many events
 		if( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
-
-		isReload = true;
 
 		for ( var x = 0; x < document.images.length; x++ ) {
 			initImage( document.images[ x ] );
@@ -387,8 +398,8 @@
 		initForesight();
 	} else {
 		if ( document.addEventListener ) {
-			document.addEventListener( "DOMContentLoaded", initForesight, false );
-			window.addEventListener( "load", initForesight, false );
+			document.addEventListener( "DOMContentLoaded", initForesight, FALSE );
+			window.addEventListener( "load", initForesight, FALSE );
 		} else if ( document.attachEvent ) {
 			document.attachEvent( "onreadystatechange", initForesight );
 			window.attachEvent( "onload", initForesight );
