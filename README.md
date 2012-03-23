@@ -168,9 +168,15 @@ __data-src-modification__: _(Optional)_ Which type of src modification to use, e
 
 __data-src-format__: _(Optional)_ The format in which a src should be rebuilt. See the Src Format section for more info.
 
-__data-max-width__: _(Optional)_ Maximum browser, or CSS, pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
+__data-src high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution, so both a pixel ratio of 1.5 and 2 will receive the same image.
 
-__data-max-height__: _(Optional)_ Maximum browser, or CSS, pixel height this image should take. If this value is greater than the height it will scale the image proportionally.
+__data-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
+
+__data-max-height__: _(Optional)_ Maximum browser pixel height this image should take. If this value is greater than the height it will scale the image proportionally.
+
+__data-max-request-width__: _(Optional)_ Maximum pixel width this image should request. If this value is greater than the width it will scale the image request dimensions proportionally.
+
+__data-max-request-height__: _(Optional)_ Maximum pixel height this image should request. If this value is greater than the height it will scale the image request dimensions proportionally.
 
 __data-pixel-ratio__: _(Optional)_ By default an image's pixel ratio is figured out using the devices pixel ratio. You can however manually assign an image's pixel ratio which will override the default.
 
