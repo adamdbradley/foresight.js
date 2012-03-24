@@ -1,14 +1,13 @@
-body { margin:0; padding:0; font:12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif }
+body { margin:0; padding:0; font:12px/16px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif }
 
 body.index { padding:2px 15px; }
 
-h1 { margin: 5px 0 10px; }
-h2 { margin: 5px 0 10px; font-size:1.1em; }
+h1, h2 { margin: 10px 0; }
 h3 { margin:25px 0 0; }
 
 .index p { margin-top:2px; }
 
-pre { font-size: 0.9em; }
+pre { font-size: 0.9em; text-align:left; }
 
 .fs-standard-resolution { border-top:5px solid red; border-bottom:5px solid red; }
 

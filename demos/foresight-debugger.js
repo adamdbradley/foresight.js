@@ -17,8 +17,20 @@ var foresight_debugger = function () {
 	info.push( 'High-Resolution Enabled: ' + foresight.hiResEnabled );
 	info.push( '<hr>' );
 
-	var docPre = document.getElementsByTagName( 'pre' )[ 0 ];
+	// add in a <pre> element or use one already there for the big info
+	var docPres = document.getElementsByTagName('pre');
+	if(docPres && docPres.length) {
+		var docPre = docPres[0];
+	} else {
+		var docPre = document.createElement( 'pre' );
+		if(foresight.images.length) {
+			foresight.images[0].parentElement.insertBefore(docPre, foresight.images[0]);
+		} else {
+			document.body.appendChild(docPre);
+		}
+	}
 	docPre.innerHTML = info.join( '<br>' );
+	
 
 	// print out img info above each foresight image
 	for( var x = 0; x < foresight.images.length; x++ ) {

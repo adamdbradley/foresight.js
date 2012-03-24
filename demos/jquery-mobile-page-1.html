@@ -7,16 +7,23 @@
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+		<script src="foresight-debugger.js"></script>
 		<script>
 			foresight = {
 				options: {
 					srcModification: 'replaceDimensions',
 					maxBrowserWidth: 640
-				}
+				},
+				oncomplete: foresight_debugger
 			};
-			$(document).bind("pagechange", foresight.reload);
 		</script>
 		<script src="../foresight.js"></script>
+		<script>
+			$(document).bind("pagechange", foresight.reload);
+		</script>
+		<style>
+			.fs-img { display:none; }
+		</style>
     </head>
     <body>
         <div data-role="page" id="page1a">
@@ -33,10 +40,14 @@
                     </b>
                 </div>
                 <div style="text-align:center">
+					
+					
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" width="320" height="240" data-width-percent="100" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" width="320" height="240">
 					</noscript>
+					
+					
                 </div>
                 <div>
                     <b>

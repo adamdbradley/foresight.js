@@ -14,11 +14,14 @@
 					maxBrowserWidth: 640
 				}
 			};
-
-			$(document).bind("pagechange", foresight.reload);
-
 		</script>
 		<script src="../foresight.js"></script>
+		<script>
+			$(document).bind("pagechange", foresight.reload);
+		</script>
+		<style>
+			.fs-img { display:none; }
+		</style>
     </head>
     <body>
         <div data-role="page" id="page2">
@@ -30,22 +33,34 @@
             <div data-role="content">
                 <div>
                     <b>
-                        The global configuration sets the image's max width to 640 browser pixels. However 
-						the second image overrides the global config with its own data-max-width attribute, 
-						which is set at 500 browser pixels.
+                        The global configuration sets the image's max width to 640 browser pixels. 
                     </b>
                 </div>
                 <div style="text-align:center">
+                	
+                	
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg" width="320" height="240" data-width-percent="100" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg" width="320" height="240">
 					</noscript>
+					
+					
+                </div>
+                <div>
+                    <b>
+                        The second image overrides the global config with its own data-max-width attribute, 
+						which is set at 500 browser pixels.
+                    </b>
                 </div>
                 <div style="text-align:center">
+                	
+                	
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg" data-max-width="500" width="320" height="213" data-width-percent="100" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg" width="320" height="213">
 					</noscript>
+					
+					
                 </div>
                 <a data-role="button" data-transition="fade" href="#page1a" data-icon="arrow-l" data-iconpos="left">
                     Go Back

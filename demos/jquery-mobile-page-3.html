@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>jQuery Mobile Demo Page 1</title>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+		<script>
+			foresight = {
+				options: {
+					maxBrowserWidth: 400
+				}
+			};
+		</script>
+		<script src="../foresight.js"></script>
+		<script>
+			$(document).bind("pagechange", foresight.reload);
+		</script>
+		<style>
+			.fs-img { display:none; }
+		</style>
+    </head>
+    <body>
+        <div data-role="page" id="page2">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Page Not AJAX Loaded
+                </h3>
+            </div>
+            <div data-role="content">
+                <div>
+                    <b>
+                        The first image below using a 'replaceDimensions' srcModification, by replacing the dimensions already in the URL with the hi-res dimension.
+					</b>
+                </div>
+                <div style="text-align:center">
+                	
+                	
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Polar_Bear_-_Alaska.jpg/320px-Polar_Bear_-_Alaska.jpg" width="320" height="213" data-width-percent="100" class="fs-img" />
+					<noscript>
+						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Polar_Bear_-_Alaska.jpg/320px-Polar_Bear_-_Alaska.jpg" width="320" height="213">
+					</noscript>
+					
+					
+                </div>
+                <div>
+                    <b>
+                        The second image manually instructs which image file should be used for high-resolution displays, using the data-src-high-resolution attribute.
+                    </b>
+                </div>
+                <div style="text-align:center">
+                	
+                	
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Frost.jpg/320px-Frost.jpg" 
+						 data-src-high-resolution="http://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Frost.jpg/800px-Frost.jpg"
+						 width="320" height="240" data-width-percent="100" class="fs-img" />
+					<noscript>
+						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Bottlenose_Dolphin_KSC04pd0178.jpg/320px-Bottlenose_Dolphin_KSC04pd0178.jpg" width="320" height="211">
+					</noscript>
+					
+					
+                </div>
+                <a data-role="button" data-transition="fade" href="jquery-mobile-page-1.html" data-ajax="false" data-icon="arrow-l" data-iconpos="left">
+                    Go Back
+                </a>
+            </div>
+            <div data-theme="a" data-role="footer">
+                <div data-role="navbar" data-iconpos="top">
+                    <ul>
+                        <li>
+                            <a href="index.html" data-ajax="false" data-theme="" data-icon="star">
+                                Demos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/adamdbradley/foresight.js" data-theme="" data-icon="home">
+                                Git Hub
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+		
+    </body>
+</html>

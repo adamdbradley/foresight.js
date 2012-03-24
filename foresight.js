@@ -57,7 +57,7 @@
 		if ( speedConnectionStatus ) return;
 
 		// if the device pixel ratio is 1, then no need to do a speed test
-		if ( fs.devicePixelRatio == 1 ) {
+		if ( fs.devicePixelRatio === 1 ) {
 			fs.connTestMethod = 'skip';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
@@ -145,7 +145,7 @@
 		fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
 
 		 // missing required attributes or the parent is not visible
-		if ( !img.orgSrc || img.width == 0 || img.height == 0 || img.parentElement.clientWidth == 0 || img.parentElement.clientHeight == 0 ) return;
+		if ( !img.orgSrc || !img.width || !img.height || !img.parentElement.clientWidth ) return;
 
 		// initialize some properties the image will use
 		if( !img.initalized ) {
@@ -154,7 +154,7 @@
 			img.orgHeight = img.height;
 			img.requestWidth = 0;
 			img.requestHeight = 0;
-			img.orgClassName = img.className;
+			img.orgClassName = img.className.replace( 'fs-img', 'fs-img-ready' );
 
 			// fill in the image's properties from the element's attributes
 			fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
@@ -212,11 +212,11 @@
 	},
 
 	setDimensionsFromPercent = function( img ) {
-		if ( img.widthPercent > 0 ) {
+		if ( img.widthPercent ) {
 			var orgW = img.width;
 			img.width = round( (img.widthPercent / 100) * img.parentElement.clientWidth );
 			img.height = round( img.height * ( img.width / orgW ) );
-		} else if ( img.heightPercent > 0 ) {
+		} else if ( img.heightPercent ) {
 			var orgH = img.height;
 			img.height = round( (img.heightPercent / 100) * img.parentElement.clientHeight );
 			img.width = round( img.width * ( img.height / orgH ) );
@@ -385,7 +385,7 @@
 		// if the window resizes or this function is called by external events (like a hashchange)
 		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
 		window.clearTimeout( reloadTimeoutId ); 
-		reloadTimeoutId = window.setTimeout( executeReload, 250 ); 
+		reloadTimeoutId = window.setTimeout( executeReload, 150 ); 
 	};
 
 	if( forcedPixelRatio ) {
@@ -411,5 +411,5 @@
 
 	// add a listen to the window.resize event
 	addWindowResizeEvent();
-
+	
 } ( this, document ) );
