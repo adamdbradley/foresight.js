@@ -11,7 +11,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Does not make multiple requests for the same image
 * Javascript Framework independent (ie: jQuery not required)
 * Cross-browser and cross-platform
-* Image dimensions set by percents will scale to the device's available width and display pixel ratio
+* Image dimensions set by percent's will scale to the device's available width and display pixel ratio
 * Fully customizable through global configuration options and individual img options
 * Default images load without javascript enabled
 * Minifies down to roughly 5K
@@ -24,7 +24,7 @@ Before we get too far into the nitty-gritty, it's probably best to view foresigh
 
 
 ## Img Element
-One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image file has already been requested from the server. And on the flip side, if _img_ elements are built by javascript then they probably won't be viewed by search engines and browsers without javascript enabled will not be able to view the images. To overcome both of these challenges foresight.js uses the an _img_ element, but without the _src_ attribute set, and a _noscript_ element with a child _img_ element.
+One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image file has already been requested from the server. And on the flip side, if _img_ elements are built by javascript then search engines probably won't view them and browsers without javascript enabled will also not be able to view the images. To overcome both of these challenges foresight.js uses the _img_ element, but without the _src_ attribute set, and a _noscript_ element with a child _img_ element.
 
     <img data-src="imagefile.jpg" width="320" height="240" class="fs-img">
     <noscript>
@@ -39,7 +39,7 @@ Using this structure allows us to still place _img_ elements within the context 
 ## NoScript Element
 Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_.
 
-Additionally, if javascript is not enabled and the _noscript_ _img_ is shown by the browser instead, the webpage should also hide the first _img_ so it doesn't show as a large broken image. The head element of the document should contain:
+Additionally, if javascript is not enabled and the browser shows the _noscript_ _img_ instead, the webpage should also hide the first _img_ so it's not seen as a large broken image. The head element of the document should contain:
 
     <style> .fs-img{ display:none }</style>
 
@@ -64,7 +64,7 @@ __rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding 
 
 
 ## Src Format
-The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight with how the request image should be built. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _img data-src-format_ attribute. Below are the various keys which are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys which help build the src request for the server.
+The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight with how the request image should be built. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _img data-src-format_ attribute. Below are the various keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys that help build the src request for the server. _[More info about Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images)_.
 
 __{protocol}__: The protocol of the request. ie: _http_ or _https_
 
@@ -86,7 +86,7 @@ __{requestWidth}__: The requested width of the image to load. This value will au
 
 __{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the request height in the src. ie: _480_
 
-__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, its just that you need to tell foresight.js where to put this info in the src. ie: _2_
+__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put this info in the src. ie: _2_
 
 _Again, not all of these keys are required inside your src URI. Src format is entirely dependent on how the server handles image requests. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server._
 
@@ -168,7 +168,7 @@ __data-src-modification__: _(Optional)_ Which type of src modification to use, e
 
 __data-src-format__: _(Optional)_ The format in which a src should be rebuilt. See the Src Format section for more info.
 
-__data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution, so both a pixel ratio of 1.5 and 2 will receive the same image.
+__data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
 
 __data-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
 
@@ -258,7 +258,7 @@ Foresight's goal has always been to work on the major browsers, both desktop and
 
 ## Contribute
 
-This project was originally created as need for an ecommerce mobile homepage, which basically showed high-resolution images for high-resolution devices, and adjust image widths accordingly. This is by no means the end-all solution for high-resolution images; I'd label this more as an interum solution as the web standards evolve for handling device pixel ratios and . Please feel free to improve this project in any way you can.
+This project was originally created as need for an ecommerce mobile homepage, which basically showed high-resolution images for high-resolution devices, and adjust image widths accordingly. This is by no means the end-all solution for high-resolution images; I'd label this more as an interum solution as the web standards evolve for handling device pixel ratios. Please feel free to improve this project in any way you can.
 
 __Contact Me__
 
