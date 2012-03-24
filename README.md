@@ -10,7 +10,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Detect network connection speed
 * Does not make multiple requests for the same image
 * Javascript Framework independent (ie: jQuery not required)
-* Cross browser/platform (works on all desktop and mobile browsers)
+* Cross-browser and cross-platform
 * Image dimensions set by percents will scale to the device's available width and display pixel ratio
 * Fully customizable through global configuration options and individual img options
 * Default images load without javascript enabled
