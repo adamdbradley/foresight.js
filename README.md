@@ -28,7 +28,7 @@ One of the largest problems faced with dynamically deciding image quality is tha
 
     <img data-src="imagefile.jpg" width="320" height="240" class="fs-img">
     <noscript>
-        <img src="imagefile.jpg" width="320" height="240">
+        <img src="imagefile.jpg">
     </noscript>
 
 Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity.
@@ -41,10 +41,10 @@ Immediately you'll notice that the _noscript_ element and its child _img_ is red
 
 Additionally, if javascript is not enabled and the _noscript_ element is shown by the browser, the webpage should also hide the first _img_ so it doesn't show as a large blank image. The head element of the document should contain:
 
-    <noscript>
-        <style> .foresight-img{ display:none }</style>
-    </noscript>
-    
+    <style> .fs-img{ display:none }</style>
+
+When foresight executes it will change the CSS class from _fs-img_ to _fs-img-ready_ so that the _.fs-img_ CSS display:none will no longer apply and the images can be seen.
+
 _If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._
 
 
