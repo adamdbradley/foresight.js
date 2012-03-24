@@ -39,11 +39,11 @@ Using this structure allows us to still place _img_ elements within the context 
 ## NoScript Element
 Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however for a new 'picture' element: [ Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)_.
 
-Additionally, if javascript is not enabled and the _noscript_ element is shown by the browser, the webpage should also hide the first _img_ so it doesn't show as a large blank image. The head element of the document should contain:
+Additionally, if javascript is not enabled and the _noscript_ _img_ is shown by the browser instead, the webpage should also hide the first _img_ so it doesn't show as a large broken image. The head element of the document should contain:
 
     <style> .fs-img{ display:none }</style>
 
-When foresight executes it will change the CSS class from _fs-img_ to _fs-img-ready_ so that the _.fs-img_ CSS display:none will no longer apply and the images can be seen.
+When foresight executes it will change each image's CSS class from _fs-img_ to _fs-img-ready_ so that the _.fs-img_ CSS display:none will no longer apply and the images can be seen.
 
 _If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._
 
@@ -242,3 +242,24 @@ Instead of including debugging code directly in the foresight.js, an additional 
         };
     </script>
     <script src="foresight.js"></script>
+    
+
+
+## Testing
+
+Foresight's goal has always been to work on the major browsers, both desktop and mobile, and not require any javascript libraries. If you come across any problems please help us by submitting an issue and we'll work to improve it. Below are the primary browsers foresight has been tested against.
+
+* iOS 5.1 (iPad3 & iPhone4)
+* Android 2.3 (Samsung Charge)
+* Chrome 17 (Mac)
+* Safari 5.1 (Mac)
+* Firefox 11 (Mac)
+
+
+## Contribute
+
+This project was originally created as need for an ecommerce mobile homepage, which basically showed high-resolution images for high-resolution devices, and adjust image widths accordingly. This is by no means the end-all solution for high-resolution images; I'd label this more as an interum solution as the web standards evolve for handling device pixel ratios and . Please feel free to improve this project in any way you can.
+
+__Contact Me__
+
+* [@adamdbradley](https://twitter.com/adamdbradley)
