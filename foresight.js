@@ -150,6 +150,8 @@
 		// initialize some properties the image will use
 		if( !img.initalized ) {
 			img.initalized = TRUE;
+			img.browserWidth = img.width;
+			img.browserHeight = img.height;
 			img.orgWidth = img.width;
 			img.orgHeight = img.height;
 			img.requestWidth = 0;
@@ -185,12 +187,12 @@
 		setDimensionsFromPercent( img );
 
 		// ensure the img dimensions do not exceed the max, scale proportionally
-		maxDimensionScaling( img, 'width', 'maxWidth', 'height', 'maxHeight' );
+		maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
 
 		// build a list of Css Classnames for the <img> which may be useful for designers
 		var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
 		classNames.push( ( img.pixelRatio > 1 ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
-		classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed(1).replace('.', '_' ) );
+		classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
 		img.className = classNames.join( ' ' ); 
 
 	},
@@ -213,13 +215,13 @@
 
 	setDimensionsFromPercent = function( img ) {
 		if ( img.widthPercent ) {
-			var orgW = img.width;
-			img.width = round( (img.widthPercent / 100) * img.parentElement.clientWidth );
-			img.height = round( img.height * ( img.width / orgW ) );
+			var orgW = img.browserWidth; 
+			img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentElement.clientWidth );
+			img.browserHeight = round( img.browserHeight * ( img.browserWidth / orgW ) );
 		} else if ( img.heightPercent ) {
-			var orgH = img.height;
-			img.height = round( (img.heightPercent / 100) * img.parentElement.clientHeight );
-			img.width = round( img.width * ( img.height / orgH ) );
+			var orgH = img.browserHeight;
+			img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentElement.clientHeight );
+			img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
 		}
 	},
 
@@ -243,13 +245,13 @@
 				requestDimensionChange = FALSE;
 
 				// only update the request width/height the new dimension is large than the one already loaded
-				newRequestWidth = round( img.width * img.pixelRatio );
+				newRequestWidth = round( img.browserWidth * img.pixelRatio );
 				if( newRequestWidth > img.requestWidth ) {
 					img.requestWidth = newRequestWidth;
 					requestDimensionChange = TRUE;
 				}
 
-				newRequestHeight = round( img.height * img.pixelRatio );
+				newRequestHeight = round( img.browserHeight * img.pixelRatio );
 				if( newRequestHeight > img.requestHeight ) {
 					img.requestHeight = newRequestHeight;
 					requestDimensionChange = TRUE;
@@ -271,6 +273,9 @@
 						replaceDimensions( img );
 					}
 				}
+				
+				img.width = img.browserWidth;
+				img.height = img.browserHeight;
 			}
 
 			if ( fs.updateComplete ) {
