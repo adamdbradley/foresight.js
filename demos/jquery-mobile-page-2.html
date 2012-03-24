@@ -7,12 +7,14 @@
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+		<script src="foresight-debugger.js"></script>
 		<script>
 			foresight = {
 				options: {
 					srcModification: 'replaceDimensions',
 					maxBrowserWidth: 640
-				}
+				},
+				oncomplete: foresight_debugger
 			};
 		</script>
 		<script src="../foresight.js"></script>
