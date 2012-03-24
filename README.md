@@ -214,23 +214,17 @@ Foresight.js does not require the jQuery library or jQuery Mobile framework, but
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+    <script src="foresight.js"></script>
     <script>
-        foresight = {
-            options: {
-                srcModification: 'replaceDimensions',
-                maxBrowserWidth: 640
-            }
-        };
         $(document).bind("pagechange", foresight.reload);
     </script>
-    <script src="foresight.js"></script>
 
-Notice how it binds the _foresight.reload_ method when a page change happens, this ensures all new images to the DOM are correctly loaded. Take a look at the [jQuery Mobile demo pages](http://foresightjs.appspot.com/demos/jquery-mobile-page-1.html) to see it in action.
+Notice how it binds the _foresight.reload_ method when a page change happens, this ensures all new images to the DOM are correctly loaded by foresight. Take a look at the [jQuery Mobile demo pages](http://foresightjs.appspot.com/demos/jquery-mobile-page-1.html) to see it in action.
 
 
 ## Foresight Events
 
-__foresight.oncomplete__: Executed after foresight rebuilds each of the image src's.
+__foresight.updateComplete__: Executed after foresight rebuilds each of the image src's.
 
 
 

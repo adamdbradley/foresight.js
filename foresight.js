@@ -263,6 +263,7 @@
 
 					if( img.highResolution && fs.hiResEnabled ) {
 						img.src = img.highResolution;
+						img.srcModification = 'hiResSrc';
 					} else if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
 						rebuildSrc( img );
 					} else {
@@ -272,8 +273,8 @@
 				}
 			}
 
-			if ( fs.oncomplete ) {
-				fs.oncomplete();
+			if ( fs.updateComplete ) {
+				fs.updateComplete();
 			}
 		}
 	},

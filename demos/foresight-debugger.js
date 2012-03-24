@@ -17,7 +17,7 @@ var foresight_debugger = function () {
 	info.push( 'High-Resolution Enabled: ' + foresight.hiResEnabled );
 	info.push( '<hr>' );
 
-	// add in a <pre> element or use one already there for the big info
+	// add in a <pre> element or use one already there for debugging info
 	var docPres = document.getElementsByTagName('pre');
 	if(docPres && docPres.length) {
 		var docPre = docPres[0];
@@ -37,9 +37,11 @@ var foresight_debugger = function () {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
-		imgInfo.push( 'Image\'s Browser Width/Height: ' + img.width + 'x' + img.height );
-		imgInfo.push( 'Image\'s Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Image\'s Parent Width/Height: ' + img.parentElement.clientWidth + 'x' + img.parentElement.clientHeight );
+		imgInfo.push( 'Width/Height: ' + img.width + 'x' + img.height );
+		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		imgInfo.push( 'Parent Width/Height: ' + img.parentElement.clientWidth + 'x' + img.parentElement.clientHeight );
+		imgInfo.push( 'Max Width/Height: ' + img.maxWidth + 'x' + img.maxHeight );
+		imgInfo.push( 'Max Request Width/Height: ' + img.maxRequestWidth + 'x' + img.maxRequestHeight );
 
 		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 		if( img.srcModification === 'rebuildSrc' ) {
