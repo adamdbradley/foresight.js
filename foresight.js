@@ -124,7 +124,7 @@
 
 	speedTestComplete = function( connTestMethod ) {
 		// if we haven't already gotten a speed connection status then save the info
-		if(speedConnectionStatus === STATUS_COMPLETE) return;
+		if (speedConnectionStatus === STATUS_COMPLETE) return;
 
 		fs.connTestMethod = connTestMethod;
 
@@ -148,7 +148,8 @@
 		if ( !img.orgSrc || !img.width || !img.height || !img.parentElement.clientWidth ) return;
 
 		// initialize some properties the image will use
-		if( !img.initalized ) {
+		if ( !img.initalized ) {
+			// only gather the images that haven't already been initialized
 			img.initalized = TRUE;
 			img.browserWidth = img.width;
 			img.browserHeight = img.height;
@@ -183,18 +184,6 @@
 			fs.images.push( img );
 		}
 
-		// set the image according to its properties
-		setDimensionsFromPercent( img );
-
-		// ensure the img dimensions do not exceed the max, scale proportionally
-		maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
-
-		// build a list of Css Classnames for the <img> which may be useful for designers
-		var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
-		classNames.push( ( img.pixelRatio > 1 ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
-		classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
-		img.className = classNames.join( ' ' ); 
-
 	},
 
 	fillImgProperty = function( img, attrName, propName, getFloat, defaultValue ) {
@@ -203,7 +192,7 @@
 		if ( value && value !== '' ) {
 			if ( getFloat ) {
 				value = value.replace( '%', '' );
-				if( !isNaN( value ) ) {
+				if ( !isNaN( value ) ) {
 					value = parseFloat( value, 10 );
 				}
 			}
@@ -229,41 +218,60 @@
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
-			if( fs.isHighSpeedConn && fs.devicePixelRatio > 1 ) {
+			if ( fs.isHighSpeedConn && fs.devicePixelRatio > 1 ) {
 				fs.hiResEnabled = TRUE;
 			}
 
 			var
 			x,
 			img,
-			newRequestWidth,
-			newRequestHeight,
+			imgRequestWidth,
+			imgRequestHeight,
 			requestDimensionChange;
 
 			for ( x = 0; x < fs.images.length; x++ ) {
 				img = fs.images[ x ];
-				requestDimensionChange = FALSE;
 
-				// only update the request width/height the new dimension is large than the one already loaded
-				newRequestWidth = round( img.browserWidth * img.pixelRatio );
-				if( newRequestWidth > img.requestWidth ) {
-					img.requestWidth = newRequestWidth;
+				img.hiResEnabled = ( fs.isHighSpeedConn && img.pixelRatio > 1 );
+
+				// set the image according to its properties
+				setDimensionsFromPercent( img );
+			
+				// ensure the img dimensions do not exceed the max, scale proportionally
+				maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
+			
+				// build a list of Css Classnames for the <img> which may be useful for designers
+				var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
+				classNames.push( ( img.hiResEnabled ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
+				classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
+				img.className = classNames.join( ' ' );
+				
+				if ( img.hiResEnabled ) {
+					imgRequestWidth = round( img.browserWidth * img.pixelRatio );
+					imgRequestHeight = round( img.browserHeight * img.pixelRatio );
+				} else {
+					imgRequestWidth = img.browserWidth;
+					imgRequestHeight = img.browserHeight;
+				}
+					
+				// only update the request width/height the new dimension is larger than the one already loaded
+				requestDimensionChange = FALSE;
+				if ( imgRequestWidth > img.requestWidth ) {
+					img.requestWidth = imgRequestWidth;
 					requestDimensionChange = TRUE;
 				}
-
-				newRequestHeight = round( img.browserHeight * img.pixelRatio );
-				if( newRequestHeight > img.requestHeight ) {
-					img.requestHeight = newRequestHeight;
+				if ( imgRequestHeight > img.requestHeight ) {
+					img.requestHeight = imgRequestHeight;
 					requestDimensionChange = TRUE;
 				}
 
 				// decide how the src should be modified for the new image request
-				if( requestDimensionChange ) {
+				if ( requestDimensionChange ) {
 
 					// ensure the request dimensions do not exceed the max, scale proportionally
 					maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
 
-					if( img.highResolution && fs.hiResEnabled ) {
+					if ( img.highResolution && fs.hiResEnabled ) {
 						img.src = img.highResolution;
 						img.srcModification = 'hiResSrc';
 					} else if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
@@ -273,7 +281,7 @@
 						replaceDimensions( img );
 					}
 				}
-				
+
 				img.width = img.browserWidth;
 				img.height = img.browserHeight;
 			}
@@ -378,7 +386,7 @@
 	reloadTimeoutId,
 	executeReload = function () {
 		// execute the reload. This is governed by a timeout so it isn't abused by many events
-		if( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
+		if ( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
 
 		for ( var x = 0; x < document.images.length; x++ ) {
 			initImage( document.images[ x ] );
@@ -394,7 +402,7 @@
 		reloadTimeoutId = window.setTimeout( executeReload, 150 ); 
 	};
 
-	if( forcedPixelRatio ) {
+	if ( forcedPixelRatio ) {
 		// force a certain pixel ratio in the options
 		fs.devicePixelRatio = forcedPixelRatio;
 	}

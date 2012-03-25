@@ -37,11 +37,12 @@ var foresight_debugger = function () {
 		var img = foresight.images[ x ];
 		var imgInfo = [];
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
-		imgInfo.push( 'Width/Height: ' + img.width + 'x' + img.height );
+		imgInfo.push( 'Browser Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
 		imgInfo.push( 'Parent Width/Height: ' + img.parentElement.clientWidth + 'x' + img.parentElement.clientHeight );
 		imgInfo.push( 'Max Width/Height: ' + img.maxWidth + 'x' + img.maxHeight );
 		imgInfo.push( 'Max Request Width/Height: ' + img.maxRequestWidth + 'x' + img.maxRequestHeight );
+		imgInfo.push( 'Image Hi-res Enabled: ' + img.hiResEnabled );
 
 		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 		if( img.srcModification === 'rebuildSrc' ) {
