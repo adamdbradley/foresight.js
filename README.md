@@ -11,7 +11,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Does not make multiple requests for the same image
 * Javascript Framework independent (ie: jQuery not required)
 * Cross-browser and cross-platform
-* Image dimensions set by percent's will scale to the device's available width and display pixel ratio
+* Image dimensions set by percent's will scale to the parent element's available width and device pixel ratio
 * Fully customizable through global configuration options and individual img options
 * Default images load without javascript enabled
 * Minifies down to roughly 5K
