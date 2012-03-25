@@ -258,7 +258,7 @@ Foresight's goal has always been to work on the major browsers, both desktop and
 
 ## Contribute
 
-This project was originally created as need for an ecommerce mobile homepage, which basically showed high-resolution images for high-resolution devices, and adjust image widths accordingly. This is by no means the end-all solution for high-resolution images; I'd label this more as an interum solution as the web standards evolve for handling device pixel ratios. Please feel free to improve this project in any way you can.
+This project was originally created as need for an ecommerce mobile homepage, which basically showed high-resolution images for high-resolution devices, and adjust image widths accordingly. This is by no means the end-all solution for high-resolution images; I'd label this more as an interim solution as the web standards evolve for handling device pixel ratios. Please feel free to improve this project in any way you can.
 
 __Contact Me__
 
