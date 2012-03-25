@@ -43,9 +43,7 @@
 
 		imageIterateStatus = STATUS_LOADING;
 
-		for ( var x = 0; x < document.images.length; x++ ) {
-			initImage( document.images[ x ] );
-		}
+		initImages();
 
 		imageIterateStatus = STATUS_COMPLETE;
 
@@ -141,47 +139,57 @@
 		initImageRebuild();
 	},
 
-	initImage = function ( img ) {
-		fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
+	initImages = function () {
 
-		 // missing required attributes or the parent is not visible
-		if ( !img.orgSrc || !img.width || !img.height || !img.parentElement.clientWidth ) return;
-
-		// initialize some properties the image will use
-		if ( !img.initalized ) {
-			// only gather the images that haven't already been initialized
-			img.initalized = TRUE;
-			img.browserWidth = img.width;
-			img.browserHeight = img.height;
-			img.orgWidth = img.width;
-			img.orgHeight = img.height;
-			img.requestWidth = 0;
-			img.requestHeight = 0;
-			img.orgClassName = img.className.replace( 'fs-img', 'fs-img-ready' );
-
-			// fill in the image's properties from the element's attributes
-			fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
-			fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
-
-			fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
-			fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
-
-			fillImgProperty( img, 'width-percent', 'widthPercent', TRUE, 0 );
-			fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
-
-			fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
-			fillImgProperty( img, 'src-format', 'srcFormat', FALSE, srcFormat );
-			fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, fs.devicePixelRatio );
-
-			fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
+		var
+		x,
+		img;
+		
+		for ( x = 0; x < document.images.length; x ++ ) {
+			img = document.images[ x ];
 			
-			// set the img's id if there isn't one already
-			if ( !img.id ) {
-				img.id = 'fsImg' + Math.round( Math.random() * 10000000 );
+			// initialize some properties the image will use
+			if ( !img.initalized ) {
+				// only gather the images that haven't already been initialized
+				img.initalized = TRUE;
+				
+				fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
+		
+				 // missing required attributes
+				if ( !img.orgSrc || !img.width || !img.height ) continue;
+				
+				img.browserWidth = img.width;
+				img.browserHeight = img.height;
+				img.orgWidth = img.width;
+				img.orgHeight = img.height;
+				img.requestWidth = 0;
+				img.requestHeight = 0;
+				img.orgClassName = img.className.replace( 'fs-img', 'fs-img-ready' );
+	
+				// fill in the image's properties from the element's attributes
+				fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
+				fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
+	
+				fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
+				fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
+	
+				fillImgProperty( img, 'width-percent', 'widthPercent', TRUE, 0 );
+				fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
+	
+				fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
+				fillImgProperty( img, 'src-format', 'srcFormat', FALSE, srcFormat );
+				fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, fs.devicePixelRatio );
+	
+				fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
+				
+				// set the img's id if there isn't one already
+				if ( !img.id ) {
+					img.id = 'fsImg' + Math.round( Math.random() * 10000000 );
+				}
+	
+				// add this image to the collection, but do not add it to the DOM yet
+				fs.images.push( img );
 			}
-
-			// add this image to the collection, but do not add it to the DOM yet
-			fs.images.push( img );
 		}
 
 	},
@@ -202,18 +210,6 @@
 		img[ propName ] = value;
 	},
 
-	setDimensionsFromPercent = function( img ) {
-		if ( img.widthPercent ) {
-			var orgW = img.browserWidth; 
-			img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentElement.clientWidth );
-			img.browserHeight = round( img.browserHeight * ( img.browserWidth / orgW ) );
-		} else if ( img.heightPercent ) {
-			var orgH = img.browserHeight;
-			img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentElement.clientHeight );
-			img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
-		}
-	},
-
 	initImageRebuild = function() {
 		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
@@ -232,13 +228,28 @@
 			for ( x = 0; x < fs.images.length; x++ ) {
 				img = fs.images[ x ];
 
+				// decide if this image should be hi-res
 				img.hiResEnabled = ( fs.isHighSpeedConn && img.pixelRatio > 1 );
 
 				// set the image according to its properties
-				setDimensionsFromPercent( img );
+				if ( img.widthPercent ) {
+					if ( !img.parentElement.clientWidth ) continue; // parent not set yet
+					var orgW = img.browserWidth; 
+					img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentElement.clientWidth );
+					img.browserHeight = round( img.browserHeight * ( img.browserWidth / orgW ) );
+				} else if ( img.heightPercent ) {
+					if ( !img.parentElement.clientHeight ) continue; // parent not set yet
+					var orgH = img.browserHeight;
+					img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentElement.clientHeight );
+					img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
+				}
 			
 				// ensure the img dimensions do not exceed the max, scale proportionally
 				maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
+			
+				if ( !img.browserWidth || !img.browserHeight ) {
+					continue; // we're not going to load an image that has no width or height
+				}
 			
 				// build a list of Css Classnames for the <img> which may be useful for designers
 				var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
@@ -387,11 +398,7 @@
 	executeReload = function () {
 		// execute the reload. This is governed by a timeout so it isn't abused by many events
 		if ( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
-
-		for ( var x = 0; x < document.images.length; x++ ) {
-			initImage( document.images[ x ] );
-		}
-
+		initImages();
 		initImageRebuild();
 	};
 
