@@ -66,7 +66,7 @@ __replaceDimensions__: The current src may already have dimensions within the UR
 
 __rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src format_. Review the Src Format section to see how to format the image URI's.
 
-_View the data-src-high-resolution attribute under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. Src Modification should be used when dynamically building the img src, while the data-src-high-resolution attribute is used if you want to manually tell foresight which image to use._
+_Also view the data-src-high-resolution attribute definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. Src Modification should be used when dynamically building the img src, while the data-src-high-resolution attribute is used if you want to manually tell foresight which image to use when hi-res is enabled._
 
 
 
