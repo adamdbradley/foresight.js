@@ -40,6 +40,7 @@ Until the web community completes a standard to hi-res context images, the new s
 _There is hope however as the web community works on a solution to high-resolution images. These two resources offer a glimps about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117) and also [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)._
 
 
+
 ## NoScript Element
 Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. 
 
@@ -50,6 +51,7 @@ If javascript is not enabled then the browser shows the _noscript_ _img_ instead
 When foresight executes it will change each image's CSS class from _fs-img_ to _fs-img-ready_ so that the _.fs-img_ CSS display:none will no longer apply and the images can be seen.
 
 _If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._
+
 
 
 ## High-Speed Network Connection Test
@@ -259,8 +261,10 @@ Foresight's goal has always been to work on the major browsers, both desktop and
 * iOS 5.1 (iPad3 & iPhone4)
 * Android 2.3 (Samsung Charge)
 * Chrome 17 (Mac)
+* Chrome 19 (Win)
 * Safari 5.1 (Mac)
 * Firefox 11 (Mac)
+* Firefox 10 (Win)
 * IE8
 
 
