@@ -150,13 +150,13 @@ __foresight.options.speedTestKB__: Foresight needs to know the filesize of the s
 
 __foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing how many minutes a speed test is valid until it expires. Default value is _30_
 
-__foresight.options.maxImgWidth__: A max pixel width can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
+__foresight.options.maxBrowserWidth__: A max pixel width can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
 
-__foresight.options.maxImgHeight__: A max pixel height can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
+__foresight.options.maxBrowserHeight__: A max pixel height can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
 
-__foresight.options.maxImgRequestWidth__: A max pixel request width can be set on how large of images can be requested from the server. Default value is _2048_
+__foresight.options.maxRequestWidth__: A max pixel request width can be set on how large of images can be requested from the server. Default value is _2048_
 
-__foresight.options.maxImgRequestHeight__: A max pixel request height can be set on how large of images can be requested from the server. Default value is _2048_
+__foresight.options.maxRequestHeight__: A max pixel request height can be set on how large of images can be requested from the server. Default value is _2048_
 
 __foresight.options.forcedPixelRatio__: You can override the device pixel ratio value. Default value is _undefined_ 
 
