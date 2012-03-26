@@ -64,6 +64,9 @@ __replaceDimensions__: The current src may already have dimensions within the UR
 
 __rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src format_. Review the Src Format section to see how to format the image URI's.
 
+_View the data-src-high-resolution attribute under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. Src Modification should be used when dynamically building the img src, while the data-src-high-resolution attribute is used if you want to manually tell foresight which image to use._
+
+
 
 ## Src Format
 The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight with how the request image should be built. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _img data-src-format_ attribute. Below are the various keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys that help build the src request for the server. _[More info about Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images)_.
