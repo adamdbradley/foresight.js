@@ -144,7 +144,7 @@ __foresight.options.testConn__: Boolean value determining if foresight should te
 
 __foresight.options.minKbpsForHighSpeedConn__: Foresight considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _800_
 
-__foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight hosted image, but you can always choose your own URI for the test image. Default value is _//foresightjs.appspot.com/speed-test/100K_
+__foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight hosted image, but you can always choose your own URI for the test image. Default value is _http://foresightjs.appspot.com/speed-test/100K (also note that if the webpage is in SSL, foresight will replace 'http:' for 'https:' to avoid any ugly security warnings)_
 
 __foresight.options.speedTestKB__: Foresight needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 100KB file. The value should be a number representing KiloBytes. Default value is _100_
 
