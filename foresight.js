@@ -316,8 +316,8 @@
 			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < speedTestExpireMinutes ) {
-					// already have connection data without our desired timeframe
-					// use this data instead of starting another test
+					// already have connection data within our desired timeframe
+					// use this recent data instead of starting another test
 					foresight.isHighSpeedConn = TRUE;
 					foresight.connKbps = fsData.connKbps;
 					foresight.connTestMethod = 'localStorage';
