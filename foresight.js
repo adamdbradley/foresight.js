@@ -47,95 +47,6 @@
 		initImageRebuild();
 	},
 
-	initSpeedTest = function () {
-		// only check the connection speed once, if there is a status we already got info or it already started
-		if ( speedConnectionStatus ) return;
-
-		// if the device pixel ratio is 1, then no need to do a speed test
-		if ( foresight.devicePixelRatio === 1 ) {
-			foresight.connTestMethod = 'skip';
-			speedConnectionStatus = STATUS_COMPLETE;
-			return;
-		}
-
-		// check if a speed test has recently been completed and data saved in the local storage
-		// localStorage.removeItem( LOCAL_STORAGE_KEY );
-		try {
-			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
-			if ( fsData && fsData.isHighSpeedConn ) {
-				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
-				if ( minuteDifference < speedTestExpireMinutes ) {
-					// already have connection data without our desired timeframe, use this instead of another test
-					foresight.isHighSpeedConn = TRUE;
-					foresight.connKbps = fsData.connKbps;
-					foresight.connTestMethod = 'localStorage';
-					speedConnectionStatus = STATUS_COMPLETE;
-					return;
-				}
-			}
-		} catch( e ) { }
-
-		var 
-		speedTestImg = document.createElement( 'img' ),
-		endTime,
-		startTime,
-		speedTestTimeoutMS;
-
-		speedTestImg.onload = function () {
-			// speed test image download completed
-			endTime = ( new Date() ).getTime();
-
-			var duration = round( ( endTime - startTime ) / 1000 );
-			duration = ( duration > 1 ? duration : 1 );
-
-			var bitsLoaded = ( speedTestKB * 1024 * 8 );
-			foresight.connKbps = ( round( bitsLoaded / duration ) / 1024 );
-			foresight.isHighSpeedConn = ( foresight.connKbps >= minKbpsForHighSpeedConn );
-
-			speedTestComplete( 'networkSuccess' );
-		};
-
-		speedTestImg.onerror = function () {
-			// fallback incase there was an error downloading the speed test image
-			speedTestComplete( 'networkError' );
-		};
-
-		// begin the network connection speed test image download
-		startTime = ( new Date() ).getTime();
-		speedConnectionStatus = STATUS_LOADING;
-		if ( document.location.protocol === 'https:' ) {
-			speedTestUri = speedTestUri.replace( 'http:', 'https:' );
-		}
-		speedTestImg.src = speedTestUri + "?r=" + Math.random();
-
-		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
-		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
-		// than it isn't a high speed connection and ignore what the test image .onload has to say
-		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
-		setTimeout( function () {
-			speedTestComplete( 'networkSlow' );
-		}, speedTestTimeoutMS );
-	},
-
-	speedTestComplete = function ( connTestMethod ) {
-		// if we haven't already gotten a speed connection status then save the info
-		if (speedConnectionStatus === STATUS_COMPLETE) return;
-
-		foresight.connTestMethod = connTestMethod;
-
-		try {
-			var fsDataToSet = {
-				connKbps: foresight.connKbps,
-				isHighSpeedConn: foresight.isHighSpeedConn,
-				timestamp: ( new Date() ).getTime()
-			};
-			localStorage.setItem( LOCAL_STORAGE_KEY, JSON.stringify( fsDataToSet ) );
-		} catch( e ) { }
-
-		speedConnectionStatus = STATUS_COMPLETE;
-		initImageRebuild();
-	},
-
 	initImages = function () {
 
 		var
@@ -181,7 +92,7 @@
 				
 				// set the img's id if there isn't one already
 				if ( !img.id ) {
-					img.id = 'fsImg' + Math.round( Math.random() * 10000000 );
+					img.id = 'fsImg' + round( Math.random() * 10000000 );
 				}
 	
 				// add this image to the collection, but do not add it to the DOM yet
@@ -375,6 +286,95 @@
 		img.src = img.orgSrc
 					.replace( img.orgWidth, img.requestWidth )
 					.replace( img.orgHeight, img.requestHeight );
+	},
+
+	initSpeedTest = function () {
+		// only check the connection speed once, if there is a status we already got info or it already started
+		if ( speedConnectionStatus ) return;
+
+		// if the device pixel ratio is 1, then no need to do a speed test
+		if ( foresight.devicePixelRatio === 1 ) {
+			foresight.connTestMethod = 'skip';
+			speedConnectionStatus = STATUS_COMPLETE;
+			return;
+		}
+
+		// check if a speed test has recently been completed and data saved in the local storage
+		// localStorage.removeItem( LOCAL_STORAGE_KEY );
+		try {
+			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
+			if ( fsData && fsData.isHighSpeedConn ) {
+				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
+				if ( minuteDifference < speedTestExpireMinutes ) {
+					// already have connection data without our desired timeframe, use this instead of another test
+					foresight.isHighSpeedConn = TRUE;
+					foresight.connKbps = fsData.connKbps;
+					foresight.connTestMethod = 'localStorage';
+					speedConnectionStatus = STATUS_COMPLETE;
+					return;
+				}
+			}
+		} catch( e ) { }
+
+		var 
+		speedTestImg = document.createElement( 'img' ),
+		endTime,
+		startTime,
+		speedTestTimeoutMS;
+
+		speedTestImg.onload = function () {
+			// speed test image download completed
+			endTime = ( new Date() ).getTime();
+
+			var duration = round( ( endTime - startTime ) / 1000 );
+			duration = ( duration > 1 ? duration : 1 );
+
+			var bitsLoaded = ( speedTestKB * 1024 * 8 );
+			foresight.connKbps = ( round( bitsLoaded / duration ) / 1024 );
+			foresight.isHighSpeedConn = ( foresight.connKbps >= minKbpsForHighSpeedConn );
+
+			speedTestComplete( 'networkSuccess' );
+		};
+
+		speedTestImg.onerror = function () {
+			// fallback incase there was an error downloading the speed test image
+			speedTestComplete( 'networkError' );
+		};
+
+		// begin the network connection speed test image download
+		startTime = ( new Date() ).getTime();
+		speedConnectionStatus = STATUS_LOADING;
+		if ( document.location.protocol === 'https:' ) {
+			speedTestUri = speedTestUri.replace( 'http:', 'https:' );
+		}
+		speedTestImg.src = speedTestUri + "?r=" + Math.random();
+
+		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
+		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
+		// than it isn't a high speed connection and ignore what the test image .onload has to say
+		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
+		setTimeout( function () {
+			speedTestComplete( 'networkSlow' );
+		}, speedTestTimeoutMS );
+	},
+
+	speedTestComplete = function ( connTestMethod ) {
+		// if we haven't already gotten a speed connection status then save the info
+		if (speedConnectionStatus === STATUS_COMPLETE) return;
+
+		foresight.connTestMethod = connTestMethod;
+
+		try {
+			var fsDataToSet = {
+				connKbps: foresight.connKbps,
+				isHighSpeedConn: foresight.isHighSpeedConn,
+				timestamp: ( new Date() ).getTime()
+			};
+			localStorage.setItem( LOCAL_STORAGE_KEY, JSON.stringify( fsDataToSet ) );
+		} catch( e ) { }
+
+		speedConnectionStatus = STATUS_COMPLETE;
+		initImageRebuild();
 	},
 
 	round = function ( value ) {
