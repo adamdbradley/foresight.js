@@ -179,6 +179,10 @@ __data-src-format__: _(Optional)_ The format in which a src should be rebuilt. S
 
 __data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
 
+__data-width-percent__: _(Optional)_ The width percent is in reference to the image's parent element, and how much of the image's parent element's width should be taken by the image. The image's previous _data-width_ attribute should not be given percents because its value is reserved so we can always know the image's aspect ratio. The _data-width-percent_ attribute, on the other hand, is an optional attribute that determines how to scale the image within its parent element.
+
+__data-height-percent__: _(Optional)_ The height percent is in reference to the image's parent element, and how much of the image's parent element's width should be taken by the image. The image's previous _data-height_ attribute should not be given percents because its value is reserved so we can always know the image's aspect ratio. The _data-height-percent_ attribute, on the other hand, is an optional attribute that determines how to scale the image within its parent element.
+
 __data-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
 
 __data-max-height__: _(Optional)_ Maximum browser pixel height this image should take. If this value is greater than the height it will scale the image proportionally.
