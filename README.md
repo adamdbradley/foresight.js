@@ -33,6 +33,8 @@ One of the largest problems faced with dynamically deciding image quality is tha
 
 Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity. Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. 
 
+One concept change is that both the _data-width_ and _data-height_ attributes should not be seen as the image's physical dimensions, but rather a way for the browser to know the image's aspect ratio as it is scaled up and down according to the desired dimensions and device pixel ratio.
+
 Until the web community completes a standard to hi-res context images, the new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). 
 
 _There is hope however as the web community works on a solution to high-resolution images. These two resources offer a glimps about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117) and also [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)._
