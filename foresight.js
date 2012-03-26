@@ -36,6 +36,7 @@
 	FALSE = false,
 
 	initForesight = function () {
+		// begin finding valid foresight <img>'s and updating their src's
 		if ( imageIterateStatus ) return;
 
 		imageIterateStatus = STATUS_LOADING;
@@ -46,7 +47,7 @@
 	},
 
 	initImages = function () {
-
+		// loop through each of the document.images and find valid foresight images
 		var
 		x,
 		img;
@@ -114,7 +115,7 @@
 	},
 
 	initImageRebuild = function () {
-		// if both the speed connection test and we've completed looping through the images, then rebuild their image src
+		// if we've completed both the connection speed test and finding all the valid foresight images, then rebuild each image's src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
 			if ( foresight.isHighSpeedConn && foresight.devicePixelRatio > 1 ) {
@@ -134,7 +135,7 @@
 				// decide if this image should be hi-res
 				img.hiResEnabled = ( foresight.isHighSpeedConn && img.pixelRatio > 1 );
 
-				// calculate dimensions if this image should be set by percentages
+				// calculate its dimensions if this image's dimensions should be set by percentages
 				if ( img.widthPercent ) {
 					if ( !img.parentElement.clientWidth ) continue; // parent not set yet
 					var orgW = img.browserWidth; 
@@ -154,7 +155,7 @@
 					continue; // we're not going to load an image that has no width or height
 				}
 
-				// build a list of Css Classnames for the <img> which may be useful for designers
+				// build a list of additional foresight Css Classnames for the <img> which may be useful for designers
 				var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
 				classNames.push( ( img.hiResEnabled ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
 				classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
@@ -170,7 +171,7 @@
 					imgRequestHeight = img.browserHeight;
 				}
 
-				// only update the request width/height the new dimension is larger than the one already loaded
+				// only update the request width/height when the new dimension is larger than the one already loaded
 				requestDimensionChange = FALSE;
 				if ( imgRequestWidth > img.requestWidth ) {
 					img.requestWidth = imgRequestWidth;
@@ -181,12 +182,13 @@
 					requestDimensionChange = TRUE;
 				}
 
-				// decide how the src should be modified for the new image request
+				// if the new request size is smaller than the current image we have loaded then there's no need to request another
 				if ( requestDimensionChange ) {
 
 					// ensure the request dimensions do not exceed the max, scale proportionally
 					maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
 
+					// decide how the src should be modified for the new image request
 					if ( img.highResolution && foresight.hiResEnabled ) {
 						img.src = img.highResolution;
 						img.srcModification = 'hiResSrc';
@@ -211,7 +213,7 @@
 
 	maxDimensionScaling = function ( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
 		// used to ensure both the width and height do not go over the max allowed
-		// this function is reusable for both the img width/height, and the request width/height
+		// this function is reusable for both the image's browser width/height, and the request width/height
 		var orgD;
 		if ( img[ widthProp ] > img[ maxWidthProp ] ) {
 			orgD = img[ widthProp ];
@@ -281,25 +283,23 @@
 
 	replaceDimensions = function ( img ) {
 		// replace image dimensions already in the src with new dimensions
-		// set the new src, begin downloading this image
 		img.src = img.orgSrc
 					.replace( img.orgWidth, img.requestWidth )
 					.replace( img.orgHeight, img.requestHeight );
 	},
 
 	initSpeedTest = function () {
-		// only check the connection speed once, if there is a status we already got info or it already started
+		// only check the connection speed once, if there is a status then we've already got info or it already started
 		if ( speedConnectionStatus ) return;
 
-		// if the device pixel ratio is 1, then no need to do a speed test
+		// if the device pixel ratio is 1, then no need to do a speed test since it can't show hi-res anyways
 		if ( foresight.devicePixelRatio === 1 ) {
 			foresight.connTestMethod = 'skip';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
 
-		// check if a speed test has recently been completed and data saved in the local storage
-		// localStorage.removeItem( LOCAL_STORAGE_KEY );
+		// check if a speed test has recently been completed and data is saved in the local storage
 		try {
 			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
 			if ( fsData && fsData.isHighSpeedConn ) {
@@ -323,6 +323,7 @@
 
 		speedTestImg.onload = function () {
 			// speed test image download completed
+			// figure out how long it took and an estimated connection speed
 			endTime = ( new Date() ).getTime();
 
 			var duration = round( ( endTime - startTime ) / 1000 );
@@ -351,6 +352,7 @@
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
 		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
+		// this is used so we don't wait too long on a speed test response
 		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
 		setTimeout( function () {
 			speedTestComplete( 'networkSlow' );
@@ -361,6 +363,7 @@
 		// if we haven't already gotten a speed connection status then save the info
 		if (speedConnectionStatus === STATUS_COMPLETE) return;
 
+		// first one with an answer wins
 		foresight.connTestMethod = connTestMethod;
 
 		try {
@@ -392,25 +395,25 @@
 
 	reloadTimeoutId,
 	executeReload = function () {
-		// execute the reload. This is governed by a timeout so it isn't abused by many events
+		// execute the reload. This is initially governed by a timeout so it isn't abused by too many calls
 		if ( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
 		initImages();
 		initImageRebuild();
 	};
 
 	foresight.reload = function () {
-		// if the window resizes or this function is called by external events (like a hashchange)
+		// if the window resizes or this function is called by external events (like a changepage in jQuery Mobile)
 		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
 		window.clearTimeout( reloadTimeoutId ); 
 		reloadTimeoutId = window.setTimeout( executeReload, 100 ); 
 	};
 
 	if ( forcedPixelRatio ) {
-		// force a certain pixel ratio in the options
+		// force a certain pixel ratio in the options, used more so for debugging purposes
 		foresight.devicePixelRatio = forcedPixelRatio;
 	}
 
-	// when the DOM is ready begin finding img's and updating their src's
+	// when the DOM is ready begin finding valid foresight <img>'s and updating their src's
 	if ( document.readyState === STATUS_COMPLETE ) {
 		initForesight();
 	} else {
