@@ -236,7 +236,7 @@ __foresight.updateComplete__: Executed after foresight rebuilds each of the imag
 
 
 ## Foresight Debugging
-Instead of including debugging code directly in the foresight.js, an additional javascript file has been included to help developers debug. By using the _foresight.oncomplete_ event and populated _foresight_ properties, the _foresight-debug.js_ file prints out relevant information to help debug. This is particularly useful for mobile devices since it is more difficult to view source code and javascript errors. Below is an example on how to include the _foresight-debugger.js_ file and calling it when foresight completes:
+Instead of including debugging code directly in the foresight.js, an additional javascript file has been included to help developers debug. By using the _foresight.updateComplete_ event and populated _foresight_ properties, the _foresight-debug.js_ file prints out relevant information to help debug. This is particularly useful for mobile devices since it is more difficult to view source code and javascript errors. Below is an example on how to include the _foresight-debugger.js_ file and calling it when foresight completes:
 
     <script src="foresight-debugger.js"></script>
     <script>
@@ -245,7 +245,7 @@ Instead of including debugging code directly in the foresight.js, an additional 
                 srcModification: 'rebuildSrc',
                 srcFormat: '{directory}{requestWidth}px-{file}'
             },
-            oncomplete: foresight_debugger
+            updateComplete: foresight_debugger
         };
     </script>
     <script src="foresight.js"></script>
@@ -254,13 +254,14 @@ Instead of including debugging code directly in the foresight.js, an additional 
 
 ## Testing
 
-Foresight's goal has always been to work on the major browsers, both desktop and mobile, and not require any javascript libraries. If you come across any problems please help us by submitting an issue and we'll work to improve it. Below are the primary browsers foresight has been tested against.
+Foresight's goal has always been to work on the major browsers, both desktop and mobile, and not require any javascript libraries or frameworks. If you come across any problems please help us by submitting an issue and we'll work to improve it. Below are the primary browsers foresight has been tested against.
 
 * iOS 5.1 (iPad3 & iPhone4)
 * Android 2.3 (Samsung Charge)
 * Chrome 17 (Mac)
 * Safari 5.1 (Mac)
 * Firefox 11 (Mac)
+* IE8
 
 
 ## Contribute
