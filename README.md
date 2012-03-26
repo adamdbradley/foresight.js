@@ -31,15 +31,17 @@ One of the largest problems faced with dynamically deciding image quality is tha
         <img src="imagefile.jpg">
     </noscript>
 
-Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity.
+Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity. Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. 
 
-Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. 
+Until the web community completes a standard to hi-res context images, the new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). 
+
+_There is hope however as the web community works on a solution to high-resolution images. These two resources offer a glimps about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117) and also [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)._
 
 
 ## NoScript Element
-Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. Until the web community comes up with a better method, their new standard becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, foresight's approach is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). _There is hope however as the web community works on a solution to high-resolution images. These two resources offer a glimps about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117) and also [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)._
+Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. 
 
-Additionally, if javascript is not enabled and the browser shows the _noscript_ _img_ instead, the webpage should also hide the first _img_ so it's not seen as a large broken image. The head element of the document should contain:
+If javascript is not enabled and the browser shows the _noscript_ _img_ instead, the webpage should also hide the first _img_ so it's not seen as a large broken image. The head element of the document should contain:
 
     <style> .fs-img{ display:none }</style>
 
