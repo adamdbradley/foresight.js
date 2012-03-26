@@ -217,6 +217,7 @@
 	maxDimensionScaling = function ( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
 		// used to ensure both the width and height do not go over the max allowed
 		// this function is reusable for both the image's browser width/height, and the request width/height
+		// this also ensures that any changes to a dimension will properly scale the image
 		var orgD;
 		if ( img[ widthProp ] > img[ maxWidthProp ] ) {
 			orgD = img[ widthProp ];
