@@ -25,10 +25,12 @@
 	maxRequestHeight = opts.maxRequestHeight || maxRequestWidth,
 	forcedPixelRatio = opts.forcedPixelRatio,
 
+	// used to keep track of the progress status for finding foresight 
+	// images in the DOM and connection test results
 	imageIterateStatus,
 	speedConnectionStatus,
 
-	 //for minification purposes
+	// for minification purposes
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
 	LOCAL_STORAGE_KEY = 'fsjs',
@@ -355,6 +357,8 @@
 		startTime = ( new Date() ).getTime();
 		speedConnectionStatus = STATUS_LOADING;
 		if ( document.location.protocol === 'https:' ) {
+			// if this current document is SSL, make sure this speed test request
+			// uses https so there are no ugly security warnings from the browser
 			speedTestUri = speedTestUri.replace( 'http:', 'https:' );
 		}
 		speedTestImg.src = speedTestUri + "?r=" + Math.random();
