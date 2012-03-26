@@ -41,7 +41,7 @@ _There is hope however as the web community works on a solution to high-resoluti
 ## NoScript Element
 Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. 
 
-If javascript is not enabled and the browser shows the _noscript_ _img_ instead, the webpage should also hide the first _img_ so it's not seen as a large broken image. The head element of the document should contain:
+If javascript is not enabled then the browser shows the _noscript_ _img_ instead. In this case the webpage should also hide the first _img_ so it's not seen as a broken image. The head element of the document should contain:
 
     <style> .fs-img{ display:none }</style>
 
