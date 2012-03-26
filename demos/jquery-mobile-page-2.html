@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>jQuery Mobile Demo Page 1</title>
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>jQuery Mobile Demo Page 1</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 		<script src="foresight-debugger.js"></script>
 		<script>
 			foresight = {
 				options: {
 					srcModification: 'replaceDimensions',
-					maxBrowserWidth: 800
+					maxBrowserWidth: 750
 				},
 				updateComplete: foresight_debugger
 			};
@@ -24,67 +24,64 @@
 		<style>
 			.fs-img { display:none; }
 		</style>
-    </head>
-    <body>
-        <div data-role="page" id="page2">
-            <div data-theme="a" data-role="header">
-                <h3>
-                    AJAX Loaded Page
-                </h3>
-            </div>
-            <div data-role="content">
-                <div>
-                    <b>
-                        The global configuration sets the image's max width to 800 browser pixels. 
-                    </b>
-                </div>
-                <div style="text-align:center">
-                	
-                	
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg" width="320" height="240" data-width-percent="100" class="fs-img" />
+	</head>
+	<body>
+		<div data-role="page" id="page2">
+			<div data-theme="a" data-role="header">
+				<h3>
+					AJAX Loaded Page
+				</h3>
+			</div>
+			<div data-role="content">
+				<div>
+					<b>
+						The global configuration sets the image's max width to 750 browser pixels. 
+					</b>
+				</div>
+				<div style="text-align:center">
+
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg" data-width="320" data-height="240" data-width-percent="100" class="fs-img" />
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg" width="320" height="240">
+						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Skiing_Christmas_%2705_034.jpg/320px-Skiing_Christmas_%2705_034.jpg">
 					</noscript>
-					
-					
-                </div>
-                <div>
-                    <b>
-                        The second image overrides the global config with its own data-max-width attribute, 
+
+
+				</div>
+				<div>
+					<b>
+						The second image overrides the global config with its own data-max-width attribute, 
 						which is set at 500 browser pixels.
-                    </b>
-                </div>
-                <div style="text-align:center">
-                	
-                	
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg" data-max-width="500" width="320" height="213" data-width-percent="100" class="fs-img" />
+					</b>
+				</div>
+				<div style="text-align:center">
+
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg" data-width="320" data-height="213" data-width-percent="100" data-max-width="500" class="fs-img" />
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg" width="320" height="213">
+						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Spiny_Forest_Ifaty_Madagascar.jpg/320px-Spiny_Forest_Ifaty_Madagascar.jpg">
 					</noscript>
-					
-					
-                </div>
-                <a data-role="button" data-transition="fade" href="#page1a" data-icon="arrow-l" data-iconpos="left">
-                    Go Back
-                </a>
-            </div>
-            <div data-theme="a" data-role="footer">
-                <div data-role="navbar" data-iconpos="top">
-                    <ul>
-                        <li>
-                            <a href="index.html" data-ajax="false" data-theme="" data-icon="star">
-                                Demos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/adamdbradley/foresight.js" data-theme="" data-icon="home">
-                                Git Hub
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+
+				</div>
+				<a data-role="button" data-transition="fade" href="#page1a" data-icon="arrow-l" data-iconpos="left">
+					Go Back
+				</a>
+			</div>
+			<div data-theme="a" data-role="footer">
+				<div data-role="navbar" data-iconpos="top">
+					<ul>
+						<li>
+							<a href="index.html" data-ajax="false" data-theme="" data-icon="star">
+								Demos
+							</a>
+						</li>
+						<li>
+							<a href="https://github.com/adamdbradley/foresight.js" data-theme="" data-icon="home">
+								Git Hub
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 		
-    </body>
+	</body>
 </html>
