@@ -115,7 +115,8 @@
 	},
 
 	initImageRebuild = function () {
-		// if we've completed both the connection speed test and finding all the valid foresight images, then rebuild each image's src
+		// if we've completed both the connection speed test and finding all the valid foresight 
+		// images then rebuild each image's src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
 			if ( foresight.isHighSpeedConn && foresight.devicePixelRatio > 1 ) {
@@ -171,7 +172,8 @@
 					imgRequestHeight = img.browserHeight;
 				}
 
-				// only update the request width/height when the new dimension is larger than the one already loaded
+				// only update the request width/height when the new dimension is 
+				// larger than the one already loaded
 				requestDimensionChange = FALSE;
 				if ( imgRequestWidth > img.requestWidth ) {
 					img.requestWidth = imgRequestWidth;
@@ -182,7 +184,8 @@
 					requestDimensionChange = TRUE;
 				}
 
-				// if the new request size is smaller than the current image we have loaded then there's no need to request another
+				// if the new request size is smaller than the already loaded image 
+				// then there's no need to request another
 				if ( requestDimensionChange ) {
 
 					// ensure the request dimensions do not exceed the max, scale proportionally
@@ -244,7 +247,8 @@
 		img.uri.requestHeight = img.requestHeight;
 		img.uri.pixelRatio = img.pixelRatio;
 
-		// loop through all the possible format keys and replace them with their respective value for this image
+		// loop through all the possible format keys and 
+		// replace them with their respective value for this image
 		for ( f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
@@ -283,29 +287,34 @@
 
 	replaceDimensions = function ( img ) {
 		// replace image dimensions already in the src with new dimensions
+		// set the new src, begin downloading this image
 		img.src = img.orgSrc
 					.replace( img.orgWidth, img.requestWidth )
 					.replace( img.orgHeight, img.requestHeight );
 	},
 
 	initSpeedTest = function () {
-		// only check the connection speed once, if there is a status then we've already got info or it already started
+		// only check the connection speed once, if there is a status then we've
+		// already got info or it already started
 		if ( speedConnectionStatus ) return;
 
-		// if the device pixel ratio is 1, then no need to do a speed test since it can't show hi-res anyways
+		// if the device pixel ratio is 1, then no need to do a network connection 
+		// speed test since it can't show hi-res anyways
 		if ( foresight.devicePixelRatio === 1 ) {
 			foresight.connTestMethod = 'skip';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
 
-		// check if a speed test has recently been completed and data is saved in the local storage
+		// check if a speed test has recently been completed and its 
+		// results are saved in the local storage
 		try {
 			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
 			if ( fsData && fsData.isHighSpeedConn ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < speedTestExpireMinutes ) {
-					// already have connection data without our desired timeframe, use this instead of another test
+					// already have connection data without our desired timeframe
+					// use this data instead of starting another test
 					foresight.isHighSpeedConn = TRUE;
 					foresight.connKbps = fsData.connKbps;
 					foresight.connTestMethod = 'localStorage';
@@ -395,7 +404,8 @@
 
 	reloadTimeoutId,
 	executeReload = function () {
-		// execute the reload. This is initially governed by a timeout so it isn't abused by too many calls
+		// execute the reload. This is initially governed by a 'setTimeout'
+		// so the reload isn't abused with too many calls
 		if ( imageIterateStatus !== STATUS_COMPLETE || speedConnectionStatus !== STATUS_COMPLETE ) return;
 		initImages();
 		initImageRebuild();
