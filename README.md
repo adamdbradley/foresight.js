@@ -1,5 +1,5 @@
 ## Introduction
-__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. Foresight deals with modifying context image requests, specifically _img_ elements, but the [server does the image resizing](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images). Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
+__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. Its deals with modifying context image requests, specifically _img_ elements, but the [server does the image resizing](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images). Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
 
 This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. 
 
@@ -162,9 +162,9 @@ Additionally, the _foresight.options_ configurations can be overridden by each i
 ## Img Attributes
 __data-src__: _(Required)_ The src attribute of the image, which is the location image on the server. Note that the img element should not set the _src_ attribute, but instead it sets a _data-src_ attribute.
 
-__width__: _(Required)_ The pixel width according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _width_ and _height_ are required so we can always proportionally scale the image.
+__data-width__: _(Required)_ The pixel width according to the browser. Any adjustments to the device pixel ratio will take care of the request image width automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
 
-__height__: _(Required)_ The pixel height according to the browser. Any adjusting to the device pixel ratio will be taken care of and request image automatically adjusted. Both _width_ and _height_ are required so we can always proportionally scale the image.
+__data-height__: _(Required)_ The pixel height according to the browser. Any adjustments to the device pixel ratio will take care of the request image height automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
 
 __data-src-modification__: _(Optional)_ Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
