@@ -39,9 +39,7 @@
 		if ( imageIterateStatus ) return;
 
 		imageIterateStatus = STATUS_LOADING;
-
 		initImages();
-
 		imageIterateStatus = STATUS_COMPLETE;
 
 		initImageRebuild();
@@ -52,49 +50,49 @@
 		var
 		x,
 		img;
-		
+
 		for ( x = 0; x < document.images.length; x ++ ) {
 			img = document.images[ x ];
-			
+
 			// initialize some properties the image will use
 			if ( !img.initalized ) {
 				// only gather the images that haven't already been initialized
 				img.initalized = TRUE;
-				
+
 				fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
-		
+				fillImgProperty( img, 'width', 'browserWidth' );
+				fillImgProperty( img, 'height', 'browserHeight' );
+
 				 // missing required attributes
-				if ( !img.orgSrc || !img.width || !img.height ) continue;
-				
-				img.browserWidth = img.width;
-				img.browserHeight = img.height;
-				img.orgWidth = img.width;
-				img.orgHeight = img.height;
+				if ( !img.orgSrc || !img.browserWidth || !img.browserHeight ) continue;
+
+				img.orgWidth = img.browserWidth;
+				img.orgHeight = img.browserHeight;
 				img.requestWidth = 0;
 				img.requestHeight = 0;
 				img.orgClassName = img.className.replace( 'fs-img', 'fs-img-ready' );
-	
+
 				// fill in the image's properties from the element's attributes
 				fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
 				fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
 	
 				fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
 				fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
-	
+
 				fillImgProperty( img, 'width-percent', 'widthPercent', TRUE, 0 );
 				fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
-	
+
 				fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
 				fillImgProperty( img, 'src-format', 'srcFormat', FALSE, srcFormat );
 				fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, foresight.devicePixelRatio );
-	
+
 				fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
-				
+
 				// set the img's id if there isn't one already
 				if ( !img.id ) {
 					img.id = 'fsImg' + round( Math.random() * 10000000 );
 				}
-	
+
 				// add this image to the collection, but do not add it to the DOM yet
 				foresight.images.push( img );
 			}
@@ -106,11 +104,8 @@
 		// standard function to fill up an <img> with data from the <noscript>
 		var value = img.getAttribute( 'data-' + attrName );
 		if ( value && value !== '' ) {
-			if ( getFloat ) {
-				value = value.replace( '%', '' );
-				if ( !isNaN( value ) ) {
-					value = parseFloat( value, 10 );
-				}
+			if ( getFloat && !isNaN( value ) ) {
+				value = parseFloat( value, 10 );
 			}
 		} else {
 			value = defaultValue;
@@ -151,20 +146,20 @@
 					img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentElement.clientHeight );
 					img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
 				}
-			
+
 				// ensure the img dimensions do not exceed the max, scale proportionally
 				maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
-			
+
 				if ( !img.browserWidth || !img.browserHeight ) {
 					continue; // we're not going to load an image that has no width or height
 				}
-			
+
 				// build a list of Css Classnames for the <img> which may be useful for designers
 				var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
 				classNames.push( ( img.hiResEnabled ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
 				classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
 				img.className = classNames.join( ' ' );
-				
+
 				if ( img.hiResEnabled ) {
 					imgRequestWidth = round( img.browserWidth * img.pixelRatio );
 					imgRequestHeight = round( img.browserHeight * img.pixelRatio );
@@ -172,7 +167,7 @@
 					imgRequestWidth = img.browserWidth;
 					imgRequestHeight = img.browserHeight;
 				}
-					
+
 				// only update the request width/height the new dimension is larger than the one already loaded
 				requestDimensionChange = FALSE;
 				if ( imgRequestWidth > img.requestWidth ) {
@@ -201,6 +196,7 @@
 					}
 				}
 
+				// set the image's actual browser rendering width/height
 				img.width = img.browserWidth;
 				img.height = img.browserHeight;
 			}
@@ -243,7 +239,8 @@
 		img.uri.requestWidth = img.requestWidth;
 		img.uri.requestHeight = img.requestHeight;
 		img.uri.pixelRatio = img.pixelRatio;
-		
+
+		// loop through all the possible format keys and replace them with their respective value for this image
 		for ( f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
@@ -403,7 +400,7 @@
 		// if the window resizes or this function is called by external events (like a hashchange)
 		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
 		window.clearTimeout( reloadTimeoutId ); 
-		reloadTimeoutId = window.setTimeout( executeReload, 150 ); 
+		reloadTimeoutId = window.setTimeout( executeReload, 100 ); 
 	};
 
 	if ( forcedPixelRatio ) {
@@ -427,7 +424,7 @@
 	// DOM does not need to be ready to begin the network connection speed test
 	initSpeedTest();
 
-	// add a listen to the window.resize event
+	// add a listener to the window.resize event
 	addWindowResizeEvent();
-	
+
 } ( this.foresight = this.foresight || {}, this, document ) );
