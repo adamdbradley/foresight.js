@@ -26,7 +26,7 @@ Before we get too far into the nitty-gritty, it's probably best to view foresigh
 ## Img Element
 One of the largest problems faced with dynamically deciding image quality is that by the time javascript is capable of viewing an _img_ in the DOM, the image file has already been requested from the server. And on the flip side, if _img_ elements are built by javascript then search engines probably won't view them and browsers without javascript enabled will also not be able to view the images. To overcome both of these challenges foresight.js uses the _img_ element, but without the _src_ attribute set, and a _noscript_ element with a child _img_ element.
 
-    <img data-src="imagefile.jpg" width="320" height="240" class="fs-img">
+    <img data-src="imagefile.jpg" data-width="320" data-height="240" class="fs-img">
     <noscript>
         <img src="imagefile.jpg">
     </noscript>
