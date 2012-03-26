@@ -93,7 +93,7 @@
 					img.id = 'fsImg' + round( Math.random() * 10000000 );
 				}
 
-				// add this image to the collection, but do not add it to the DOM yet
+				// add this image to the collection
 				foresight.images.push( img );
 			}
 		}
@@ -101,7 +101,7 @@
 	},
 
 	fillImgProperty = function ( img, attrName, propName, getFloat, defaultValue ) {
-		// standard function to fill up an <img> with data from the <noscript>
+		// standard function to fill up img properties with the <img>'s data attributes
 		var value = img.getAttribute( 'data-' + attrName );
 		if ( value && value !== '' ) {
 			if ( getFloat && !isNaN( value ) ) {
@@ -114,7 +114,7 @@
 	},
 
 	initImageRebuild = function () {
-		// if both the speed connection test and we've looped through the entire DOM, then rebuild the image src
+		// if both the speed connection test and we've completed looping through the images, then rebuild their image src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
 			if ( foresight.isHighSpeedConn && foresight.devicePixelRatio > 1 ) {
@@ -134,7 +134,7 @@
 				// decide if this image should be hi-res
 				img.hiResEnabled = ( foresight.isHighSpeedConn && img.pixelRatio > 1 );
 
-				// set the image according to its properties
+				// calculate dimensions if this image should be set by percentages
 				if ( img.widthPercent ) {
 					if ( !img.parentElement.clientWidth ) continue; // parent not set yet
 					var orgW = img.browserWidth; 
@@ -161,9 +161,11 @@
 				img.className = classNames.join( ' ' );
 
 				if ( img.hiResEnabled ) {
+					// hi-res is good to go, figure out our request dimensions
 					imgRequestWidth = round( img.browserWidth * img.pixelRatio );
 					imgRequestHeight = round( img.browserHeight * img.pixelRatio );
 				} else {
+					// no-go on the hi-res, go with the standard size
 					imgRequestWidth = img.browserWidth;
 					imgRequestHeight = img.browserHeight;
 				}
