@@ -359,7 +359,7 @@
 		speedTestImg.src = speedTestUri + "?r=" + Math.random();
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
-		// set a timeout so that if the speed testdownload takes too long (plus 250ms for benefit of the doubt)
+		// set a timeout so that if the speed test download takes too long (plus 250ms for benefit of the doubt)
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
 		// this is used so we don't wait too long on a speed test response
 		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
@@ -373,6 +373,7 @@
 		if (speedConnectionStatus === STATUS_COMPLETE) return;
 
 		// first one with an answer wins
+		speedConnectionStatus = STATUS_COMPLETE;
 		foresight.connTestMethod = connTestMethod;
 
 		try {
@@ -384,7 +385,6 @@
 			localStorage.setItem( LOCAL_STORAGE_KEY, JSON.stringify( fsDataToSet ) );
 		} catch( e ) { }
 
-		speedConnectionStatus = STATUS_COMPLETE;
 		initImageRebuild();
 	},
 
