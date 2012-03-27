@@ -44,10 +44,16 @@ var foresight_debugger = function () {
 		imgInfo.push( 'Max Request Width/Height: ' + img.maxRequestWidth + 'x' + img.maxRequestHeight );
 		imgInfo.push( 'Image Hi-res Enabled: ' + img.hiResEnabled );
 
-		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
-		if( img.srcModification === 'rebuildSrc' ) {
-			imgInfo.push( 'Src Format: ' + img.srcFormat );
+		if ( img.highResolution && foresight.hiResEnabled ) {
+			imgInfo.push( 'Src Modification Method: data-src-high-resolution attribute');
+			imgInfo.push( 'Hi-Res Attribute: ' + img.highResolution );
+		} else {
+			imgInfo.push( 'Src Modification Method: ' + img.srcModification );
+			if( img.srcModification === 'rebuildSrc' ) {
+				imgInfo.push( 'Src Format: ' + img.srcFormat );
+			}
 		}
+
 		imgInfo.push( 'Requested Src: <a href="' + img.src + '">' + img.src + '</a>' );
 
 		if ( img.orgSrc === img.src ) {
