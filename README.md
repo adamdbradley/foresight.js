@@ -1,7 +1,7 @@
 ## Introduction
 __Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. It modifies context image requests, specifically the _img_ _src_ attribute, but the [server does the image resizing](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images). Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
 
-This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. 
+This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. 
 
 
 
@@ -285,5 +285,6 @@ __Contact Me__
 ## License
 
 Copyright (c) 2012 Adam Bradley
+
 Licensed under the MIT license.
 
