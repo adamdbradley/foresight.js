@@ -7,7 +7,8 @@ This project's overall goal is to tackle these current issues faced by web devel
 
 ## Features
 * Request hi-res images according to device pixel ratio
-* Detect network connection speed
+* Estimates network connection speed prior to requesting an image
+* Does not use device detection through user-agents
 * Does not make multiple requests for the same image
 * Javascript library and framework independent (ie: jQuery not required)
 * Cross-browser and cross-platform
