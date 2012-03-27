@@ -1,3 +1,10 @@
+
+/*
+ * Foresight.js 1.0.0 Copyright (c) 2012, Adam Bradley
+ * Available via the MIT license.
+ * For details see: https://github.com/adamdbradley/foresight.js
+ */
+
 ; ( function ( foresight, window, document ) {
 	"use strict";
 
