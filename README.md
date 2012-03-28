@@ -61,13 +61,13 @@ Currently most devices capable of hi-res displays are mobile devices, such as ne
 
 
 ## Src Modification
-An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is formatted is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various formats. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
+An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is templated is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various templates. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
 
 Src modification types can be assigned in the _foresight.options.srcModification_ config, or individually for each image using the _img data-src-modification_ attribute. The possible values are __replaceDimensions__ or __rebuildSrc__ and described below.
 
 __replaceDimensions__: The current src may already have dimensions within the URI. Instead of rebuilding the src entirely, just find and replace the original dimensions with the new dimensions. 
 
-__rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src format_. Review the Src Format section to see how to format the image URI's.
+__rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src URI template_. Review the Src URI Template section to see how to format the image URI's.
 
 _Also view the data-src-high-resolution attribute definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. Src Modification should be used when dynamically building the img src, while the data-src-high-resolution attribute is used if you want to manually tell foresight.js which image to use when hi-res is enabled._
 
@@ -141,7 +141,7 @@ Foresight.js comes with default settings, but using the _foresight.options_ obje
 
 __foresight.options.srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
-__foresight.options.srcUriTemplate__: The format in which a src should be rebuilt. See the Src Format section for more info.
+__foresight.options.srcUriTemplate__: The URI template in which a src should be rebuilt from. See the Src URI Template section for more info.
 
 __foresight.options.testConn__: Boolean value determining if foresight.js should test the network connection speed or not. Default is _true_
 
