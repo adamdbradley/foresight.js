@@ -13,18 +13,18 @@
 	foresight.isHighSpeedConn = false;
 	foresight.hiResEnabled = false;
 	foresight.connKbps = 0;
-	foresight.connTestMethod = undefined;
+	foresight.connTestResult = undefined;
 	foresight.images = [];
 
 	// options
 	foresight.options = foresight.options || {};
 	var opts = foresight.options,
 	srcModification = opts.srcModification || 'replaceDimensions',
-	srcFormat = opts.srcFormat || '{protocol}://{host}{directory}{file}',
+	srcUriTemplate = opts.srcUriTemplate || '{protocol}://{host}{directory}{file}',
 	testConn = opts.testConn || true,
-	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 800,
-	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/100K.jpg',
-	speedTestKB = opts.speedTestKB || 100,
+	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 400,
+	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/50K.jpg',
+	speedTestKB = opts.speedTestKB || 50,
 	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
 	maxBrowserWidth = opts.maxBrowserWidth || 1024,
 	maxBrowserHeight = opts.maxBrowserHeight || maxBrowserWidth,
@@ -93,15 +93,10 @@
 				fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
 
 				fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
-				fillImgProperty( img, 'src-format', 'srcFormat', FALSE, srcFormat );
+				fillImgProperty( img, 'src-uri-template', 'srcUriTemplate', FALSE, srcUriTemplate );
 				fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, foresight.devicePixelRatio );
 
 				fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
-
-				// set the img's id if there isn't one already
-				if ( !img.id ) {
-					img.id = 'fsImg' + round( Math.random() * 10000000 );
-				}
 
 				// add this image to the collection
 				foresight.images.push( img );
@@ -204,7 +199,7 @@
 					if ( img.highResolution && foresight.hiResEnabled ) {
 						img.src = img.highResolution;
 						img.srcModification = 'hiResSrc';
-					} else if ( img.srcModification === 'rebuildSrc' && img.srcFormat ) {
+					} else if ( img.srcModification === 'rebuildSrc' && img.srcUriTemplate ) {
 						rebuildSrc( img );
 					} else {
 						// default: replaceDimensions
@@ -250,7 +245,7 @@
 		var
 		f,
 		formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', 'requestWidth', 'requestHeight', 'pixelRatio' ],
-		newSrc = img.srcFormat;
+		newSrc = img.srcUriTemplate;
 
 		img.uri = parseUri( img.orgSrc );
 		img.uri.requestWidth = img.requestWidth;
@@ -311,7 +306,7 @@
 		// if the device pixel ratio is 1, then no need to do a network connection 
 		// speed test since it can't show hi-res anyways
 		if ( foresight.devicePixelRatio === 1 ) {
-			foresight.connTestMethod = 'skip';
+			foresight.connTestResult = 'skip';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
@@ -320,14 +315,14 @@
 		// results are saved in the local storage
 		try {
 			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
-			if ( fsData && fsData.isHighSpeedConn ) {
+			if ( fsData !== null ) {
 				var minuteDifference = ( ( new Date() ).getTime() - fsData.timestamp ) / 1000 / 60;
 				if ( minuteDifference < speedTestExpireMinutes ) {
 					// already have connection data within our desired timeframe
 					// use this recent data instead of starting another test
-					foresight.isHighSpeedConn = TRUE;
+					foresight.isHighSpeedConn = fsData.isHighSpeedConn;
 					foresight.connKbps = fsData.connKbps;
-					foresight.connTestMethod = 'localStorage';
+					foresight.connTestResult = 'localStorage';
 					speedConnectionStatus = STATUS_COMPLETE;
 					return;
 				}
@@ -371,22 +366,23 @@
 		speedTestImg.src = speedTestUri + "?r=" + Math.random();
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
-		// set a timeout so that if the speed test download takes too long (plus 250ms for benefit of the doubt)
+		// set a timeout so that if the speed test download takes too long
 		// than it isn't a high speed connection and ignore what the test image .onload has to say
-		// this is used so we don't wait too long on a speed test response
-		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 250;
+		// this is used so we don't wait too long on a speed test response 
+		// Adding 350ms for TCP slow start, quickAndDirty = true
+		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighSpeedConn ) * 1000 ) + 350;
 		setTimeout( function () {
 			speedTestComplete( 'networkSlow' );
 		}, speedTestTimeoutMS );
 	},
 
-	speedTestComplete = function ( connTestMethod ) {
+	speedTestComplete = function ( connTestResult ) {
 		// if we haven't already gotten a speed connection status then save the info
 		if (speedConnectionStatus === STATUS_COMPLETE) return;
 
 		// first one with an answer wins
 		speedConnectionStatus = STATUS_COMPLETE;
-		foresight.connTestMethod = connTestMethod;
+		foresight.connTestResult = connTestResult;
 
 		try {
 			var fsDataToSet = {

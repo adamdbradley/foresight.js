@@ -73,8 +73,8 @@ _Also view the data-src-high-resolution attribute definition under the Img Attri
 
 
 
-## Src Format
-The src format is only required when using the _rebuildSrc_ src modification. The src format provides foresight.js with how the request should be built for the image. Each server's image request is different and the _srcFormat_ value allows the URI to be customized. The format can either be in the _foresight.options.srcFormat_ config, or individually for each image using the _img data-src-format_ attribute. Below are the various keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys that help build the src request for the server. _[More info about Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images)_.
+## Src URI Template
+The src URI template is only required when using the _rebuildSrc_ src modification. The src URI template provides foresight.js with how the request should be built for the image. Each server's image request is different and the _srcUriTemplate_ value allows the URI to be customized. The template can either be in the _foresight.options.srcUriTemplate_ config, or individually for each image using the _img data-src-uri-template_ attribute. Below are the various keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys that help build the src request for the server. _[More info about Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images)_.
 
 __{protocol}__: The protocol of the request. ie: _http_ or _https_
 
@@ -98,31 +98,31 @@ __{requestHeight}__: The requested height of the image to load. This value will 
 
 __{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put this info in the src. ie: _2_
 
-_Again, not all of these keys are required inside your src URI. Src format is entirely dependent on how the server handles image requests. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server._
+_Again, not all of these keys are required inside your src URI. Src URI template is entirely dependent on how the server handles image requests. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server._
 
 
 
 #### Src Format Examples
 
-    Example A: Width and height in their own folder:
-    Output Src: http://cdn.mysite.com/images/640/480/myimage.jpg
-    SrcFormat: {protocol}://{host}{directory}{requestWidth}/{requestHeight}/{file}
+    Example A: Width and height in their own directory
+    Original Img Src: http://cdn.mysite.com/images/myimage.jpg
+    SrcUriTemplate:   {protocol}://{host}{directory}{requestWidth}x{requestHeight}/{file}
+    Request Src:      http://cdn.mysite.com/images/640x480/myimage.jpg
 
     Example B: Width and height in the querystring
-    Output Src: http://cdn.mysite.com/images/myimage.jpg?w=640&h=480
-    SrcFormat: {protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}
+    Original Img Src: http://cdn.mysite.com/images/myimage.jpg
+    SrcUriTemplate:   {protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}
+    Request Src:      http://cdn.mysite.com/images/myimage.jpg?w=640&h=480
 
     Example C: Width in the filename, request to the same host
-    Output Src: /images/320px-myimage.jpg
-    SrcFormat: {directory}{requestWidth}px-{file}
+    Original Img Src: /images/myimage.jpg
+    SrcUriTemplate:   {directory}{requestWidth}px-{file}
+    Request Src:      /images/320px-myimage.jpg
 
     Example D: Pixel ratio in the filename
-    Output Src: http://images.example.com/home/images/hero_2x.jpg
-    SrcFormat: {protocol}://{host}{directory}{file}_{pixelRatio}x.jpg
-
-    Example E: Width in the filename, actual Wikipedia.org src format
-    Output Src: http://upload.wikimedia.org/wikipedia/commons/thumb/5/57/AmericanBadger.JPG/1024px-AmericanBadger.JPG
-    SrcFormat: {protocol}://{host}{directory}{requestWidth}px-{file}
+    Original Img Src: http://images.example.com/home/images/hero.jpg
+    SrcUriTemplate:   {protocol}://{host}{directory}{file}_{pixelRatio}x.jpg
+    Request Src:      http://images.example.com/home/images/hero_2x.jpg
 
 
 
@@ -133,7 +133,7 @@ Foresight.js comes with default settings, but using the _foresight.options_ obje
         foresight = {
             options: {
                 srcModification: 'rebuildSrc',
-                srcFormat: '{directory}{requestWidth}px-{file}'
+                srcUriTemplate: '{directory}{requestWidth}px-{file}'
             }
         };
     </script>
@@ -141,15 +141,15 @@ Foresight.js comes with default settings, but using the _foresight.options_ obje
 
 __foresight.options.srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
-__foresight.options.srcFormat__: The format in which a src should be rebuilt. See the Src Format section for more info.
+__foresight.options.srcUriTemplate__: The format in which a src should be rebuilt. See the Src Format section for more info.
 
 __foresight.options.testConn__: Boolean value determining if foresight.js should test the network connection speed or not. Default is _true_
 
-__foresight.options.minKbpsForHighSpeedConn__: Foresight.js considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 800Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _800_
+__foresight.options.minKbpsForHighSpeedConn__: Foresight.js considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 400Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _400_
 
-__foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight.js hosted image, but you can always choose your own URI for the test image. Default value is _http://foresightjs.appspot.com/speed-test/100K (also note that if the webpage is in SSL, foresight.js will replace 'http:' for 'https:' to avoid any ugly security warnings)_
+__foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight.js hosted image, but you can always choose your own URI for the test image. Default value is _http://foresightjs.appspot.com/speed-test/50K.jpg (also note that if the webpage is in SSL, foresight.js will replace 'http:' for 'https:' to avoid any ugly security warnings)_
 
-__foresight.options.speedTestKB__: Foresight.js needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 100KB file. The value should be a number representing KiloBytes. Default value is _100_
+__foresight.options.speedTestKB__: Foresight.js needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 100KB file. The value should be a number representing KiloBytes. Default value is _50_
 
 __foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing how many minutes a speed test is valid until it expires. Default value is _30_
 
@@ -176,7 +176,7 @@ __data-height__: _(Required)_ The pixel height according to the browser. Any adj
 
 __data-src-modification__: _(Optional)_ Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
 
-__data-src-format__: _(Optional)_ The format in which a src should be rebuilt. See the Src Format section for more info.
+__data-src-uri-template__: _(Optional)_ The URI template in which a src should be rebuilt. See the Src URI Template section for more info.
 
 __data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
 
@@ -204,7 +204,7 @@ __foresight.images__: An array containing each of the foresight.js _img_ element
 
 __foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If the browser does not know the pixel ratio, which older browsers will not, the _devicePixelRatio_ defaults to 1.
 
-__foresight.connTestMethod__: The connection test value provides info on how the device received its speed-test information. 
+__foresight.connTestResult__: The connection test result provides info on how the device received its speed-test information. Below are the possible values:
 
 * _networkSuccess_: The speed test information came directly from a network test.
 * _networkSlow_: A 100KB file should be downloaded within 1 second on a 800Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
@@ -250,7 +250,7 @@ Instead of including debugging code directly in the foresight.js, an additional 
         foresight = {
             options: {
                 srcModification: 'rebuildSrc',
-                srcFormat: '{directory}{requestWidth}px-{file}'
+                srcUriTemplate: '{directory}{requestWidth}px-{file}'
             },
             updateComplete: foresight_debugger
         };
