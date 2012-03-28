@@ -149,7 +149,7 @@ __foresight.options.minKbpsForHighSpeedConn__: Foresight.js considers a network 
 
 __foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight.js hosted image, but you can always choose your own URI for the test image. Default value is _http://foresightjs.appspot.com/speed-test/50K.jpg (also note that if the webpage is in SSL, foresight.js will replace 'http:' for 'https:' to avoid any ugly security warnings)_
 
-__foresight.options.speedTestKB__: Foresight.js needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 100KB file. The value should be a number representing KiloBytes. Default value is _50_
+__foresight.options.speedTestKB__: Foresight.js needs to know the filesize of the speed test file is so it can calculate the approximate network connection speed. By default it downloads a 50KB file. The value should be a number representing KiloBytes. Default value is _50_
 
 __foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing how many minutes a speed test is valid until it expires. Default value is _30_
 
@@ -207,7 +207,7 @@ __foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If t
 __foresight.connTestResult__: The connection test result provides info on how the device received its speed-test information. Below are the possible values:
 
 * _networkSuccess_: The speed test information came directly from a network test.
-* _networkSlow_: A 100KB file should be downloaded within 1 second on a 800Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
+* _networkSlow_: A 50KB file should be downloaded within 1 second on a 400Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
 * _networkError_: When a speed-test network error occurs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
 * _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight.js doesn't bother testing the network connection.
