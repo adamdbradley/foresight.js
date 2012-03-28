@@ -7,8 +7,8 @@ var foresight_debugger = function () {
 
 	info.push( 'Foresight Images: ' + foresight.images.length );
 	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
-	info.push( 'Connection Test Method: ' + foresight.connTestMethod );
-	if( foresight.connTestMethod === 'skip' ) {
+	info.push( 'Connection Test Result: ' + foresight.connTestResult );
+	if( foresight.connTestResult === 'skip' ) {
 		info.push( 'No speed test because this device has a pixel ratio of 1, so no need' );
 	} else {
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
@@ -50,7 +50,7 @@ var foresight_debugger = function () {
 		} else {
 			imgInfo.push( 'Src Modification Method: ' + img.srcModification );
 			if( img.srcModification === 'rebuildSrc' ) {
-				imgInfo.push( 'Src Format: ' + img.srcFormat );
+				imgInfo.push( 'Src URI Template: ' + img.srcUriTemplate );
 			}
 		}
 

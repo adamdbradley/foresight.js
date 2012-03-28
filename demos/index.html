@@ -32,7 +32,7 @@
 	<p>
 		This demo expands the image browser pixels to 100% of its parent element's width, and requests an image 
 		width adjusted to the device pixel ratio.
-		<a href="window-width-percentage.html">View</a>
+		<a href="parent-element-percentage.html">View</a>
 	</p>
 
 	<h3>
@@ -63,6 +63,21 @@
 	<div id="qr">
 		<div>Don't kill me, but the QR code is here just to make it easier to open this page on a mobile device</div>
 		<img src="http://chart.apis.google.com/chart?cht=qr&chs=200x200&chl=http%3A//foresightjs.appspot.com/demos/index.html&chld=H|0">
+	</div>
+	
+	<div>
+		
+		<script>
+			function clearForesightLocalStorage() {
+				try {
+					localStorage.removeItem( 'fsjs' );
+				} catch( e ) { }
+			}
+		</script>
+		
+		<input type="button" onclick="clearForesightLocalStorage();" value="Clear Foresight Local Storage" /><br>
+		(For debugging purposes)
+		
 	</div>
 
 	
