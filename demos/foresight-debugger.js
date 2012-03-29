@@ -11,6 +11,7 @@ var foresight_debugger = function () {
 	if( foresight.connTestResult === 'skip' ) {
 		info.push( 'No speed test because this device has a pixel ratio of 1, so no need' );
 	} else {
+		info.push( 'Connection Type: ' + foresight.connType );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
 		info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
 	}
@@ -38,8 +39,14 @@ var foresight_debugger = function () {
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
 		imgInfo.push( 'Rendered Width/Height: ' + img.width + 'x' + img.height );
-		imgInfo.push( 'Requested Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Parent Width/Height: ' + img.parentElement.clientWidth + 'x' + img.parentElement.clientHeight );
+		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		imgInfo.push( 'Parent Width/Height: ' + img.parentWidth + 'x' + img.parentHeight );
+		if ( img.widthPercent ) {
+			imgInfo.push( 'Width Percent: ' + img.widthPercent );
+		}
+		if ( img.heightPercent ) {
+			imgInfo.push( 'Height Percent: ' + img.heightPercent );
+		}
 		imgInfo.push( 'Max Browser Width/Height: ' + img.maxWidth + 'x' + img.maxHeight );
 		imgInfo.push( 'Max Request Width/Height: ' + img.maxRequestWidth + 'x' + img.maxRequestHeight );
 		imgInfo.push( 'Image Hi-res Enabled: ' + img.hiResEnabled );
@@ -54,7 +61,7 @@ var foresight_debugger = function () {
 			}
 		}
 
-		imgInfo.push( 'Requested Src: <a href="' + img.src + '">' + img.src + '</a>' );
+		imgInfo.push( 'Request Src: <a href="' + img.src + '">' + img.src + '</a>' );
 
 		if ( img.orgSrc === img.src ) {
 			imgInfo.push( 'No change to the src' );
