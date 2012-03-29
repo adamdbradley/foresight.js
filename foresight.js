@@ -1,19 +1,19 @@
-
 /*
- * Foresight.js 1.0.0 Copyright (c) 2012, Adam Bradley
+ * Foresight.js 1.0.1 Copyright (c) 2012, Adam Bradley
  * Available via the MIT license.
  * For details see: https://github.com/adamdbradley/foresight.js
  */
 
-; ( function ( foresight, window, document ) {
+; ( function ( foresight, window, document, navigator ) {
 	"use strict";
 
 	// properties
 	foresight.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
 	foresight.isHighSpeedConn = false;
 	foresight.hiResEnabled = false;
-	foresight.connKbps = 0;
-	foresight.connTestResult = undefined;
+	foresight.connKbps;
+	foresight.connTestResult;
+	foresight.connType;
 	foresight.images = [];
 
 	// options
@@ -85,7 +85,7 @@
 				// fill in the image's properties from the element's attributes
 				fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
 				fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
-	
+
 				fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
 				fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
 
@@ -140,16 +140,20 @@
 				// decide if this image should be hi-res
 				img.hiResEnabled = ( foresight.isHighSpeedConn && img.pixelRatio > 1 );
 
+				// figure out what this img's parent's dimensions are
+				img.parentWidth = getParentClientDimension( img, 'clientWidth' );
+				img.parentHeight = getParentClientDimension( img, 'clientHeight' );
+					
 				// calculate its dimensions if this image's dimensions should be set by percentages
 				if ( img.widthPercent ) {
-					if ( !img.parentElement.clientWidth ) continue; // parent not set yet
+					if ( !img.parentWidth ) continue; // parent not set yet
 					var orgW = img.browserWidth; 
-					img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentElement.clientWidth );
+					img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentWidth );
 					img.browserHeight = round( img.browserHeight * ( img.browserWidth / orgW ) );
 				} else if ( img.heightPercent ) {
-					if ( !img.parentElement.clientHeight ) continue; // parent not set yet
+					if ( !clientHeight ) continue; // parent not set yet
 					var orgH = img.browserHeight;
-					img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentElement.clientHeight );
+					img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentHeight );
 					img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
 				}
 
@@ -217,6 +221,23 @@
 			}
 		}
 	},
+	
+	getParentClientDimension = function ( ele, clientDimension ) {
+		// this is reusable to get the element's parent 'clientWidth' and 'clientHeight'
+		// inline elements may not have a width/height
+		// if the element doesn't have a value for the dimension
+		// if not then try that element's parent to get the dimension
+		var parentElement = ele.parentElement;
+		if ( parentElement ) {
+			if ( parentElement[ clientDimension ] ) { // return value if the client dimension is greater than 0
+				return parentElement[ clientDimension ];
+			} else {
+				// keep climbing up until we get a dimension
+				return getParentClientDimension( parentElement, clientDimension );
+			}
+		}
+		return 0; // wtf
+	},
 
 	maxDimensionScaling = function ( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
 		// used to ensure both the width and height do not go over the max allowed
@@ -263,6 +284,7 @@
 	// parseUri 1.2.2
 	// (c) Steven Levithan <stevenlevithan.com>
 	// MIT License
+	// Modified by Adam Bradley for foresight.js
 	parseUri = function ( str ) {
 		var o = {
 			key: [ "source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor" ],
@@ -311,6 +333,21 @@
 			return;
 		}
 
+		// if we know the connection is 2g or 3g, don't even bother with the speed test, cuz its slow
+		foresight.connType = ( navigator.connection && navigator.connection.type ? navigator.connection.type.toString().toLowerCase() : 'unknown' );
+		if ( foresight.connType !== 'unknown' ) {
+			var
+			c,
+			knownSlowConnections = [ '2g', '3g' ];
+			for ( c = 0; c < knownSlowConnections.length; c ++ ) {
+				if ( foresight.connType.indexOf( knownSlowConnections[ c ] ) > -1 ) {
+					foresight.connTestResult = 'connTypeSlow';
+					speedConnectionStatus = STATUS_COMPLETE;
+					return;
+				}
+			}
+		}
+
 		// check if a speed test has recently been completed and its 
 		// results are saved in the local storage
 		try {
@@ -341,7 +378,7 @@
 			endTime = ( new Date() ).getTime();
 
 			var duration = round( ( endTime - startTime ) / 1000 );
-			duration = ( duration > 1 ? duration : 1 );
+			duration = ( duration > 1 ? duration : 1 ); // just to ensure we don't divide by 0
 
 			var bitsLoaded = ( speedTestKB * 1024 * 8 );
 			foresight.connKbps = ( round( bitsLoaded / duration ) / 1024 );
@@ -402,7 +439,7 @@
 	},
 
 	addWindowResizeEvent = function () {
-		// attach an the foresight.reload event that executes when the window resizes
+		// attach the foresight.reload event that executes when the window resizes
 		if ( window.addEventListener ) {
 			window.addEventListener( 'resize', foresight.reload, FALSE );
 		} else if ( window.attachEvent ) {
@@ -450,4 +487,4 @@
 	// add a listener to the window.resize event
 	addWindowResizeEvent();
 
-} ( this.foresight = this.foresight || {}, this, document ) );
+} ( this.foresight = this.foresight || {}, this, document, navigator ) );

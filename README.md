@@ -15,7 +15,7 @@ This project's overall goal is to tackle these current issues faced by web devel
 * Image dimensions set by percents will scale to the parent element's available width and device pixel ratio
 * Fully customizable through global configuration options and individual _img_ attributes
 * Default images will load without javascript enabled
-* Minifies down to roughly 5K
+* Minifies down to roughly 6K
 
 
 ## Demos
@@ -102,7 +102,7 @@ _Again, not all of these keys are required inside your src URI. Src URI template
 
 
 
-#### Src Format Examples
+#### Src URI Template Examples
 
     Example A: Width and height in their own directory
     Original Img Src: http://cdn.mysite.com/images/myimage.jpg
@@ -204,11 +204,14 @@ __foresight.images__: An array containing each of the foresight.js _img_ element
 
 __foresight.devicePixelRatio__: The device's pixel ratio used by foresight. If the browser does not know the pixel ratio, which older browsers will not, the _devicePixelRatio_ defaults to 1.
 
+__foresight.connType__: The connection type used by the device, such as 2g, 3g, 4g, eternet, wifi, etc. Current only some Android devices seem to support _navigator.connection.type_. But for the devices that do support this, and they state that they are using either a 2g or 3g connection, foresight.js doesn't even bother doing a speed test. See [W3C Network Information API](http://www.w3.org/TR/netinfo-api/) for more info.
+
 __foresight.connTestResult__: The connection test result provides info on how the device received its speed-test information. Below are the possible values:
 
 * _networkSuccess_: The speed test information came directly from a network test.
 * _networkSlow_: A 50KB file should be downloaded within 1 second on a 400Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
 * _networkError_: When a speed-test network error occurs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
+* _connTypeSlow_: The device stated that it is using either a 2g or 3g connection, which in this case we do not perform a speed test and just consider this device to not have a high-speed connection.
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
 * _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight.js doesn't bother testing the network connection.
 
