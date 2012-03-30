@@ -4,21 +4,24 @@
 	<title>Foresight.js Demo: Parent Element Percentage</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+	<style>
+		.fs-img {
+			width:100%;
+			max-width:640px;
+			display:none;
+		}
+	</style>
+
 	<script src="foresight-debugger.js"></script>
 	<script>
 		foresight = {
-			options: {
-				srcModification: 'replaceDimensions',
-				maxBrowserWidth: 640
+			options : {
+				forcedPixelRatio: 2
 			},
 			updateComplete: foresight_debugger
 		};
 	</script>
 	<script src="../foresight.js"></script>
-
-	<style>
-		.fs-img { display:none; }
-	</style>
 	
 	<link href="demo.css" type="text/css" rel="stylesheet" />
 
@@ -46,7 +49,7 @@
 	</p>
 
 
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg" data-width="320" data-height="229" data-width-percent="100" class="fs-img" />
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg" style="width:320px; height:229px" class="fs-img" />
 	<noscript>
 		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg">
 	</noscript>

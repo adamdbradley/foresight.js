@@ -5,15 +5,20 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Foresight.js Demo: jQuery Mobile Demo Page 1</title>
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+
+		<style>
+			.fs-img {
+				width:100%;
+				max-width:640px;
+				display:none;
+			}
+		</style>
+		
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 		<script src="foresight-debugger.js"></script>
 		<script>
 			foresight = {
-				options: {
-					srcModification: 'replaceDimensions',
-					maxBrowserWidth: 750
-				},
 				updateComplete: foresight_debugger
 			};
 		</script>
@@ -21,9 +26,6 @@
 		<script>
 			$(document).bind("pagechange", foresight.reload);
 		</script>
-		<style>
-			.fs-img { display:none; }
-		</style>
 	</head>
 	<body>
 		<div data-role="page" id="page1a">
@@ -42,7 +44,7 @@
 				<div style="text-align:center">
 
 
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" data-width="320" data-height="240" data-width-percent="100" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" style="width:320px; height:240px" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG">
 					</noscript>
@@ -115,7 +117,7 @@
 					</b>
 				</div>
 				<div style="text-align:center">
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg" data-width="320" data-height="319" data-width-percent="100" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg" style="width:320px; height:319px" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg">
 					</noscript>

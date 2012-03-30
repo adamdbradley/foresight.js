@@ -1,5 +1,5 @@
 /*
- * Foresight.js 1.0.1 Copyright (c) 2012, Adam Bradley
+ * Foresight.js 1.1.0 Copyright (c) 2012, Adam Bradley
  * Available via the MIT license.
  * For details see: https://github.com/adamdbradley/foresight.js
  */
@@ -19,17 +19,11 @@
 	// options
 	foresight.options = foresight.options || {};
 	var opts = foresight.options,
-	srcModification = opts.srcModification || 'replaceDimensions',
-	srcUriTemplate = opts.srcUriTemplate || '{protocol}://{host}{directory}{file}',
 	testConn = opts.testConn || true,
 	minKbpsForHighSpeedConn = opts.minKbpsForHighSpeedConn || 400,
-	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/50K.jpg',
+	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/50K',
 	speedTestKB = opts.speedTestKB || 50,
 	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
-	maxBrowserWidth = opts.maxBrowserWidth || 1024,
-	maxBrowserHeight = opts.maxBrowserHeight || maxBrowserWidth,
-	maxRequestWidth = opts.maxRequestWidth || 2048,
-	maxRequestHeight = opts.maxRequestHeight || maxRequestWidth,
 	forcedPixelRatio = opts.forcedPixelRatio,
 
 	// used to keep track of the progress status for finding foresight 
@@ -69,34 +63,54 @@
 				// only gather the images that haven't already been initialized
 				img.initalized = TRUE;
 
-				fillImgProperty( img, 'src', 'orgSrc' ); // important, do not set the src attribute yet!
-				fillImgProperty( img, 'width', 'browserWidth' );
-				fillImgProperty( img, 'height', 'browserHeight' );
+				img.orgSrc = img.getAttribute( 'data-src' );  // important, do not set the src attribute yet!
 
-				 // missing required attributes
+				// get the browser pixel width from the inline css or attributes
+				// does not set the .width or .height property yet until the very end
+				// always set the img's width/height so we always know its aspect ratio
+				img.browserWidth = getImgDimension( img, 'width' );
+				img.browserHeight = getImgDimension( img, 'height' );
+
+				 // missing required info
 				if ( !img.orgSrc || !img.browserWidth || !img.browserHeight ) continue;
 
 				img.orgWidth = img.browserWidth;
 				img.orgHeight = img.browserHeight;
 				img.requestWidth = 0;
 				img.requestHeight = 0;
-				img.orgClassName = img.className.replace( 'fs-img', 'fs-img-ready' );
+				img.highResolutionSrc = img.getAttribute( 'data-high-resolution-src' );
+				
+				// replace the 'fs-img' class so it removes display:none
+				// eventually the 'fs-img' class will be removed from this img
+				img.orgClassName = img.className;
 
-				// fill in the image's properties from the element's attributes
-				fillImgProperty( img, 'max-width', 'maxWidth', TRUE, maxBrowserWidth );
-				fillImgProperty( img, 'max-height', 'maxHeight', TRUE, maxBrowserHeight );
-
-				fillImgProperty( img, 'max-request-width', 'maxRequestWidth', TRUE, maxRequestWidth );
-				fillImgProperty( img, 'max-request-height', 'maxRequestHeight', TRUE, maxRequestHeight );
-
-				fillImgProperty( img, 'width-percent', 'widthPercent', TRUE, 0 );
-				fillImgProperty( img, 'height-percent', 'heightPercent', TRUE, 0 );
-
-				fillImgProperty( img, 'src-modification', 'srcModification', FALSE, srcModification );
-				fillImgProperty( img, 'src-uri-template', 'srcUriTemplate', FALSE, srcUriTemplate );
-				fillImgProperty( img, 'pixel-ratio', 'pixelRatio', TRUE, foresight.devicePixelRatio );
-
-				fillImgProperty( img, 'src-high-resolution', 'highResolution', FALSE );
+				// get the image's CSS properties it's background-image querystring in the CSS, then parse it apart
+				// http://refactorer.blogspot.com/2011/08/faking-custom-css-properties.html
+				// http://www.quirksmode.org/dom/getstyles.html
+				var bi = img.currentStyle ? img.currentStyle.backgroundImage : document.defaultView.getComputedStyle( img, null ).getPropertyValue( 'background-image' );
+				
+				// split the background-image url and only read its querystring
+				var biSplit = bi.split( '?' );
+				var urlValue = ( biSplit.length > 1 ? biSplit[ 1 ] : '' );
+				
+				// parse apart the CSS image-source property value
+				var cssParameters = parseCssParameters( unescape( urlValue ) );
+		
+				// override current properties with any found in the hacked CSS properties
+				for ( var x = 0; x < cssParameters.length; x++ ) {
+					if ( cssParameters[ x ][ 0 ] === 'template' ) {
+						img.srcUriTemplate = cssParameters[ x ][ 1 ];
+					} else if ( cssParameters[ x ][ 0 ] === 'max-browser' ) {
+						img.maxWidth = cssParameters[ x ][ 1 ][ 0 ];
+						img.maxHeight = cssParameters[ x ][ 1 ][ 1 ];
+					} else if ( cssParameters[ x ][ 0 ] === 'max-request' ) {
+						img.maxRequestWidth = cssParameters[ x ][ 1 ][ 0 ];
+						img.maxRequestHeight = cssParameters[ x ][ 1 ][ 1 ];
+					} else if ( cssParameters[ x ][ 0 ] === 'fill' ) {
+						img.widthPercent = cssParameters[ x ][ 1 ][ 0 ];
+						img.heightPercent = cssParameters[ x ][ 1 ][ 1 ];
+					}
+				}
 
 				// add this image to the collection
 				foresight.images.push( img );
@@ -105,17 +119,48 @@
 
 	},
 
-	fillImgProperty = function ( img, attrName, propName, getFloat, defaultValue ) {
-		// standard function to fill up img properties with the <img>'s data attributes
-		var value = img.getAttribute( 'data-' + attrName );
-		if ( value && value !== '' ) {
-			if ( getFloat && !isNaN( value ) ) {
-				value = parseFloat( value, 10 );
+	parseCssParameters = function ( imageSourceProperty ) {
+		var 
+		re = /([a-z-]+)\((?:"([a-z-_0-9{}\\//.:\s]+)"|(\d+)([px%]+) (\d+)([px%]+)|(\d+)% auto|auto (\d+)%)\)/g,
+		arr = [], 
+		match, 
+		value;
+		while( match = re.exec( imageSourceProperty ) ) {
+			if ( match[ 2 ] ) {
+				value = match[ 2 ]; // known string
+			} else if ( match[ 3 ] &&  match[ 5 ] ) {
+				value = [ parseInt( match[ 3 ], 10 ), parseInt( match[ 5 ], 10 ) ]; // two known numbers
+			} else if ( match[ 7 ] ) {
+				value = [ parseInt( match[ 7 ], 10 ), null ]; // 1 known number [1, null]
+			} else if ( match[ 8 ] ) {
+				value = [ null, parseInt( match[ 8 ], 10 ) ]; // 1 known number [null, 1]
 			}
-		} else {
-			value = defaultValue;
+			arr.push( [ match[ 1 ], value ] );
 		}
-		img[ propName ] = value;
+		return arr; // [["param1", "stringValue"], ["param2", ["1", "2"]], ["param2", ["34", "555"]]]
+	},
+
+	getImgDimension = function ( img, dimension ) {
+		// first see if this has an inline CSS dimension, ie: style="width:100px"
+		// if not, then check if there is a valid attribute, ie: width="100"
+		// returns 0 if it never finds a good value
+		var val = getValidInt( img.style[ dimension ] );
+		if( val ) {
+			img.dimensionValues = 'inlineCss';
+			return val;
+		}
+		img.dimensionValues = 'attributes';
+		return getValidInt( img.getAttribute( dimension ) );;
+	},
+
+	getValidInt = function ( val ) {
+		if ( val && val !== '' ) {
+			val = val.replace( 'px', '' );
+			if ( !isNaN( val ) ) {
+				return parseInt( val, 10 );
+			}
+		}
+		return 0;
 	},
 
 	initImageRebuild = function () {
@@ -123,6 +168,12 @@
 		// images then rebuild each image's src
 		if ( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) {
 
+			if ( forcedPixelRatio ) {
+				// force a certain pixel ratio in the options, used more so for debugging purposes
+				foresight.devicePixelRatio = forcedPixelRatio;
+				foresight.isHighSpeedConn = TRUE;
+			}
+			
 			if ( foresight.isHighSpeedConn && foresight.devicePixelRatio > 1 ) {
 				foresight.hiResEnabled = TRUE;
 			}
@@ -132,131 +183,101 @@
 			img,
 			imgRequestWidth,
 			imgRequestHeight,
-			requestDimensionChange;
+			requestDimensionIncreased;
 
 			for ( x = 0; x < foresight.images.length; x++ ) {
 				img = foresight.images[ x ];
-
-				// decide if this image should be hi-res
-				img.hiResEnabled = ( foresight.isHighSpeedConn && img.pixelRatio > 1 );
-
-				// figure out what this img's parent's dimensions are
-				img.parentWidth = getParentClientDimension( img, 'clientWidth' );
-				img.parentHeight = getParentClientDimension( img, 'clientHeight' );
-					
-				// calculate its dimensions if this image's dimensions should be set by percentages
-				if ( img.widthPercent ) {
-					if ( !img.parentWidth ) continue; // parent not set yet
-					var orgW = img.browserWidth; 
-					img.browserWidth = round( ( img.widthPercent / 100 ) * img.parentWidth );
+				
+				if ( !img.clientWidth ) {
+					//continue;
+				}
+				
+				// show the image
+				img.style.display = 'inline';
+				
+				// remember what the img's current clientWidth is before we remove inline dimensions
+				var preTestWidth = img.clientWidth;
+				
+				// remove the inline dimesions and see if the img's size changes
+				// TODO: probably pretty poor performance from repainting
+				img.style.width = "";
+				img.style.height = "";
+				
+				// get the clientWidth again after removing the inline dimensions
+				var postTestWidth = img.clientWidth;
+				
+				if ( preTestWidth > postTestWidth ) {
+					// before the test the image was larger, after the test it got smaller
+					// go back to the original dimensions again and stay with the same dimensions
+					img.style.width = img.browserWidth + "px";
+					img.style.height = img.browserHeight + "px";
+				} else {
+					// before the test the img was smaller, after the test it got larger
+					// image got larger probably because of applying CSS like width:100%
+					// remember what these new browser dimensions are
+					// scale the browserHeight using the correct aspect ratio
+					var orgW = img.browserWidth;
+					img.browserWidth = img.clientWidth;
 					img.browserHeight = round( img.browserHeight * ( img.browserWidth / orgW ) );
-				} else if ( img.heightPercent ) {
-					if ( !clientHeight ) continue; // parent not set yet
-					var orgH = img.browserHeight;
-					img.browserHeight = round( ( img.heightPercent / 100 ) * img.parentHeight );
-					img.browserWidth = round( img.browserWidth * ( img.browserHeight / orgH ) );
 				}
 
-				// ensure the img dimensions do not exceed the max, scale proportionally
-				maxDimensionScaling( img, 'browserWidth', 'maxWidth', 'browserHeight', 'maxHeight' );
-
 				if ( !img.browserWidth || !img.browserHeight ) {
+					// something went wrong
+					img.style.display = 'none';
 					continue; // we're not going to load an image that has no width or height
 				}
 
-				// build a list of additional foresight Css Classnames for the <img> which may be useful for designers
+				// build a list of additional foresight Css Classnames for the <img> which may be useful
 				var classNames = ( img.orgClassName ? img.orgClassName.split( ' ' ) : [] );
-				classNames.push( ( img.hiResEnabled ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
-				classNames.push( 'fs-pixel-ratio-' + img.pixelRatio.toFixed( 1 ).replace('.', '_' ) );
+				classNames.push( ( foresight.hiResEnabled ? 'fs-high-resolution' : 'fs-standard-resolution' ) );
+				classNames.push( 'fs-pixel-ratio-' + foresight.devicePixelRatio.toFixed( 1 ).replace('.', '_' ) );
 				img.className = classNames.join( ' ' );
 
-				if ( img.hiResEnabled ) {
+				if ( foresight.hiResEnabled ) {
 					// hi-res is good to go, figure out our request dimensions
-					imgRequestWidth = round( img.browserWidth * img.pixelRatio );
-					imgRequestHeight = round( img.browserHeight * img.pixelRatio );
+					imgRequestWidth = round( img.browserWidth * foresight.devicePixelRatio );
+					imgRequestHeight = round( img.browserHeight * foresight.devicePixelRatio );
 				} else {
-					// no-go on the hi-res, go with the standard size
+					// no-go on the hi-res, go with the default size
 					imgRequestWidth = img.browserWidth;
 					imgRequestHeight = img.browserHeight;
 				}
 
 				// only update the request width/height when the new dimension is 
-				// larger than the one already loaded
-				requestDimensionChange = FALSE;
+				// larger than the one already loaded (will always go on first load)
+				// if the new request size is smaller than the image already loaded
+				// then there's no need to request another img, just let the browser shrink the current img
 				if ( imgRequestWidth > img.requestWidth ) {
 					img.requestWidth = imgRequestWidth;
-					requestDimensionChange = TRUE;
-				}
-				if ( imgRequestHeight > img.requestHeight ) {
 					img.requestHeight = imgRequestHeight;
-					requestDimensionChange = TRUE;
-				}
 
-				// if the new request size is smaller than the already loaded image 
-				// then there's no need to request another
-				if ( requestDimensionChange ) {
-
-					// ensure the request dimensions do not exceed the max, scale proportionally
-					maxDimensionScaling( img, 'requestWidth', 'maxRequestWidth', 'requestHeight', 'maxRequestHeight' );
-
-					// decide how the src should be modified for the new image request
-					if ( img.highResolution && foresight.hiResEnabled ) {
-						img.src = img.highResolution;
+					// decide how the img src should be modified for the image request
+					if ( img.highResolutionSrc && foresight.hiResEnabled ) {
+						// this image has a hi-res src manually set and the device is hi-res enabled
+						// set the img src using the data-high-resolution-src attribute value
+						// begin the request for this image
+						img.src = img.highResolutionSrc;
 						img.srcModification = 'hiResSrc';
-					} else if ( img.srcModification === 'rebuildSrc' && img.srcUriTemplate ) {
+					} else if ( img.srcUriTemplate ) {
+						// this image's src should be parsed a part then
+						// rebuilt using the supplied URI template
+						// this allows you to place the dimensions where ever in the src
 						rebuildSrc( img );
+						img.srcModification = 'uriTemplate';
 					} else {
 						// default: replaceDimensions
+						// this image may already have its default dimensions
+						// directly within the src. Replace the default width/height
+						// with the new request width/height
 						replaceDimensions( img );
+						img.srcModification = 'replaceDimensions';
 					}
 				}
 
-				// set the image's actual browser rendering width/height
-				img.width = img.browserWidth;
-				img.height = img.browserHeight;
 			}
 
 			if ( foresight.updateComplete ) {
 				foresight.updateComplete();
-			}
-		}
-	},
-	
-	getParentClientDimension = function ( ele, clientDimension ) {
-		// this is reusable to get the element's parent 'clientWidth' and 'clientHeight'
-		// inline elements may not have a width/height
-		// if the element doesn't have a value for the dimension
-		// if not then try that element's parent to get the dimension
-		var parentElement = ele.parentElement;
-		if ( parentElement ) {
-			if ( parentElement[ clientDimension ] ) { // return value if the client dimension is greater than 0
-				return parentElement[ clientDimension ];
-			} else {
-				// keep climbing up until we get a dimension
-				return getParentClientDimension( parentElement, clientDimension );
-			}
-		}
-		return 0; // wtf
-	},
-
-	maxDimensionScaling = function ( img, widthProp, maxWidthProp, heightProp, maxHeightProp ) {
-		// used to ensure both the width and height do not go over the max allowed
-		// this function is reusable for both the image's browser width/height, and the request width/height
-		// this also ensures that any changes to a dimension will properly scale the image
-		var orgD;
-		if ( img[ widthProp ] > img[ maxWidthProp ] ) {
-			orgD = img[ widthProp ];
-			img[ widthProp ] = img[ maxWidthProp ];
-			img[ heightProp ] = round( img[ heightProp ] * ( img[ widthProp ] / orgD ) );
-		}
-		if ( img[ heightProp ] > img[ maxHeightProp ] ) {
-			orgD = img[ heightProp ];
-			img[ heightProp ] = img[ maxHeightProp ];
-			img[ widthProp ] = round( img[ widthProp ] * ( img[ heightProp ] / orgD ) );
-			if ( img[ widthProp ] > img[ maxWidthProp ] ) {
-				orgD = img.img[ widthProp ];
-				img[ widthProp ] = img[ maxWidthProp ];
-				img[ heightProp ] = round( img[ heightProp ] * ( img[ widthProp ] / orgD ) );
 			}
 		}
 	},
@@ -268,17 +289,20 @@
 		formatReplace = [ 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', 'requestWidth', 'requestHeight', 'pixelRatio' ],
 		newSrc = img.srcUriTemplate;
 
+		// parse apart the original src URI
 		img.uri = parseUri( img.orgSrc );
+		
+		// add in a few more properties we'll need for the find/replace later
 		img.uri.requestWidth = img.requestWidth;
 		img.uri.requestHeight = img.requestHeight;
-		img.uri.pixelRatio = img.pixelRatio;
+		img.uri.pixelRatio = foresight.devicePixelRatio;
 
 		// loop through all the possible format keys and 
 		// replace them with their respective value for this image
 		for ( f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
-		img.src = newSrc; // set the new src, begin downloading this image
+		img.src = newSrc; // set the new src, begin the request for this image
 	},
 
 	// parseUri 1.2.2
@@ -314,7 +338,7 @@
 
 	replaceDimensions = function ( img ) {
 		// replace image dimensions already in the src with new dimensions
-		// set the new src, begin downloading this image
+		// set the new src, begin the request for this image
 		img.src = img.orgSrc
 					.replace( img.orgWidth, img.requestWidth )
 					.replace( img.orgHeight, img.requestHeight );
@@ -462,11 +486,6 @@
 		window.clearTimeout( reloadTimeoutId ); 
 		reloadTimeoutId = window.setTimeout( executeReload, 100 ); 
 	};
-
-	if ( forcedPixelRatio ) {
-		// force a certain pixel ratio in the options, used more so for debugging purposes
-		foresight.devicePixelRatio = forcedPixelRatio;
-	}
 
 	// when the DOM is ready begin finding valid foresight <img>'s and updating their src's
 	if ( document.readyState === STATUS_COMPLETE ) {

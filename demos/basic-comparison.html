@@ -7,8 +7,8 @@
 	<script src="foresight-debugger.js"></script>
 	<script>
 		foresight = {
-			options: {
-				srcModification: 'replaceDimensions'
+			options : {
+				forcedPixelRatio: 2
 			},
 			updateComplete: foresight_debugger
 		};
@@ -16,7 +16,9 @@
 	<script src="../foresight.js"></script>
 
 	<style>
-		.fs-img { display:none; }
+		.fs-img {
+			display:none;
+		}
 	</style>
 	
 	<link href="demo.css" type="text/css" rel="stylesheet" />
@@ -40,119 +42,19 @@
 	</p>
 
 	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" data-width="320" data-height="240" class="fs-img" />
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" style="width:320px; height:240px" class="fs-img" />
 	<noscript>
 		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg">
 	</noscript>
 	<!-- End Foresight Image -->
 
 	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" width="320" height="240" class="fs-standard-resolution" />
+	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" style="width:320px; height:240px" class="fs-standard-resolution" />
 	<p>
 		Photo by <a href="http://commons.wikimedia.org/wiki/File:%C5%A0koda_15T,_smy%C4%8Dka_Radlick%C3%A1.jpg">Honza Groh </a>
 	</p>
 	
 	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg/320px-Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg" data-width="320" data-height="213" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg/320px-Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg/320px-Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg" width="320" height="213" class="fs-standard-resolution" />
-	<p>
-		Photo by <a href="http://commons.wikimedia.org/wiki/File:Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg">Kallerna</a>
-	</p>
-	
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/V-J_Day_Times_Square_NYWTS.jpg/320px-V-J_Day_Times_Square_NYWTS.jpg" data-width="320" data-height="260" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/V-J_Day_Times_Square_NYWTS.jpg/320px-V-J_Day_Times_Square_NYWTS.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/V-J_Day_Times_Square_NYWTS.jpg/320px-V-J_Day_Times_Square_NYWTS.jpg" width="320" height="260" class="fs-standard-resolution" />
-	
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg/320px-Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg" data-width="320" data-height="228" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg/320px-Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg/320px-Steve_Jobs_and_Bill_Gates_%28522695099%29.jpg" width="320" height="228" class="fs-standard-resolution" />
-	<p>
-		Photo by <a href="http://www.flickr.com/people/35034362831@N01">Joi Ito</a>
-	</p>
-
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/2006-02-13_Drop-impact.jpg/320px-2006-02-13_Drop-impact.jpg" data-width="320" data-height="309" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/2006-02-13_Drop-impact.jpg/320px-2006-02-13_Drop-impact.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/2006-02-13_Drop-impact.jpg/320px-2006-02-13_Drop-impact.jpg" width="320" height="309" class="fs-standard-resolution" />
-	<p>
-		Photo by <a href="http://commons.wikimedia.org/wiki/User:Roger_McLassus">Roger McLassus</a>
-	</p>
-
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Panorama_of_Malbork_Castle%2C_part_4.jpg/320px-Panorama_of_Malbork_Castle%2C_part_4.jpg" data-width="320" data-height="212" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Panorama_of_Malbork_Castle%2C_part_4.jpg/320px-Panorama_of_Malbork_Castle%2C_part_4.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Panorama_of_Malbork_Castle%2C_part_4.jpg/320px-Panorama_of_Malbork_Castle%2C_part_4.jpg" width="320" height="212" class="fs-standard-resolution" />
-	<p>
-		Photo by <a href="http://commons.wikimedia.org/wiki/File:Panorama_of_Malbork_Castle,_part_4.jpg">DerHexer</a>
-	</p>
-	
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/4-14_Marines_in_Fallujah.jpg/320px-4-14_Marines_in_Fallujah.jpg" data-width="320" data-height="213" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/4-14_Marines_in_Fallujah.jpg/320px-4-14_Marines_in_Fallujah.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/4-14_Marines_in_Fallujah.jpg/320px-4-14_Marines_in_Fallujah.jpg" width="320" height="213" class="fs-standard-resolution" />
-	<p>
-		Photo by Lance Corporal Samantha L. Jones, USMC
-	</p>
-	
-	<hr>
-
-	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Born_to_the_West_%281937%29_1.jpg/320px-Born_to_the_West_%281937%29_1.jpg" data-width="320" data-height="245" class="fs-img" />
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Born_to_the_West_%281937%29_1.jpg/320px-Born_to_the_West_%281937%29_1.jpg">
-	</noscript>
-	<!-- End Foresight Image -->
-
-	<!-- This is a standard image that does not get enhanced by foresight -->
-	<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Born_to_the_West_%281937%29_1.jpg/320px-Born_to_the_West_%281937%29_1.jpg" width="320" height="245" class="fs-standard-resolution" />
-	<p>
-		<em>Born to the West</em> (Paramount Pictures) 
-	</p>
 	
 	<hr>
 

@@ -38,18 +38,7 @@ var foresight_debugger = function () {
 		var imgInfo = [];
 		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
-		imgInfo.push( 'Rendered Width/Height: ' + img.width + 'x' + img.height );
 		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Parent Width/Height: ' + img.parentWidth + 'x' + img.parentHeight );
-		if ( img.widthPercent ) {
-			imgInfo.push( 'Width Percent: ' + img.widthPercent );
-		}
-		if ( img.heightPercent ) {
-			imgInfo.push( 'Height Percent: ' + img.heightPercent );
-		}
-		imgInfo.push( 'Max Browser Width/Height: ' + img.maxWidth + 'x' + img.maxHeight );
-		imgInfo.push( 'Max Request Width/Height: ' + img.maxRequestWidth + 'x' + img.maxRequestHeight );
-		imgInfo.push( 'Image Hi-res Enabled: ' + img.hiResEnabled );
 
 		if ( img.highResolution && foresight.hiResEnabled ) {
 			imgInfo.push( 'Src Modification Method: data-src-high-resolution attribute');
@@ -79,3 +68,5 @@ var foresight_debugger = function () {
 	}
 
 };
+
+

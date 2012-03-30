@@ -4,15 +4,21 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Foresight.js Demo: jQuery Mobile Demo Page 1</title>
+
+		<style>
+			.fs-img {
+				width:100%;
+				max-width:640px;
+				display:none;
+			}
+		</style>
+		
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 		<script src="foresight-debugger.js"></script>
 		<script>
 			foresight = {
-				options: {
-					maxBrowserWidth: 400
-				},
 				updateComplete: foresight_debugger
 			};
 		</script>
@@ -20,9 +26,6 @@
 		<script>
 			$(document).bind("pagechange", foresight.reload);
 		</script>
-		<style>
-			.fs-img { display:none; }
-		</style>
 	</head>
 	<body>
 		<div data-role="page" id="page2">
@@ -34,12 +37,13 @@
 			<div data-role="content">
 				<div>
 					<b>
-						The first image below using a 'replaceDimensions' srcModification, by replacing the dimensions already in the URL with the hi-res dimension.
+						The first image uses the CSS declared in the head tag.
+						The img's width is 100% and its max-width is 640px;
 					</b>
 				</div>
 				<div style="text-align:center">
 
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg/320px-Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg" data-width="320" data-height="427" data-width-percent="100" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg/320px-Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg" style="width:320px; height:427px" class="fs-img" />
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg/320px-Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg">
 					</noscript>
@@ -52,13 +56,14 @@
 				<div>
 					<b>
 						The second image manually instructs which image file should be used for high-resolution displays, using the data-src-high-resolution attribute.
+						It also uses inline CSS to override the CSS found in the head tag by applying a max-width of 380px.
 					</b>
 				</div>
 				<div style="text-align:center">
 
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/320px-Kolob_Canyons_part_of_Zion_National_Park.JPG" 
 						 data-src-high-resolution="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/640px-Kolob_Canyons_part_of_Zion_National_Park.JPG"
-						 data-width="320" data-height="204" data-width-percent="100" class="fs-img">
+						 style="width:320px; height:204px; max-width:380px;" class="fs-img">
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/640px-Kolob_Canyons_part_of_Zion_National_Park.JPG">
 					</noscript>
