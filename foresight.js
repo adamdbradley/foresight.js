@@ -151,7 +151,6 @@
 
 				// handle any response errors which may happen with this image
 				img.onerror = imgResponseError;
-				img.onabort = imgResponseError;
 				
 				// add this image to the collection
 				foresight.images.push( img );
@@ -170,6 +169,24 @@
 	getComputedStyleValue = function ( element, cssProperty, jsReference ) {
 		// get the computed style value for this element (but there's an IE way and the rest-of-the-world way)
 		return element.currentStyle ? element.currentStyle[ jsReference ] : document.defaultView.getComputedStyle( element, null ).getPropertyValue( cssProperty );
+	},
+	
+	getComputedPixelWidth = function ( element, pixelWidth, style, runtimeStyle, maxWidth ) {
+		pixelWidth = getComputedStyleValue( element, DIMENSION_WIDTH, DIMENSION_WIDTH );
+		if ( pixelWidth.indexOf( '%' ) === -1 ) return pixelWidth;
+		
+		// didn't get a computed pixel width, probably our friend IE, do this trick
+		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+		style = element.style.left;
+		runtimeStyle = element.runtimeStyle.left;
+		element.runtimeStyle.left = element.currentStyle.left;
+		element.style.left = pixelWidth || 0;
+		pixelWidth = element.style.pixelLeft;
+		element.style.left = style;
+		element.runtimeStyle.left = runtimeStyle;
+		
+		maxWidth = parseValidInt( getComputedStyleValue( element, 'max-width', 'maxWidth' ).replace( 'px', '' ) );
+		return (pixelWidth < maxWidth ? pixelWidth : maxWidth) + 'px';
 	},
 	
 	parseValidInt = function ( value ) {
@@ -219,7 +236,7 @@
 				if ( !img.unitType ) {
 					img.style.display = 'block';
 					img.unitType = 'percent';
-					computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
+					computedWidthValue = getComputedPixelWidth( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
 					img.computedWidth = parseValidInt( computedWidthValue.replace( 'px' , '' ) );
 					// show the display as inline so it flows in the webpage like a normal img
 					img.style.display = 'inline';
@@ -456,13 +473,12 @@
 	},
 
 	imgResponseError = function ( e ) {
-		var img = e.target;
-		if ( img.hadError ) return;
+		if ( !e || !e.target || e.target.hadError ) return;
 		
 		// very first error
-		img.hadError = TRUE;
-		img.src = img.orgSrc;
-		img.srcModification = 'response-error';
+		e.target.hadError = TRUE;
+		e.target.src = img.orgSrc;
+		e.target.srcModification = 'response-error';
 	},
 
 	initSpeedTest = function () {
