@@ -4,16 +4,22 @@
 	<title>Foresight.js Demo: Src URI Templates</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-	<script src="foresight-debugger.js"></script>
 	<script>
 		foresight = {
-			updateComplete: foresight_debugger
+			options : {
+				forcedPixelRatio: 2,
+				forcedBandwidth: 'high'
+			}
 		};
 	</script>
-	<script src="../foresight.js"></script>
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
 
 	<style>
-		.fs-img { display:none; }
+		.fs-img { 
+			width:100%;
+			display:none; 
+		}
 	</style>
 
 	<link href="demo.css" type="text/css" rel="stylesheet" />
@@ -36,7 +42,7 @@
 		<div style="width:80%">
 			<span>
 				<a href="http://www.imdb.com/title/tt0357413/">
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg" data-width="320" data-height="212" data-width-percent="50" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg" data-width="320" data-height="212" class="fs-img" />
 					<noscript>
 							<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg">
 					</noscript>

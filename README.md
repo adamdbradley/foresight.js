@@ -1,5 +1,7 @@
 ## Introduction
-__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image is requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. It modifies context image requests, specifically the _img_ _src_ attribute, but the [server does the image resizing](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images). Media queries however should be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
+__Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image has been requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. By customizing the _img_ _src_ attribute using methods such as URI templates, it is able to form requests built for your image's resolution variants. Media queries however could be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
+
+Foresight.js has made significant improvements over its previous versions, specifically the implenentation of the image-set() function. The latest version lets the browser control the image's browser dimensions completely, while foresight.js only worries about which image to request according to the network connection and device pixel ratio. Additionally, previously foresight.js was centered around requesting dynamically sized images, and while this is still possible, it also ensures its easy to request static based images (such as images with "@2x" or "-highres" in the filename).
 
 This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. 
 
@@ -8,20 +10,20 @@ This project's overall goal is to tackle these current issues faced by web devel
 ## Features
 * Request hi-res images according to device pixel ratio
 * Estimates network connection speed prior to requesting an image
-* Does not use device detection through user-agents
+* Allows existing CSS techniques to control an image's dimensions within the browser
+* Implements image-set() to control which image resolution variant to request
 * Does not make multiple requests for the same image
 * Javascript library and framework independent (ie: jQuery not required)
-* Cross-browser and cross-platform
-* Image dimensions set by percents will scale to the parent element's available width and device pixel ratio
-* Fully customizable through global configuration options and individual _img_ attributes
+* Image dimensions set by percents will scale to the parent element's available width
 * Default images will load without javascript enabled
-* Minifies down to roughly 6K
+* Does not use device detection through user-agents
+* Minifies down to roughly 7K
 
 
 ## Demos
-Before we get too far into the nitty-gritty, it's probably best to view foresight.js in action. Currently most desktop and laptops do not have high-resolution displays and are limited to a device pixel ratio of only 1, so you will not be able to see the effects on a standard monitor. Make sure you view the demos from multiple devices, such as your mobile phone, tablet and traditional computer.
+Before we get too far into the nitty-gritty, it's probably best to view foresight.js in action. Currently most desktop and laptops do not have high-resolution displays and are limited to a device pixel ratio of only 1, so you will not be able to see the effects on a standard monitor. Make sure you view the demos from multiple devices, such as your mobile phone, tablet and traditional .
 
-* [Foresight.js Demos](http://foresightjs.appspot.com/demos/index.html)
+* [Foresight.js Demos](http://foresightjs.appspot.com/css-demos/index.html)
 
 
 ## Img Element
@@ -34,47 +36,111 @@ One of the largest problems faced with dynamically deciding image quality is tha
 
 Notice how the first image is missing the _src_ attribute, but instead has a _data-src_ attribute. Because this _img_ element does not have the _src_ attribute the browser will not attempt to download the file. Once the DOM is ready, foresight.js does its magic to transform the _data-src_ and set the _src_ attribute tailored to the device's display and network connectivity. Using this structure allows us to still place _img_ elements within the context of the webpage, while also allowing search engines and javascript disabled browsers to view the images. 
 
-One concept change is that both the _data-width_ and _data-height_ attributes should not be seen as the image's physical dimensions, but rather a way for the browser to know the image's aspect ratio as it is scaled up and down according to the desired dimensions and device pixel ratio. After gathering info about the device/browser and your given requirements, foresight.js decides the image's actual dimensions, while the _data-width_ and _data-height_ attributes help to maintain its correct aspect ratio.
+One concept change is that both the _data-width_ and _data-height_ attributes should not be seen as the image's physical dimensions, but rather a way for the browser to know the image's aspect ratio as it is scaled up and down according to the desired dimensions and device pixel ratio. Foresight.js decides the image's actual dimensions, while the _data-width_ and _data-height_ attributes help to maintain its correct aspect ratio.
 
 Until the web community completes a new standard to hi-res context images, and it becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, the approach by foresight.js is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). 
 
-_There is hope however as the web community works on a solution to high-resolution images. These two resources offer a glimpse about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117) and also [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)._
+_There is hope however as the web community continues to work on a solution for high-resolution images. These resources offer a glimpse about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117), [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/) and [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html).
 
+
+
+## CSS: Using image-set() to control image requests
+
+The first version of foresight.js was a proof-of-concept configured using javascript options and HTML attributes. While it showed potential, there was still an area for improvement is to allow many of its features to be controlled with CSS. Its no secret presentation should be separated from functionality.
+
+The largest introduction is the use of the _image-set()_ CSS function. The [image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html) thread offers some great insight and direction that responsive images may be heading. 
+
+From [image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html):
+
+> I'd like to propose a new function for the Images module. This function will allow developers to provide, in a compact manner, multiple variants of the same image at differing resolutions. Using @media pushes the two asset references apart from one another, whereas such a function keeps related asset references together. It also helps keep selectors DRY. We've called it image-set(), and it takes one or more image specifiers.
+
+Here is an example of a proposed format:
+
+    image-set( url(foo.png) 1x low-bandwidth, url(foo@2x.png) 2x high-bandwidth )
+
+Like they pointed out, the image-set() function is great because it keeps everything together and might just be a huge piece of the hi-res puzzle. But obviously this new concept is a ways away from being standardized and widely adopted across the worlds browsers.
+
+The latest version of foresight.js is combining its original idea from the first version, by using URI templates, and following the _image-set()_ concept. This way you can use just one, or any number of CSS rules to control images throughout your site instead of creating a CSS rule for every image. _Check out the URI Templates section farther down for more info._
+
+The big hang-up at the moment would be that most browsers have no clue what _image-set()_ is, and since any custom CSS property isn't valid then the DOM is unable to view the newly introduced image-set() CSS. 
+
+#### Enter _font-family_!
+
+"FONT FAMILY! YOU NUTS!" Yes, but hang with me. An _img_ element doesn't use the _font-family_ property because you're not exactly assigning "Times New Roman" to your funny cat pictures, so its already useless to the _img_ element. Secondly,  _font-family_ is one of the few properties which lets you enter free-text in the value and the browsers still consider it valid and viewable by the DOM (yup, even IE doesn't care). 
+
+In the example below you'll see we're using the _font-family_ property to hold the _image-set_ value. Foresight's javascript is then able to view your CSS, whether its in an external stylesheet, internal styles within the _head_ element, or even inline styles, and request the appropriate image given the browser's circumstances. The example is simply telling the browser, "if your device pixel ratio is 1, or you have low-bandwidth, then request the foo.png image. If your device pixel ratio is 2, and you have high-bandwidth, then request the foo@2x.png image."
+
+    <style>
+        .fs-img {
+            font-family: ' image-set( url(/images/foo.png) 1x low-bandwidth, url(/images/foo@2x.png) 2x high-bandwidth ) ';
+        }
+    </style>
+
+This is good, except now my CSS class _fs-img_ only lets me request the foo.png and foo@2x.png images, and we'd rather not create a CSS rule for each image we want to request (and I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all browsers).
+
+Now let's take this one step further and allow each image-set url to have its own URI template, such as:
+
+    <style>
+        .fs-img {
+            font-family: ' image-set( url({directory}{filename}.{ext}) 1x low-bandwidth, url({directory}{filename}@2x.{ext}) 2x high-bandwidth ) ';
+        }
+    </style>
+
+This time we're not specifically coding the _foo.png_ file, or even files in the _/images/_ directory. Instead we're simply stating, "hey browser, if this image should be low-res, then use the first URI template. If this image should be hi-res, then use the second URI template."
+
+Each URI template can be fully customized to your website's image request format. In the example above, any images which have the _fs-img_ CSS classname assigned will use the following URI templates, but foresight.js chooses which template to use depending on your device pixel ratio and network connection speed. Being that the image-set() value is just CSS and can be applied like any other CSS property your options are wide open. If you review the demos you'll see that _image-set()_ actually gives you many options. 
 
 
 ## NoScript Element
-Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. 
+Immediately you'll notice that the _noscript_ element and its child _img_ is redundant, but with today's standards this is one of the issues we'll have to dance with. _However, if your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements and display:none CSS all together._
 
-If javascript is not enabled then the browser shows the _noscript_ _img_ instead. In this case the webpage should also hide the first _img_ so it's not seen as a broken image. The head element of the document should contain:
+If javascript is not enabled then the browser shows the _noscript_ _img_ instead. In this case the webpage should also hide the foresight.js _img_ so it's not seen as a broken image. The CSS rule applied to foresight.js images should contain the _display:none_ CSS property, such as:
 
-    <style> .fs-img{ display:none }</style>
-
-When foresight.js executes, it will change each image's CSS class from _fs-img_ to _fs-img-ready_ so that the _.fs-img_ CSS _display:none_ will no longer apply and the images can be seen.
-
-_If your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements all together._
+    <style> 
+    	.fs-img {
+            font-family: ' image-set( url({directory}{filename}.{ext}) 1x low-bandwidth, url({directory}{filename}@2x.{ext}) 2x high-bandwidth ) ';
+    	    display:none;
+    	}
+    </style>
+    
+    ...
+    
+    <img data-src="/images/imagefile.jpg" data-width="320" data-height="240" class="fs-img">
+    <noscript>
+        <img src="/images/imagefile.jpg">
+    </noscript>
+    
+When foresight.js executes, it will change each image's display style to 'inline' so it can be seen.
 
 
 
 ## High-Speed Network Connection Test
 Currently most devices capable of hi-res displays are mobile devices, such as new iPhones or iPads. However, since they are "mobile" in nature and their data may be relying on cell towers, even if the device has a hi-res display, users with slow connectivity probably do not want to wait a long time while images download. In these cases, foresight.js does a quick network speed test to make sure the user's device can handle hi-res images. Additionally, it stores the devices network connection speed information for 30 minutes (or is customizable to any expiration period you'd like) so it does not continually perform speed tests. You can host your own speed test file to be downloaded, or you can use the default URI available for public use found in the foresight.js configuration.
 
+Other speed test notes:
+
+* If the response takes longer than it "should" take to download the test file, then foresight.js will no longer wait on the test response and automatically consider the connection "slow"
+* If the device has a pixel ratio of _1_, then the display in unable to view hi-res anyways. In these cases (which is just about all traditional computers at the moment), it doesn't bother with doing a speed test because it already knows its a waste of time since the display can't view hi-res.
+* If the device implements _navigator.connection.type_, and the known connection type is either _2g_ or _3g_, then it doesn't bother doing the speed test since it already knows its too slow. _Android is currently seems to be the only one implementing navigator.connection.type, and even then it may not always have the info (but when it does it'll save us time, and for 2g that's pretty valuable info).
+* Foresight's publically available speed test file is hosted by Google App Engine, which is a cloud-based service and can handle many requests. Additionally, if the page requesting the speed test is SSL, foresight.js will ensure the speed test image is downloaded using the _https://_ protocol.
+
 
 
 ## Src Modification
-An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is templated is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various templates. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server.
+An _img src_ attribute needs to be modified so the browser can request the correct image according to the device and network speed. How an image's src is formatted is entirely up to the URI format of the server, but foresight.js allows the _img src_ attribute to be customized to meet various formats.
 
-Src modification types can be assigned in the _foresight.options.srcModification_ config, or individually for each image using the _img data-src-modification_ attribute. The possible values are __replaceDimensions__ or __rebuildSrc__ and described below.
+Src modification can be applied using three different methods:
 
-__replaceDimensions__: The current src may already have dimensions within the URI. Instead of rebuilding the src entirely, just find and replace the original dimensions with the new dimensions. 
+__src-replace-dimensions__: The current src may already have dimensions within the URI. Instead of rebuilding the src entirely, just find and replace the original dimensions with the new dimensions. This is also the default method because even if you do not have dimensions within the src it'll still return the default image you supplied.
 
-__rebuildSrc__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _src URI template_. Review the Src URI Template section to see how to format the image URI's.
+__src-uri-template__: Rebuild the src by parsing apart the current URI and rebuilding it using the supplied _URI template_. Review the Src URI Template section to see how to format the image URI's.
 
-_Also view the data-src-high-resolution attribute definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. Src Modification should be used when dynamically building the img src, while the data-src-high-resolution attribute is used if you want to manually tell foresight.js which image to use when hi-res is enabled._
+__src-hi-res__: The _data-src-high-resolution_ attribute can be used to identify which _src_ to use when the device is hi-res ready. See the definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. The first two Src Modification type should be used when dynamically building the img src, while the _data-src-high-resolution_ attribute is used if you want to manually tell foresight.js which image to use when hi-res is enabled.
 
 
 
-## Src URI Template
-The src URI template is only required when using the _rebuildSrc_ src modification. The src URI template provides foresight.js with how the request should be built for the image. Each server's image request is different and the _srcUriTemplate_ value allows the URI to be customized. The template can either be in the _foresight.options.srcUriTemplate_ config, or individually for each image using the _img data-src-uri-template_ attribute. Below are the various keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the keys that help build the src request for the server. _[More info about Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images)_.
+## URI Template
+The src URI template provides foresight.js with how the request should be built for the image. Each server's image request is different and the URI template can be customized to meet each server's format. Below are the various format keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the format keys that help build the src request for the server. 
 
 __{protocol}__: The protocol of the request. ie: _http_ or _https_
 
@@ -92,60 +158,63 @@ __{ext}__: Only the file-extension of the image. ie: _jpg_
 
 __{query}__: The querystring. ie: _page=1&size=10_
 
-__{requestWidth}__: The requested width of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the request width in the src. ie: _320_
+__{scaleFactor}__: The scale factor for the image to load. This value will automatically be calculated, it's just that you may need to tell foresight.js where to put this info within the src. ie: _2_
 
-__{requestHeight}__: The requested height of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the request height in the src. ie: _480_
+__{requestWidth}__: The natural width of the image to load. This value will automatically be calculated, it's just that you may need to tell foresight.js where to put the natural width within the src. ie: _320_
 
-__{pixelRatio}__: The requested pixel ratio of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put this info in the src. ie: _2_
+__{requestHeight}__: The natural height of the image to load. This value will automatically be calculated, it's just that you need to tell foresight.js where to put the natural height within the src. ie: _480_
 
-_Again, not all of these keys are required inside your src URI. Src URI template is entirely dependent on how the server handles image requests. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server._
+__{src}__: The original src value. Use this if you do not want to make any changes to the src from the one already supplied in the _data-src_ attribute. This would be used mostly for the 1x scale factors and low-bandwidth image-sets, mainly stating that the default image should be requested instead of modifying the src. ie: _http://cdn.mysite.com/images/foo.png_
+
+_Again, not all of these keys are required inside your template. URI template is entirely dependent on how the server handles image requests. See [Server Resizing Images](//github.com/adamdbradley/foresight.js/wiki/Server-Resizing-Images) for more information on a few options for requesting various images sizes from a server._
 
 
 
 #### Src URI Template Examples
 
-    Example A: Width and height in their own directory
-    Original Img Src: http://cdn.mysite.com/images/myimage.jpg
-    SrcUriTemplate:   {protocol}://{host}{directory}{requestWidth}x{requestHeight}/{file}
+    Example A: Custom terms within the URI
+    Original Src:     /images/funnycat.jpg
+    Uri Template:     {directory}{filename}-hi-res.{ext}
+    Request Src:      /images/funnycat-hi-res.jpg
+
+    Example B: Scale factor in the filename
+    Original Src:     http://images.example.com/home/images/hero.jpg
+    Uri Template:     {protocol}://{host}{directory}{file}@{scaleFactor}x.jpg
+    Request Src:      http://images.example.com/home/images/hero_2x.jpg
+
+    Example C: Width and height in their own directory
+    Original Src:     http://cdn.mysite.com/images/myimage.jpg
+    Uri Template:     {protocol}://{host}{directory}{requestWidth}x{requestHeight}/{file}
     Request Src:      http://cdn.mysite.com/images/640x480/myimage.jpg
 
-    Example B: Width and height in the querystring
-    Original Img Src: http://cdn.mysite.com/images/myimage.jpg
-    SrcUriTemplate:   {protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}
+    Example D: Width and height in the querystring
+    Original Src:     http://cdn.mysite.com/images/myimage.jpg
+    Uri Template:     {protocol}://{host}{directory}{file}?w={requestWidth}&h={requestHeight}
     Request Src:      http://cdn.mysite.com/images/myimage.jpg?w=640&h=480
 
-    Example C: Width in the filename, request to the same host
-    Original Img Src: /images/myimage.jpg
-    SrcUriTemplate:   {directory}{requestWidth}px-{file}
+    Example E: Width in the filename, request to the same host
+    Original Src:     /images/myimage.jpg
+    Uri Template:     {directory}{requestWidth}px-{file}
     Request Src:      /images/320px-myimage.jpg
-
-    Example D: Pixel ratio in the filename
-    Original Img Src: http://images.example.com/home/images/hero.jpg
-    SrcUriTemplate:   {protocol}://{host}{directory}{file}_{pixelRatio}x.jpg
-    Request Src:      http://images.example.com/home/images/hero_2x.jpg
 
 
 
 ## Foresight.js Options
-Foresight.js comes with default settings, but using the _foresight.options_ object allows you to customize them as needed. The easiest way to configure foresight.js is to include the _foresight.options_ configuration before the foresight.js script, such as:
+Foresight.js comes with default settings, but using _foresight.options_ allows you to customize them as needed. The easiest way to configure foresight.js is to include the _foresight.options_ configuration before the foresight.js script, such as:
 
     <script>
         foresight = {
             options: {
-                srcModification: 'rebuildSrc',
-                srcUriTemplate: '{directory}{requestWidth}px-{file}'
+                minKbpsForHighBandwidth: 800,
+                speedTestExpireMinutes: 60
             }
         };
     </script>
     <script src="foresight.js"></script>
 
-__foresight.options.srcModification__: Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
-
-__foresight.options.srcUriTemplate__: The URI template in which a src should be rebuilt from. See the Src URI Template section for more info.
-
 __foresight.options.testConn__: Boolean value determining if foresight.js should test the network connection speed or not. Default is _true_
 
-__foresight.options.minKbpsForHighSpeedConn__: Foresight.js considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 400Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _400_
+__foresight.options.minKbpsForHighBandwidth__: Foresight.js considers a network connection to be either high-speed or not. When a device has a high-speed connection and hi-res display it will request hi-res images to be downloaded. However, everyone's interpretation of what is considered _high-speed_ should be a variable. By default, any connection that can download an image at a minimum of 400Kbps is considered high-speed. The value should be a number representing Kbps. Default value is _400_
 
 __foresight.options.speedTestUri__: You can determine the URI for the speed test image. By default it will use a foresight.js hosted image, but you can always choose your own URI for the test image. Default value is _http://foresightjs.appspot.com/speed-test/50K.jpg (also note that if the webpage is in SSL, foresight.js will replace 'http:' for 'https:' to avoid any ugly security warnings)_
 
@@ -153,17 +222,9 @@ __foresight.options.speedTestKB__: Foresight.js needs to know the filesize of th
 
 __foresight.options.speedTestExpireMinutes__: Speed-tests do not need to be continually performed on every page. Instead you can set how often a speed test should be completed, and in between tests you can rely on past test information. The value should be a number representing how many minutes a speed test is valid until it expires. Default value is _30_
 
-__foresight.options.maxBrowserWidth__: A max pixel width can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
+__foresight.options.forcedPixelRatio__: You can override the device pixel ratio value. This is used more so for debugging purposes. Default value is _undefined_ 
 
-__foresight.options.maxBrowserHeight__: A max pixel height can be set on images. This is in reference to browser, or CSS, pixels. Default value is _1024_
-
-__foresight.options.maxRequestWidth__: A max pixel request width can be set on how large of images can be requested from the server. Default value is _2048_
-
-__foresight.options.maxRequestHeight__: A max pixel request height can be set on how large of images can be requested from the server. Default value is _2048_
-
-__foresight.options.forcedPixelRatio__: You can override the device pixel ratio value. Default value is _undefined_ 
-
-Additionally, the _foresight.options_ configurations can be overridden by each individual _img_ element if need be. See the Img Attributes section for more information on individual configuration.
+__foresight.options.forcedBandwidth__: You can override what the network bandwidth is with either _low_ or _high_ values. This is used more so for debugging purposes. Default value is _undefined_ 
 
 
 
@@ -174,25 +235,7 @@ __data-width__: _(Required)_ The pixel width according to the browser. Any adjus
 
 __data-height__: _(Required)_ The pixel height according to the browser. Any adjustments to the device pixel ratio will take care of the request image height automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
 
-__data-src-modification__: _(Optional)_ Which type of src modification to use, either _rebuildSrc_ or _replaceDimensions_. See the Src Modification section for more info.
-
-__data-src-uri-template__: _(Optional)_ The URI template in which a src should be rebuilt. See the Src URI Template section for more info.
-
 __data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
-
-__data-width-percent__: _(Optional)_ The width percent is in reference to the image's parent element, and how much of the image's parent element's width should be taken by the image. The image's previous _data-width_ attribute should not be given percents because its value is reserved so we can always know the image's aspect ratio. The _data-width-percent_ attribute, on the other hand, is an optional attribute that determines how to scale the image within its parent element.
-
-__data-height-percent__: _(Optional)_ The height percent is in reference to the image's parent element, and how much of the image's parent element's width should be taken by the image. The image's previous _data-height_ attribute should not be given percents because its value is reserved so we can always know the image's aspect ratio. The _data-height-percent_ attribute, on the other hand, is an optional attribute that determines how to scale the image within its parent element.
-
-__data-max-width__: _(Optional)_ Maximum browser pixel width this image should take. If this value is greater than the width it will scale the image proportionally.
-
-__data-max-height__: _(Optional)_ Maximum browser pixel height this image should take. If this value is greater than the height it will scale the image proportionally.
-
-__data-max-request-width__: _(Optional)_ Maximum pixel width this image should request. If this value is greater than the width it will scale the image request dimensions proportionally.
-
-__data-max-request-height__: _(Optional)_ Maximum pixel height this image should request. If this value is greater than the height it will scale the image request dimensions proportionally.
-
-__data-pixel-ratio__: _(Optional)_ By default an image's pixel ratio is figured out using the devices pixel ratio. You can however manually assign an image's pixel ratio which will override the default.
 
 
 
@@ -211,13 +254,14 @@ __foresight.connTestResult__: The connection test result provides info on how th
 * _networkSuccess_: The speed test information came directly from a network test.
 * _networkSlow_: A 50KB file should be downloaded within 1 second on a 400Kbps connection. If the speed test takes longer than 1 second than we already know its not a high-speed connection. Instead of waiting for the response, just continue and set that this network connection is not a high-speed connection.
 * _networkError_: When a speed-test network error occurs, such as a 404 response, the connTestMethod will equal networkError and will not be considered a high-speed connection.
+* _networkAbort_: When a speed-test network abort occurs,  the connTestMethod will equal networkAbort and will not be considered a high-speed connection.
 * _connTypeSlow_: The device stated that it is using either a 2g or 3g connection, which in this case we do not perform a speed test and just consider this device to not have a high-speed connection.
 * _localStorage_: A speed-test does not need to be executed on every webpage. The browser's localStorage function is used to remember the last speed test information. When the last speed-test falls outside of the _foresight.options.speedTestExpireMinutes_ option it execute a new speed-test again.
 * _skip_: If the device pixel ratio equals 1 then the display cannot view hi-res images. Since high-resolution doesn't apply to this device, foresight.js doesn't bother testing the network connection.
 
 __foresight.connKbps__: Number representing the estimated Kbps following a network connection speed-test. This value can also come from localStorage if the last test was within the _foresight.options.speedTestExpireMinutes_ option. Note that _foresight.connKbps_ is not an extremely accurate assessment of the device's connection speed, but rather provides a fast look to see if it can download a file quickly (and then remembers that test info for a configurable number of minutes). 
 
-__foresight.isHighSpeedConn__: Boolean used to tell foresight.js if this device's connection is considered a high-speed connection or not. You can use the _foresight.options.minKbpsForHighSpeedConn_ configuration option to help determine what is considered _high-speed_. See the minKbpsForHighSpeedConn config description for more info.
+__foresight.bandwidth__: String value which is either _low_ or _high_ and used to tell foresight.js if this device's bandwidth is low-bandwidth or high-bandwidth. You can use the _foresight.options.minKbpsForHighBandwidth_ configuration option to help determine what is considered _high-bandwidth_. See the minKbpsForHighBandwidth config description for more info.
 
 
 
@@ -248,16 +292,15 @@ __foresight.updateComplete__: Executed after foresight.js rebuilds each of the i
 ## Foresight.js Debugging
 Instead of including debugging code directly in the foresight.js, an additional javascript file has been included to help developers debug. By using the _foresight.updateComplete_ event and populated _foresight_ properties, the _foresight-debug.js_ file prints out relevant information to help debug. This is particularly useful for mobile devices since it is more difficult to view source code and javascript errors. Below is an example on how to include the _foresight-debugger.js_ file and calling it when foresight.js completes:
 
-    <script src="foresight-debugger.js"></script>
     <script>
         foresight = {
             options: {
-                srcModification: 'rebuildSrc',
-                srcUriTemplate: '{directory}{requestWidth}px-{file}'
-            },
-            updateComplete: foresight_debugger
+                minKbpsForHighBandwidth: 800,
+                speedTestExpireMinutes: 60
+            }
         };
     </script>
+    <script src="foresight-debugger.js"></script>
     <script src="foresight.js"></script>
     
 

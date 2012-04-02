@@ -4,24 +4,25 @@
 	<title>Foresight.js Demo: Basic Image Comparison</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-	<script src="foresight-debugger.js"></script>
-	<script>
-		foresight = {
-			options : {
-				forcedPixelRatio: 2
-			},
-			updateComplete: foresight_debugger
-		};
-	</script>
-	<script src="../foresight.js"></script>
-
 	<style>
 		.fs-img {
+			font-family: 'image-set( url({src}) 1x low-bandwidth, url({protocol}://{host}{directory}{file}) 2x high-bandwidth )';
 			display:none;
 		}
 	</style>
 	
 	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<script>
+		foresight = {
+			options : {
+				forcedPixelRatio: 2,
+				forcedBandwidth: 'high'
+			}
+		};
+	</script>
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
 
 </head>
 <body>
@@ -42,7 +43,7 @@
 	</p>
 
 	<!-- Start Foresight Image -->
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" style="width:320px; height:240px" class="fs-img" />
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg" data-width="320" data-height="240" class="fs-img" />
 	<noscript>
 		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/05/%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg/320px-%C5%A0koda_15T%2C_smy%C4%8Dka_Radlick%C3%A1.jpg">
 	</noscript>

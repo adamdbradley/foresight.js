@@ -8,20 +8,21 @@
 		.fs-img {
 			width:100%;
 			max-width:640px;
+			font-family: 'template("{file}") block';
 			display:none;
 		}
 	</style>
 
-	<script src="foresight-debugger.js"></script>
 	<script>
 		foresight = {
 			options : {
-				forcedPixelRatio: 2
-			},
-			updateComplete: foresight_debugger
+				forcedPixelRatio: 2,
+				forcedBandwidth: 'high'
+			}
 		};
 	</script>
-	<script src="../foresight.js"></script>
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
 	
 	<link href="demo.css" type="text/css" rel="stylesheet" />
 
@@ -48,8 +49,11 @@
 		we'd be unable to scale the image proportionately when adjusting the percentage.
 	</p>
 
+	<image>
+		
+	</image>
 
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg" style="width:320px; height:229px" class="fs-img" />
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg" data-width="320" data-height="229" class="fs-img" />
 	<noscript>
 		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg">
 	</noscript>

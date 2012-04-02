@@ -1,7 +1,8 @@
 // DEMO JAVASCRIPT ONLY
 // this is not required to use foresight.js, this is here only to help view info about the images
 
-var foresight_debugger = function () {
+
+var initForesightDebugger = function () {
 	// oncomplete only being use to print out debugger info, demo purposes only
 	var info = [];
 
@@ -13,9 +14,8 @@ var foresight_debugger = function () {
 	} else {
 		info.push( 'Connection Type: ' + foresight.connType );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
-		info.push( 'Is Considered High Speed Connection: ' + foresight.isHighSpeedConn );
 	}
-	info.push( 'High-Resolution Enabled: ' + foresight.hiResEnabled );
+	info.push( 'Bandwidth: ' + foresight.bandwidth );
 	info.push( '<hr>' );
 
 	// add in a <pre> element or use one already there for debugging info
@@ -32,41 +32,62 @@ var foresight_debugger = function () {
 	}
 	docPre.innerHTML = info.join( '<br>' );
 
+
 	// print out img info above each foresight image
 	for( var x = 0; x < foresight.images.length; x++ ) {
 		var img = foresight.images[ x ];
+		
+		if ( !img.unitType ) {
+			continue;
+		}
+		
 		var imgInfo = [];
-		imgInfo.push( 'Original Src: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
+		imgInfo.push( 'Original: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
+		if ( img.computedWidth ) {
+			imgInfo.push( 'Browser Computed Width: ' + img.computedWidth );
+		}
 		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
 		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
+		imgInfo.push( 'Unit Type: ' + img.unitType + ', Bandwidth: ' + img.bandwidth + ', Scale: ' + img.scaleFactor );
 
-		if ( img.highResolution && foresight.hiResEnabled ) {
-			imgInfo.push( 'Src Modification Method: data-src-high-resolution attribute');
-			imgInfo.push( 'Hi-Res Attribute: ' + img.highResolution );
+		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
+		if ( img.highResolutionSrc && foresight.hiResEnabled ) {
+			imgInfo.push( 'Hi-Res Src Attribute: ' + img.highResolutionSrc );
 		} else {
-			imgInfo.push( 'Src Modification Method: ' + img.srcModification );
-			if( img.srcModification === 'rebuildSrc' ) {
-				imgInfo.push( 'Src URI Template: ' + img.srcUriTemplate );
+			if( img.srcModification === 'src-uri-template' ) {
+				imgInfo.push( 'URI Template: ' + img.uriTemplate );
 			}
 		}
 
-		imgInfo.push( 'Request Src: <a href="' + img.src + '">' + img.src + '</a>' );
+		imgInfo.push( 'Request: <a href="' + img.src + '">' + img.src + '</a>' );
 
-		if ( img.orgSrc === img.src ) {
-			imgInfo.push( 'No change to the src' );
-		} else {
-			imgInfo.push( 'Src has been modified' );
+		if ( !img.infoElement ) {
+			img.infoElement = document.createElement( 'div' );
+			img.parentElement.insertBefore(img.infoElement, img);
 		}
-
-		img.setAttribute( 'title', 'Org: ' + img.width + 'x' + img.height + ', Requested: ' + img.requestWidth + 'x' + img.requestHeight  );
-
-		if ( !img.preElement ) {
-			img.preElement = document.createElement( 'pre' );
-			img.parentElement.insertBefore( img.preElement, img );
-		}
-		img.preElement.innerHTML = imgInfo.join( '<br>' );
+		
+		var newInfoElement = document.createElement( 'pre' );
+		newInfoElement.innerHTML = imgInfo.join( '<br>' ) + '<hr>';
+		img.infoElement.appendChild(newInfoElement);
 	}
 
 };
 
+var foresightDebugger = function () {
+	// kick off the debugger when the window has been loaded
+	if ( document.readyState === 'complete' ) {
+		initForesightDebugger();
+	} else {
+		if ( document.addEventListener ) {
+			window.addEventListener( "load", initForesightDebugger, false );
+		} else if ( document.attachEvent ) {
+			window.attachEvent( "onload", initForesightDebugger );
+		}
+	}
+}
+
+
+window.foresight = window.foresight || {};
+
+window.foresight.updateComplete = foresightDebugger;
 

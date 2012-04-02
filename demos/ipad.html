@@ -4,13 +4,16 @@
 	<title>Foresight.js Demo: Apple.com's iPad Hero</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-	<script src="foresight-debugger.js"></script>
 	<script>
 		foresight = {
-			updateComplete: foresight_debugger
+			options : {
+				forcedPixelRatio: 2,
+				forcedBandwidth: 'high'
+			}
 		};
 	</script>
-	<script src="../foresight.js"></script>
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
 
 	<style>
 		.fs-img { display:none; }
@@ -42,7 +45,7 @@
 	</p>
 
 
-	<img data-src="images/ipad_hero.jpg" data-src-high-resolution="images/ipad_hero_2x.jpg" width="1454" height="605" class="fs-img" />
+	<img data-src="images/ipad_hero.jpg" data-src-high-resolution="images/ipad_hero_2x.jpg" data-width="1454" data-height="605" class="fs-img" />
 	<noscript>
 		<img src="images/ipad_hero.jpg">
 	</noscript>
