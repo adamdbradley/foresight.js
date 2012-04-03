@@ -9,9 +9,7 @@ var initForesightDebugger = function () {
 	info.push( 'Foresight Images: ' + foresight.images.length );
 	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
 	info.push( 'Connection Test Result: ' + foresight.connTestResult );
-	if( foresight.connTestResult === 'skip' ) {
-		info.push( 'No speed test because this device has a pixel ratio of 1, so no need' );
-	} else {
+	if( foresight.connTestResult !== 'skip' ) {
 		info.push( 'Connection Type: ' + foresight.connType );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
 	}
@@ -37,20 +35,20 @@ var initForesightDebugger = function () {
 	for( var x = 0; x < foresight.images.length; x++ ) {
 		var img = foresight.images[ x ];
 		
-		if ( !img.unitType ) {
+		if ( !img.requestChange ) {
 			continue;
 		}
 		
 		var imgInfo = [];
 		imgInfo.push( 'Original: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		if ( img.computedWidth ) {
-			imgInfo.push( 'Browser Computed Width: ' + img.computedWidth );
+			imgInfo.push( 'Computed Width: ' + img.computedWidth );
 		}
 		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
 		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
 		imgInfo.push( 'Unit Type: ' + img.unitType + ', Bandwidth: ' + img.bandwidth + ', Scale: ' + img.scaleFactor );
 
-		imgInfo.push( 'Src Modification Method: ' + img.srcModification );
+		imgInfo.push( 'Src Modification: ' + img.srcModification );
 		if ( img.highResolutionSrc && foresight.hiResEnabled ) {
 			imgInfo.push( 'Hi-Res Src Attribute: ' + img.highResolutionSrc );
 		} else {
@@ -90,4 +88,29 @@ var foresightDebugger = function () {
 window.foresight = window.foresight || {};
 
 window.foresight.updateComplete = foresightDebugger;
+
+window.foresight.options = window.foresight.options || {};
+
+
+// You can set your own variables both bandwidth and device pixel ratio
+
+// Querystring dpr sets the device pixel ratio, possible values: 1.5 and 2
+// Querystring bw sets the bandwidth, possible values: low and high
+
+
+if ( window.location.search.indexOf( 'dpr=2' ) > -1 ) {
+	window.foresight.options.forcedPixelRatio = 2
+} else if ( window.location.search.indexOf( 'dpr=1.5' ) > -1 ) {
+	window.foresight.options.forcedPixelRatio = 1.5
+}
+
+if ( window.location.search.indexOf( 'bw=low' ) > -1 ) {
+	window.foresight.options.forcedBandwidth = 'low'
+} else if ( window.location.search.indexOf( 'bw=high' ) > -1 ) {
+	window.foresight.options.forcedBandwidth = 'high'
+}
+
+
+
+
 

@@ -52,12 +52,12 @@
 			// force a certain device pixel ratio, used more so for debugging purposes
 			foresight.devicePixelRatio = opts.forcedPixelRatio;
 		}
-		
+
 		if ( opts.forcedBandwidth ) {
-			// force that this device has a high speed connection, used more so for debugging purposes
+			// force that this device has a low or high bandwidth, used more so for debugging purposes
 			foresight.bandwidth = opts.forcedBandwidth;
 		}
-		
+
 		initImages();
 		imageIterateStatus = STATUS_COMPLETE;
 
@@ -151,7 +151,7 @@
 
 				// handle any response errors which may happen with this image
 				img.onerror = imgResponseError;
-				
+
 				// add this image to the collection
 				foresight.images.push( img );
 			}
@@ -159,6 +159,7 @@
 	},
 
 	getDataAttribute = function ( img, attribute, getInt ) {
+		// get an <img> element's data- attribute value
 		var value = img.getAttribute( 'data-' + attribute );
 		if ( getInt ) {
 			return parseValidInt( value );
@@ -166,36 +167,13 @@
 		return value;
 	},
 
-	getComputedStyleValue = function ( element, cssProperty, jsReference ) {
-		// get the computed style value for this element (but there's an IE way and the rest-of-the-world way)
-		return element.currentStyle ? element.currentStyle[ jsReference ] : document.defaultView.getComputedStyle( element, null ).getPropertyValue( cssProperty );
-	},
-	
-	getComputedPixelWidth = function ( element, pixelWidth, style, runtimeStyle, maxWidth ) {
-		pixelWidth = getComputedStyleValue( element, DIMENSION_WIDTH, DIMENSION_WIDTH );
-		if ( pixelWidth.indexOf( '%' ) === -1 ) return pixelWidth;
-		
-		// didn't get a computed pixel width, probably our friend IE, do this trick
-		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
-		style = element.style.left;
-		runtimeStyle = element.runtimeStyle.left;
-		element.runtimeStyle.left = element.currentStyle.left;
-		element.style.left = pixelWidth || 0;
-		pixelWidth = element.style.pixelLeft;
-		element.style.left = style;
-		element.runtimeStyle.left = runtimeStyle;
-		
-		maxWidth = parseValidInt( getComputedStyleValue( element, 'max-width', 'maxWidth' ).replace( 'px', '' ) );
-		return (pixelWidth < maxWidth ? pixelWidth : maxWidth) + 'px';
-	},
-	
 	parseValidInt = function ( value ) {
 		if ( !isNaN( value ) ) {
 			return parseInt( value, 10 );
 		}
 		return 0;
 	},
-	
+
 	initImageRebuild = function () {
 		// if we've completed both the connection speed test and finding all
 		// of the valid foresight images then rebuild each image's src
@@ -218,48 +196,20 @@
 
 		for ( x = 0; x < imagesLength; x++ ) {
 			img = foresight.images[ x ];
-			
+
 			if ( !isParentVisible( img ) ) {
 				// parent element not visible (yet anyways) so don't continue with this img
 				continue;
 			}
-			
+
 			// build a list of CSS Classnames for the <img> which may be useful
 			classNames = img.orgClassName.split( ' ' );
-			
+
 			// get the computed pixel width according to the browser
-			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
-			if ( computedWidthValue.indexOf( '%' ) > 0 ) {
-				// if the width has a percent value then change the display to
-				// display:block to help get correct browser pixel width
-				
-				if ( !img.unitType ) {
-					img.style.display = 'block';
-					img.unitType = 'percent';
-					computedWidthValue = getComputedPixelWidth( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
-					img.computedWidth = parseValidInt( computedWidthValue.replace( 'px' , '' ) );
-					// show the display as inline so it flows in the webpage like a normal img
-					img.style.display = 'inline';
-				}
-				
-				// the computed width is probably getting controlled by some applied width property CSS
-				// since we now know what the pixel width the browser wants it to be, calculate its height
-				// the height should be calculated with the correct aspect ratio
-				img[ BROWSER_WIDTH ] = img.computedWidth;
-				img[ BROWSER_HEIGHT ] = Math.round( img.heightUnits * ( img.computedWidth / img.widthUnits ) );
-				
-			} else if ( !img.unitType ) {
-				// there is no computed width, so it must not have any width CSS applied
-				// assign the browser pixels to equal the width and height Units
-				
-				img.unitType = 'pixel';
-				img[ BROWSER_WIDTH ] = img.widthUnits;
-				img[ BROWSER_HEIGHT ] = img.heightUnits;
-				// show the display to inline so it flows in the webpage like a normal img
-				img.style.display = 'inline';
-				
+			fillComputedPixelDimensions( img );
+			if ( img.unitType == 'pixel' ) {
 				// instead of manually assigning width, then height, for every image and doing many repaints
-				// create a clasname with its dimensions and when we're all done
+				// create a classname with its dimensions and when we're all done
 				// we can then add those CSS dimension classnames to the document and do less repaints
 				dimensionClassName = 'fs-' + img[ BROWSER_WIDTH ] + 'x' + img[ BROWSER_HEIGHT ];
 				classNames.push( dimensionClassName );
@@ -267,7 +217,11 @@
 				// build a list of CSS rules for all the different dimensions (sorry, ugly i know)
 				// ie:  .fs-640x480{width:640px;height:480px}
 				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' );
-				
+			}
+
+			// show the display to inline so it flows in the webpage like a normal img
+			if ( img.style.display != 'inline' ) {
+				img.style.display = 'inline';
 			}
 
 			// set the defaults this image will use
@@ -339,6 +293,9 @@
 					replaceDimensions( img );
 					img.srcModification = 'src-replace-dimensions';
 				}
+				img.requestChange = TRUE;
+			} else {
+				img.requestChange = FALSE;
 			}
 			
 			classNames.push( 'fs-' + img.srcModification );
@@ -347,7 +304,7 @@
 			img.className = classNames.join( ' ' );
 
 		}
-		
+
 		// if there were are imgs that need width/height assigned to them then
 		// add their CSS rules to the document
 		if ( dimensionCssRules.length ) {
@@ -359,19 +316,83 @@
 		}
 
 		// remember what the width is to evaluate later when the window resizes
-		lastWindowWidth = window.innerWidth;
+		lastWindowWidth = getWindowWidth();
 	},
 
-	isParentVisible = function ( ele, parent, displayValue ) {
+	isParentVisible = function ( ele, parent ) {
+		// test to see if this element's parent is currently visible in the DOM
 		parent = ele.parentElement;
 		if ( parent.clientWidth ) {
 			return TRUE;
 		}
-		displayValue = getComputedStyleValue( parent, 'display', 'display' );
-		if ( displayValue === 'inline' ) {
+		if ( getComputedStyleValue( parent, 'display', 'display' ) === 'inline' ) {
+			// if its an inline element then we won't get a good clientWidth
+			// so try again with this element's parent
 			return isParentVisible( parent );
 		}
 		return FALSE;
+	},
+
+	fillComputedPixelDimensions = function ( img, computedWidthValue ) {
+		// get the computed pixel width according to the browser
+		// this is most important for images set by percents
+		// and images with a max-width set
+		if ( !img.unitType ) {
+			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
+			if ( computedWidthValue.indexOf( '%' ) > 0 ) {
+				// if the width has a percent value then change the display to
+				// display:block to help get correct browser pixel width
+				img.unitType = 'percent';
+			} else {
+				// the browser already knows the exact pixel width
+				// assign the browser pixels to equal the width and height units
+				// this only needs to happen the first time
+				img.unitType = 'pixel';
+				img[ BROWSER_WIDTH ] = img.widthUnits;
+				img[ BROWSER_HEIGHT ] = img.heightUnits;
+			}
+		}
+
+		if ( img.unitType === 'percent' ) {
+			// the computed width is probably getting controlled by some applied width property CSS
+			// since we now know what the pixel width the browser wants it to be, calculate its height
+			// the height should be calculated with the correct aspect ratio
+			// this should be re-ran every time the window width changes
+			img.computedWidth = getComputedPixelWidth( img );
+			img[ BROWSER_WIDTH ] = img.computedWidth;
+			img[ BROWSER_HEIGHT ] = Math.round( img.heightUnits * ( img.computedWidth / img.widthUnits ) );
+
+			// manually assign what the calculated height pixels should be
+			img.style.height = img[ BROWSER_HEIGHT ] + 'px';
+		}
+	},
+
+	getComputedPixelWidth = function ( img ) {
+		// code is a slimmed down version of jQuery getWidthOrHeight() and css swap()
+		if ( img.offsetWidth !== 0 ) {
+			return img.offsetWidth;
+		} else {
+			// doesn't have an offsetWidth yet, apply styles which adds display:block, but visibility hidden
+			// remember what the inline values were before changing them, so you can change them back
+			var ret, name,
+				old = {},
+				cssShow = { position: "absolute", visibility: "hidden", display: "block" };
+			for ( name in cssShow ) {
+				old[ name ] = img.style[ name ];
+				img.style[ name ] = cssShow[ name ];
+			}
+			ret = img.offsetWidth;
+			// change back the styles to what they were before we got the offsetWidth
+			for ( name in cssShow ) {
+				img.style[ name ] = old[ name ];
+			}
+			return ret;
+		}
+	},
+
+	getComputedStyleValue = function ( element, cssProperty, jsReference ) {
+		// get the computed style value for this element (but there's an IE way and the rest-of-the-world way)
+		return element.currentStyle ? element.currentStyle[ jsReference ] : document.defaultView.getComputedStyle( element, null ).getPropertyValue( cssProperty );
 	},
 
 	dimensionStyleEle,
@@ -609,14 +630,18 @@
 			window.attachEvent( 'onresize', windowResized );
 		}
 	},
-	
+
 	lastWindowWidth = 0,
 	windowResized = function () {
 		// only reload when the window changes the width
 		// we don't care if the window's height changed
-		if ( lastWindowWidth !== window.innerWidth ) {
+		if ( lastWindowWidth !== getWindowWidth() ) {
 			foresight.reload();
 		}
+	},
+
+	getWindowWidth = function () {
+		return document.documentElement.clientWidth || document.body && document.body.clientWidth || undefined;
 	},
 
 	reloadTimeoutId,
@@ -632,12 +657,18 @@
 		// if the window resizes or this function is called by external events (like a changepage in jQuery Mobile)
 		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
 		window.clearTimeout( reloadTimeoutId ); 
-		reloadTimeoutId = window.setTimeout( executeReload, 400 ); 
+		reloadTimeoutId = window.setTimeout( executeReload, 300 ); 
 	};
 
 	// when the DOM is ready begin finding valid foresight <img>'s and updating their src's
-	if ( document.readyState === STATUS_COMPLETE ) {
+	window.foresightReady = function () {
+		if ( !document.body ) {
+			return setTimeout( window.foresightReady, 1 );
+		}
 		initForesight();
+	};
+	if ( document.readyState === STATUS_COMPLETE ) {
+		setTimeout( foresightReady, 1 );
 	} else {
 		if ( document.addEventListener ) {
 			document.addEventListener( "DOMContentLoaded", initForesight, FALSE );
