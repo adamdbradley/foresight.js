@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Static Image URI Template Examples</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+		.fs-img { 
+			display:none;
+		}
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Demo 3: Static Image URI Template Examples
+	</h2>
+	<p>
+		This example only uses static images and they cannot be dynamically resized by the server.
+		Common examples includes hi-res image filenames ending with "@2x" or "-high-res".
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/ipad_hero.jpg" data-src-high-resolution="http://foresightjs.appspot.com/static-images/ipad_hero_2x.jpg" data-width="1454" data-height="605" class="fs-img">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/ipad_hero.jpg">
+	</noscript>
+
+
+	<hr>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>

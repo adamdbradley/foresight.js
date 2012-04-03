@@ -5,6 +5,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Foresight.js Demo: jQuery Mobile Demo Page 2</title>
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 
 		<style>
 			.fs-img {
@@ -14,23 +16,13 @@
 			}
 		</style>
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
-	
-		<script>
-			foresight = {
-				options : {
-					forcedPixelRatio: 2,
-					forcedBandwidth: 'high'
-				}
-			};
-		</script>
 		<script src="foresight-debugger.js"></script>
 		<script src="foresight.js"></script>
 
 		<script>
 			$(document).bind("pagechange", foresight.reload);
 		</script>
+		
 	</head>
 	<body>
 		<div data-role="page" id="page2">
@@ -47,7 +39,7 @@
 				</div>
 				<div style="text-align:center">
 
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/320px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg" data-width="320" data-height="227" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/320px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg" data-width="320" data-height="227" class="fs-img">
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/320px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg">
 					</noscript>
@@ -62,7 +54,7 @@
 				</div>
 				<div style="text-align:center">
 
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Julian_Alps_with_Prisojnik_and_Razor.jpg/320px-Julian_Alps_with_Prisojnik_and_Razor.jpg" data-width="320" data-height="169" class="fs-img" />
+					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Julian_Alps_with_Prisojnik_and_Razor.jpg/320px-Julian_Alps_with_Prisojnik_and_Razor.jpg" data-width="320" data-height="169" class="fs-img">
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Julian_Alps_with_Prisojnik_and_Razor.jpg/320px-Julian_Alps_with_Prisojnik_and_Razor.jpg">
 					</noscript>

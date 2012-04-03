@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Static Image URI Replacement Examples</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+		.fs-img { 
+			width:100%;
+			display:none; 
+		}
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Demo 5: Static Image URI Replacement Examples
+	</h2>
+	<p>
+		This demo replaces existing scale factors and values within static image request URIs.
+	</p>
+
+
+	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg" data-width="320" data-height="212" class="fs-img">
+	<noscript>
+			<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg">
+	</noscript>
+
+
+	<hr>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>
