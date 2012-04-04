@@ -7,9 +7,9 @@ var initForesightDebugger = function () {
 	var info = [];
 
 	info.push( 'Foresight Images: ' + foresight.images.length );
-	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio );
+	info.push( 'Device Pixel Ratio: ' + foresight.devicePixelRatio + ', Device Pixel Ratio Rounded: ' + foresight.devicePixelRatioRounded );
 	info.push( 'Connection Test Result: ' + foresight.connTestResult );
-	if( foresight.connTestResult !== 'skip' ) {
+	if( foresight.connTestResult !== 'skip' && foresight.connTestResult !== 'forced' ) {
 		info.push( 'Connection Type: ' + foresight.connType );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
 	}
@@ -46,7 +46,7 @@ var initForesightDebugger = function () {
 		}
 		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
 		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Unit Type: ' + img.unitType + ', Bandwidth: ' + img.bandwidth + ', Scale: ' + img.scaleFactor );
+		imgInfo.push( 'Unit Type: ' + img.unitType + ', Bandwidth: ' + img.bandwidth + ', Scale: ' + img.scale + ', Scale Rounded: ' + img.scaleRounded );
 
 		imgInfo.push( 'Src Modification: ' + img.srcModification );
 		if ( img.highResolutionSrc && foresight.hiResEnabled ) {

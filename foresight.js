@@ -7,56 +7,55 @@
 ; ( function ( foresight, window, document, navigator ) {
 	"use strict";
 
-	// properties
-	foresight.devicePixelRatio = ( ( window.devicePixelRatio && window.devicePixelRatio > 1 ) ? window.devicePixelRatio : 1 );
-	foresight.bandwidth = 'low';
-	foresight.connKbps;
-	foresight.connTestResult;
-	foresight.connType;
-	foresight.images = [];
+	foresight.images = []; 
+	foresight.options = foresight.options || {};
 
 	// options
-	foresight.options = foresight.options || {};
 	var opts = foresight.options,
 	testConn = opts.testConn || true,
 	minKbpsForHighBandwidth = opts.minKbpsForHighBandwidth || 400,
 	speedTestUri = opts.speedTestUri || 'http://foresightjs.appspot.com/speed-test/50K',
 	speedTestKB = opts.speedTestKB || 50,
 	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
+	knownSlowConnections = opts.knownSlowConnections || [ '2g', '3g' ],
 
-	// used to keep track of the progress status for finding foresight 
-	// images in the DOM and connection test results
-	imageIterateStatus,
-	speedConnectionStatus,
-
-	// for minification purposes
-	STATUS_LOADING = 'loading',
-	STATUS_COMPLETE = 'complete',
-	LOCAL_STORAGE_KEY = 'fsjs',
+	// using property string references for minification purposes
+	DEVICE_PIXEL_RATIO = 'devicePixelRatio',
+	DEVICE_PIXEL_RATIO_ROUNDED = 'devicePixelRatioRounded',
+	BANDWIDTH = 'bandwidth',
+	CONNECTION_TYPE = 'connType',
+	CONNECTION_TEST_RESULT = 'connTestResult',
+	CONNECTION_KBPS = 'connKbps',
+	REQUEST_CHANGE = 'requestChange',
+	HIGH_RES_SRC = 'highResolutionSrc',
 	BROWSER_WIDTH = 'browserWidth',
 	BROWSER_HEIGHT = 'browserHeight',
 	REQUEST_WIDTH = 'requestWidth',
 	REQUEST_HEIGHT = 'requestHeight',
 	DIMENSION_WIDTH = 'width',
 	DIMENSION_HEIGHT = 'height',
+	WIDTH_UNITS = 'widthUnits',
+	HEIGHT_UNITS = 'heightUnits',
+	SCALE = 'scale',
+	SCALE_ROUNDED = 'scaleRounded',
+	URI_TEMPLATE = 'uriTemplate',
+	SRC_MODIFICATION = 'srcModification',
+	STATUS_LOADING = 'loading',
+	STATUS_COMPLETE = 'complete',
+	LOCAL_STORAGE_KEY = 'fsjs',
 	TRUE = true,
 	FALSE = false,
+
+	// used to keep track of the progress status for finding foresight 
+	// images in the DOM and connection test results
+	imageIterateStatus,
+	speedConnectionStatus,
 
 	initForesight = function () {
 		// begin finding valid foresight <img>'s and updating their src's
 		if ( imageIterateStatus ) return;
 
 		imageIterateStatus = STATUS_LOADING;
-
-		if ( opts.forcedPixelRatio ) {
-			// force a certain device pixel ratio, used more so for debugging purposes
-			foresight.devicePixelRatio = opts.forcedPixelRatio;
-		}
-
-		if ( opts.forcedBandwidth ) {
-			// force that this device has a low or high bandwidth, used more so for debugging purposes
-			foresight.bandwidth = opts.forcedBandwidth;
-		}
 
 		initImages();
 		imageIterateStatus = STATUS_COMPLETE;
@@ -70,135 +69,147 @@
 		x,
 		img,
 		customCss,
-		cssRegex = /url\((?:([a-zA-Z-_0-9{}\\//.:\s]+))\)/g, // regex used to parse apart custom CSS
-		imageSetCssValue,
-		imageSetValues,
-		imageSetItem,
-		y,
-		urlMatch;
+		imageSetText;
 
 		for ( x = 0; x < document.images.length; x ++ ) {
 			img = document.images[ x ];
 
-			// initialize some properties the image will use
-			if ( !img.initalized ) {
-				// only gather the images that haven't already been initialized
-				img.initalized = TRUE;
+			// initialize properties the image will use
+			// only gather the images that haven't already been initialized
+			if ( img.initalized ) continue;
 
-				img.orgSrc = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
+			img.initalized = TRUE;
 
-				// always set the img's data-width & data-height attributes so we always know its aspect ratio
-				img.widthUnits = getDataAttribute( img, DIMENSION_WIDTH, true );
-				img.heightUnits = getDataAttribute( img, DIMENSION_HEIGHT, true );
+			img.orgSrc = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
 
-				 // missing required info
-				if ( !img.orgSrc || !img.widthUnits || !img.heightUnits ) continue;
+			// always set the img's data-width & data-height attributes so we always know its aspect ratio
+			img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
+			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
 
-				img[ REQUEST_WIDTH ] = 0;
-				img[ REQUEST_HEIGHT ] = 0;
-				img.highResolutionSrc = getDataAttribute( img, 'high-resolution-src' );
-				img.orgClassName = ( img.className ? img.className : '' );
+			 // missing required info
+			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
 
-				// font-family will be the hacked CSS property which contains the image-set() CSS value
-				// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
-				// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
-				// http://trac.webkit.org/changeset/111637
-				imageSetCssValue = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
+			img[ REQUEST_WIDTH ] = 0;
+			img[ REQUEST_HEIGHT ] = 0;
+			img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
+			img.orgClassName = ( img.className ? img.className : '' );
 
-				img.imageSet = [];
+			// font-family will be the hacked CSS property which contains the image-set() CSS value
+			// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
+			// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
+			// http://trac.webkit.org/changeset/111637
+			imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
 
-				if ( imageSetCssValue.length > 1) {
-					// parse apart the custom CSS image-source property value
+			img.imageSet = [];
+			
+			img.imageSet.push( { 
+				uriTemplate: null,
+				scale: foresight[ DEVICE_PIXEL_RATIO ],
+				bandwidth: foresight[ BANDWIDTH ],
+				text: null
+			} );
 
-					imageSetValues = imageSetCssValue[1].split( ',' );
-
-					for ( y = 0; y < imageSetValues.length; y ++ ) {
-
-						// set the defaults for this image-set item
-						imageSetItem = { 
-							uriTemplate: null,
-							scaleFactor: null,
-							bandwidth: null,
-							text: imageSetValues[ y ]
-						};
-
-						// get the image's scale factor if it was provided (default is 1)
-						if ( imageSetItem.text.indexOf( ' 2x' ) > -1 ) {
-							imageSetItem.scaleFactor = 2;
-						} else if ( imageSetItem.text.indexOf( ' 1.5x' ) > -1 ) {
-							imageSetItem.scaleFactor = 1.5;
-						} else {
-							imageSetItem.scaleFactor = foresight.devicePixelRatio;
-						}
-
-						// get the image's bandwidth value if it was provided (default is low)
-						if ( imageSetItem.text.indexOf( 'high-bandwidth' ) > -1 ) {
-							imageSetItem.bandwidth = 'high';
-						} else {
-							imageSetItem.bandwidth = foresight.bandwidth;
-						}
-
-						// get the url's value (the URI template)
-						while ( urlMatch = cssRegex.exec( imageSetItem.text ) ) {
-							if ( urlMatch[ 1 ] != null ) {
-								imageSetItem.uriTemplate = urlMatch[ 1 ];
-							}
-						}
-
-						img.imageSet.push( imageSetItem );
-					}
-				}
-
-				// handle any response errors which may happen with this image
-				img.onerror = imgResponseError;
-
-				// add this image to the collection
-				foresight.images.push( img );
+			if ( imageSetText.length > 1 ) {
+				// parse apart the custom CSS image-set() text
+				parseImageSet( img, imageSetText[ 1 ] );
 			}
+
+			// handle any response errors which may happen with this image
+			img.onerror = imgResponseError;
+
+			// add this image to the collection
+			foresight.images.push( img );
 		}
 	},
 
-	getDataAttribute = function ( img, attribute, getInt ) {
+	parseImageSet = function ( img, imageSetText ) {
+		// parse apart the custom CSS image-set() text
+		// add each image-set item to the img.imageSet array
+		// the array will be used later when deciding what image to request
+		var
+		y,
+		imageSetValues = imageSetText.split( ',' ),
+		imageSetItem,
+		urlMatch,
+		cssRegex = /url\((?:([a-zA-Z-_0-9{}\\//.:\s]+))\)/g; // regex used to parse apart custom CSS
+		
+		for ( y = 0; y < imageSetValues.length; y ++ ) {
+
+			// set the defaults for this image-set item
+			// scaleFactor and bandwidth initially are set to the device's info
+			imageSetItem = { 
+				uriTemplate: null,
+				scale: null,
+				bandwidth: null,
+				text: imageSetValues[ y ]
+			};
+
+			// get the image's scale factor if it was provided
+			if ( imageSetItem.text.indexOf( ' 2x' ) > -1 ) {
+				imageSetItem[ SCALE ] = 2;
+			} else if ( imageSetItem.text.indexOf( ' 1.5x' ) > -1 ) {
+				imageSetItem[ SCALE ] = 1.5;
+			}
+
+			// get the image's bandwidth value if it was provided
+			if ( imageSetItem.text.indexOf( 'high-bandwidth' ) > -1 ) {
+				imageSetItem[ BANDWIDTH ] = 'high';
+			} else if ( imageSetItem.text.indexOf( 'low-bandwidth' ) > -1 ) {
+				imageSetItem[ BANDWIDTH ] = 'low';
+			}
+
+			// get the url's value (the URI template)
+			// ie:  url(URITEMPLATE)
+			while ( urlMatch = cssRegex.exec( imageSetItem.text ) ) {
+				if ( urlMatch[ 1 ] != null ) {
+					imageSetItem[ URI_TEMPLATE ] = urlMatch[ 1 ];
+				}
+			}
+
+			// each img keeps an array containing each of its image-set items
+			// this array is used later when foresight decides which image to request
+			img.imageSet.push( imageSetItem );
+		}
+	},
+
+	getDataAttribute = function ( img, attribute, getInt, value ) {
 		// get an <img> element's data- attribute value
-		var value = img.getAttribute( 'data-' + attribute );
+		value = img.getAttribute( 'data-' + attribute );
 		if ( getInt ) {
-			return parseValidInt( value );
+			if ( !isNaN( value ) ) {
+				return parseInt( value, 10 );
+			}
+			return 0;
 		}
 		return value;
 	},
 
-	parseValidInt = function ( value ) {
-		if ( !isNaN( value ) ) {
-			return parseInt( value, 10 );
-		}
-		return 0;
-	},
-
 	initImageRebuild = function () {
-		// if we've completed both the connection speed test and finding all
-		// of the valid foresight images then rebuild each image's src
+		// if we've completed both the connection speed test and we've found
+		// all of the valid foresight images then rebuild each image's src
 		if ( !( speedConnectionStatus === STATUS_COMPLETE && imageIterateStatus === STATUS_COMPLETE ) ) return;
 
+		// variables reused throughout the for loop
 		var
 		x,
+		y,
 		imagesLength = foresight.images.length,
 		img,
-		imgrequestWidth,
-		imgrequestHeight,
+		imgRequestWidth,
+		imgRequestHeight,
 		dimensionIncreased,
 		classNames,
 		hiResClassName,
 		dimensionClassName,
 		dimensionCssRules = [],
 		computedWidthValue,
-		y,
 		imageSetItem;
 
 		for ( x = 0; x < imagesLength; x++ ) {
 			img = foresight.images[ x ];
 
 			if ( !isParentVisible( img ) ) {
-				// parent element not visible (yet anyways) so don't continue with this img
+				// parent element is not visible (yet anyways) so don't continue with this img
 				continue;
 			}
 
@@ -209,97 +220,102 @@
 			fillComputedPixelDimensions( img );
 			if ( img.unitType == 'pixel' ) {
 				// instead of manually assigning width, then height, for every image and doing many repaints
-				// create a classname with its dimensions and when we're all done
+				// create a classname from its dimensions and when we're all done
 				// we can then add those CSS dimension classnames to the document and do less repaints
 				dimensionClassName = 'fs-' + img[ BROWSER_WIDTH ] + 'x' + img[ BROWSER_HEIGHT ];
 				classNames.push( dimensionClassName );
-				
-				// build a list of CSS rules for all the different dimensions (sorry, ugly i know)
+
+				// build a list of CSS rules for all the different dimensions
 				// ie:  .fs-640x480{width:640px;height:480px}
 				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' );
 			}
 
 			// show the display to inline so it flows in the webpage like a normal img
-			if ( img.style.display != 'inline' ) {
+			if ( img.style.display !== 'inline' ) {
 				img.style.display = 'inline';
 			}
 
-			// set the defaults this image will use
-			img.uriTemplate = null;
-			img.scaleFactor = foresight.devicePixelRatio;
-			img.bandwidth = foresight.bandwidth;
-
 			// image-set( url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth );
-			// use the scale factor and bandwidth value to determine which URI template to apply to the img src
+			// use the scale factor and bandwidth value to determine which image-set item to apply to the img src
 			// loop through each of the items in the imageSet and pick out which one to use
 			for ( y = 0; y < img.imageSet.length; y++ ) {
 				imageSetItem = img.imageSet[ y ];
-				if ( foresight.bandwidth === imageSetItem.bandwidth && foresight.devicePixelRatio === imageSetItem.scaleFactor ) {
-					img.uriTemplate = imageSetItem.uriTemplate;
-					img.scaleFactor = imageSetItem.scaleFactor;
-					img.bandwidth = imageSetItem.bandwidth;
-				} else if ( foresight.devicePixelRatio === imageSetItem.scaleFactor ) {
-					img.uriTemplate = imageSetItem.uriTemplate;
-					img.scaleFactor = imageSetItem.scaleFactor;
-				} else if ( foresight.bandwidth === imageSetItem.bandwidth ) {
-					img.uriTemplate = imageSetItem.uriTemplate;
-					img.bandwidth = imageSetItem.bandwidth;
+				if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] && foresight[ DEVICE_PIXEL_RATIO ] === imageSetItem[ SCALE ] ) {
+					// this device has the exact bandwidth and device pixel ratio required
+					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
+					img[ SCALE ] = imageSetItem[ SCALE ];
+					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
+				} else if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] && foresight[ DEVICE_PIXEL_RATIO_ROUNDED ] === Math.round( imageSetItem[ SCALE ] ) ) {
+					// this device has the exact bandwidth and device pixel ratio required
+					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
+					img[ SCALE ] = imageSetItem[ SCALE ];
+					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
+				} else if ( foresight[ DEVICE_PIXEL_RATIO ] === imageSetItem[ SCALE ] ) {
+					// this device has the correct device pixel ratio required
+					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
+					img[ SCALE ] = imageSetItem[ SCALE ];
+				} else if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] ) {
+					// this device has the correct bandwidth required
+					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
+					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
 				}
 			}
-			
+			img[ SCALE_ROUNDED ] = Math.round( img[ SCALE ] );
+
 			// decide if this image should be hi-res or not
-			if ( img.bandwidth === 'high' && img.scaleFactor > 1 ) {
+			// both the bandwidth should be 'high' and the scale factor greater than 1
+			if ( img[ BANDWIDTH ] === 'high' && img[ SCALE ] > 1 ) {
 				// hi-res is good to go, figure out our request dimensions
-				imgrequestWidth = Math.round( img[ BROWSER_WIDTH ] * img.scaleFactor );
-				imgrequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img.scaleFactor );
+				imgRequestWidth = Math.round( img[ BROWSER_WIDTH ] * img[ SCALE ] );
+				imgRequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img[ SCALE ] );
 				foresight.hiResEnabled = TRUE;
 				classNames.push( 'fs-high-resolution' );
 			} else {
 				// no-go on the hi-res, go with the default size
-				imgrequestWidth = img[ BROWSER_WIDTH ];
-				imgrequestHeight = img[ BROWSER_HEIGHT ];
+				imgRequestWidth = img[ BROWSER_WIDTH ];
+				imgRequestHeight = img[ BROWSER_HEIGHT ];
 				foresight.hiResEnabled = FALSE;
 				classNames.push( 'fs-standard-resolution' );
 			}
 
 			// only update the request width/height when the new dimension is 
-			// larger than the one already loaded (will always be needed on first load)
+			// larger than the one already loaded (this will always be needed on first load)
 			// if the new request size is smaller than the image already loaded then there's 
-			// no need to request another img, just let the browser shrink the current img
-			if ( imgrequestWidth > img[ REQUEST_WIDTH ] ) {
-				img[ REQUEST_WIDTH ] = imgrequestWidth;
-				img[ REQUEST_HEIGHT ] = imgrequestHeight;
+			// no need to request another image, just let the browser shrink the current img
+			if ( imgRequestWidth > img[ REQUEST_WIDTH ] ) {
+				img[ REQUEST_WIDTH ] = imgRequestWidth;
+				img[ REQUEST_HEIGHT ] = imgRequestHeight;
 
 				// decide how the img src should be modified for the image request
-				if ( img.highResolutionSrc && foresight.hiResEnabled ) {
+				if ( img[ HIGH_RES_SRC ] && foresight.hiResEnabled ) {
 					// this image has a hi-res src manually set and the device is hi-res enabled
 					// set the img src using the data-high-resolution-src attribute value
 					// begin the request for this image
-					if ( img.highResolutionSrc !== img.src ){ 
-						img.src = img.highResolutionSrc;
+					if ( img[ HIGH_RES_SRC ] !== img.src ){ 
+						img.src = img[ HIGH_RES_SRC ];
 					}
-					img.srcModification = 'src-hi-res';
-				} else if ( img.uriTemplate ) {
+					img[ SRC_MODIFICATION ] = 'src-hi-res';
+				} else if ( img[ URI_TEMPLATE ] ) {
 					// this image's src should be parsed a part then
 					// rebuilt using the supplied URI template
 					// this allows you to place the dimensions where ever in the src
 					rebuildSrcFromUriTemplate( img );
-					img.srcModification = 'src-uri-template';
+					img[ SRC_MODIFICATION ] = 'src-uri-template';
 				} else {
 					// default: replaceDimensions
 					// this image may already have its default dimensions
 					// directly within the src. Replace the default width/height
 					// with the new request width/height
 					replaceDimensions( img );
-					img.srcModification = 'src-replace-dimensions';
+					img[ SRC_MODIFICATION ] = 'src-replace-dimensions';
 				}
-				img.requestChange = TRUE;
+				img[ REQUEST_CHANGE ] = TRUE;
 			} else {
-				img.requestChange = FALSE;
+				img[ REQUEST_CHANGE ] = FALSE;
 			}
-			
-			classNames.push( 'fs-' + img.srcModification );
-			
+
+			classNames.push( 'fs-' + img[ SRC_MODIFICATION ] );
+
 			// assign the new CSS classnames to the img
 			img.className = classNames.join( ' ' );
 
@@ -312,10 +328,11 @@
 		}
 		
 		if ( foresight.updateComplete ) {
+			// fire off the updateComplete() function if one exists
 			foresight.updateComplete();
 		}
 
-		// remember what the width is to evaluate later when the window resizes
+		// remember what the window width is to evaluate later when the window resizes
 		lastWindowWidth = getWindowWidth();
 	},
 
@@ -325,7 +342,7 @@
 		if ( parent.clientWidth ) {
 			return TRUE;
 		}
-		if ( getComputedStyleValue( parent, 'display', 'display' ) === 'inline' ) {
+		if ( getComputedStyleValue( parent, 'display' ) === 'inline' ) {
 			// if its an inline element then we won't get a good clientWidth
 			// so try again with this element's parent
 			return isParentVisible( parent );
@@ -338,7 +355,7 @@
 		// this is most important for images set by percents
 		// and images with a max-width set
 		if ( !img.unitType ) {
-			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH, DIMENSION_WIDTH );
+			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
 			if ( computedWidthValue.indexOf( '%' ) > 0 ) {
 				// if the width has a percent value then change the display to
 				// display:block to help get correct browser pixel width
@@ -348,8 +365,8 @@
 				// assign the browser pixels to equal the width and height units
 				// this only needs to happen the first time
 				img.unitType = 'pixel';
-				img[ BROWSER_WIDTH ] = img.widthUnits;
-				img[ BROWSER_HEIGHT ] = img.heightUnits;
+				img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+				img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
 			}
 		}
 
@@ -360,7 +377,7 @@
 			// this should be re-ran every time the window width changes
 			img.computedWidth = getComputedPixelWidth( img );
 			img[ BROWSER_WIDTH ] = img.computedWidth;
-			img[ BROWSER_HEIGHT ] = Math.round( img.heightUnits * ( img.computedWidth / img.widthUnits ) );
+			img[ BROWSER_HEIGHT ] = Math.round( img[ HEIGHT_UNITS ] * ( img.computedWidth / img[ WIDTH_UNITS ] ) );
 
 			// manually assign what the calculated height pixels should be
 			img.style.height = img[ BROWSER_HEIGHT ] + 'px';
@@ -392,20 +409,23 @@
 
 	getComputedStyleValue = function ( element, cssProperty, jsReference ) {
 		// get the computed style value for this element (but there's an IE way and the rest-of-the-world way)
+		if ( !jsReference ) {
+			jsReference = cssProperty;
+		}
 		return element.currentStyle ? element.currentStyle[ jsReference ] : document.defaultView.getComputedStyle( element, null ).getPropertyValue( cssProperty );
 	},
 
 	dimensionStyleEle,
-	applyDimensionCssRules = function ( dimensionCssRules ) {
+	applyDimensionCssRules = function ( dimensionCssRules, cssRules ) {
 		if ( !dimensionStyleEle ) {
 			// build a new style element to hold all the dimension CSS rules
 			// add the new style element to the head element
 			dimensionStyleEle = document.createElement( 'style' );
 			dimensionStyleEle.setAttribute( 'type', 'text/css' );
 		}
-		
-		var cssRules = dimensionCssRules.join( '' );
-		
+
+		cssRules = dimensionCssRules.join( '' );
+
 		// add all of the dimension CSS rules to the style element
 		try {
 			dimensionStyleEle.innerText = cssRules;
@@ -413,7 +433,7 @@
 			// our trusty friend IE has their own way of doing things, weird I know
 			dimensionStyleEle.styleSheet.cssText = cssRules;
 		}
-		
+
 		if ( dimensionStyleEle.parentElement == null ) {
 			// append it to the head element if we haven't done so yet
 			document.getElementsByTagName( 'head' )[ 0 ].appendChild( dimensionStyleEle );
@@ -424,8 +444,8 @@
 		// rebuild the <img> src using the supplied URI template and image data
 		var
 		f,
-		formatReplace = [ 'src', 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', 'requestWidth', 'requestHeight', 'scaleFactor' ],
-		newSrc = img.uriTemplate;
+		formatReplace = [ 'src', 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', REQUEST_WIDTH, REQUEST_HEIGHT, SCALE, SCALE_ROUNDED ],
+		newSrc = img[ URI_TEMPLATE ];
 
 		// parse apart the original src URI
 		img.uri = parseUri( img.orgSrc );
@@ -434,7 +454,8 @@
 		img.uri.src = img.orgSrc;
 		img.uri[ REQUEST_WIDTH ] = img[ REQUEST_WIDTH ];
 		img.uri[ REQUEST_HEIGHT ] = img[ REQUEST_HEIGHT ];
-		img.uri.scaleFactor = img.scaleFactor;
+		img.uri[ SCALE ] = img[ SCALE ];
+		img.uri[ SCALE_ROUNDED ] = img[ SCALE_ROUNDED ];
 
 		// loop through all the possible format keys and 
 		// replace them with their respective value for this image
@@ -472,34 +493,33 @@
 
 		var fileSplt = uri.file.split('.');
 		uri.filename = fileSplt[ 0 ];
-		uri.ext = ( fileSplt.length > 1 ? fileSplt[ fileSplt.length -1 ] : '' );
+		uri.ext = ( fileSplt.length > 1 ? fileSplt[ fileSplt.length - 1 ] : '' );
 
 		return uri;
 	},
 
-	replaceDimensions = function ( img ) {
+	replaceDimensions = function ( img, newSrc ) {
 		// replace image dimensions already in the src with new dimensions
 		// do this flip-flop replace so dimensions do step on one another after replacing
 		// set the new src, begin the request for this image
-		var newSrc = img.orgSrc
-						.replace( img.widthUnits, '{requestWidth}' )
-						.replace( img.heightUnits, '{requestHeight}' );
-		newSrc = newSrc
-					.replace( '{requestWidth}', img[ REQUEST_WIDTH ] )
-					.replace( '{requestHeight}', img[ REQUEST_HEIGHT ] );
-					
+		newSrc = img.orgSrc;
+		if ( img[ WIDTH_UNITS ] !== img[ REQUEST_WIDTH ] ) {
+			newSrc = newSrc.replace( img[ WIDTH_UNITS ], '{requestWidth}' )
+						   .replace( img[ HEIGHT_UNITS ], '{requestHeight}' );
+			newSrc = newSrc.replace( '{requestWidth}', img[ REQUEST_WIDTH ] )
+						   .replace( '{requestHeight}', img[ REQUEST_HEIGHT ] );
+		}
 		if ( img.src !== newSrc ) {
 			img.src = newSrc;
 		}
 	},
 
-	imgResponseError = function ( e ) {
-		if ( !e || !e.target || e.target.hadError ) return;
-		
-		// very first error
-		e.target.hadError = TRUE;
-		e.target.src = img.orgSrc;
-		e.target.srcModification = 'response-error';
+	imgResponseError = function ( img ) {
+		img = this;
+		if ( img.hadError ) return;
+		img.hadError = TRUE;
+		img.src = img.orgSrc;
+		img[ SRC_MODIFICATION ] = 'response-error';
 	},
 
 	initSpeedTest = function () {
@@ -507,23 +527,29 @@
 		// already got info or it already started
 		if ( speedConnectionStatus ) return;
 
-		// if the device pixel ratio is 1, then no need to do a network connection 
-		// speed test since it can't show hi-res anyways
-		if ( foresight.devicePixelRatio === 1 ) {
-			foresight.connTestResult = 'skip';
+		// force that this device has a low or high bandwidth, used more so for debugging purposes
+		if ( opts.forcedBandwidth ) {
+			foresight[ BANDWIDTH ] = opts.forcedBandwidth;
+			foresight[ CONNECTION_TEST_RESULT ] = 'forced';
 			speedConnectionStatus = STATUS_COMPLETE;
 			return;
 		}
 
-		// if we know the connection is 2g or 3g, don't even bother with the speed test, cuz its slow
-		foresight.connType = ( navigator.connection && navigator.connection.type ? navigator.connection.type.toString().toLowerCase() : 'unknown' );
-		if ( foresight.connType !== 'unknown' ) {
-			var
-			c,
-			knownSlowConnections = [ '2g', '3g' ];
-			for ( c = 0; c < knownSlowConnections.length; c ++ ) {
-				if ( foresight.connType.indexOf( knownSlowConnections[ c ] ) > -1 ) {
-					foresight.connTestResult = 'connTypeSlow';
+		// if the device pixel ratio is 1, then no need to do a network connection 
+		// speed test since it can't show hi-res anyways
+		if ( foresight[ DEVICE_PIXEL_RATIO ] === 1 ) {
+			foresight[ CONNECTION_TEST_RESULT ] = 'skip';
+			speedConnectionStatus = STATUS_COMPLETE;
+			return;
+		}
+
+		// if we know the connection is 2g or 3 (configured by options.knownSlowConnections) 
+		//don't even bother with the speed test, cuz its slow
+		foresight[ CONNECTION_TYPE ] = ( navigator.connection && navigator.connection.type ? navigator.connection.type.toString().toLowerCase() : 'unknown' );
+		if ( foresight[ CONNECTION_TYPE ] !== 'unknown' ) {
+			for ( var c = 0; c < knownSlowConnections.length; c ++ ) {
+				if ( foresight[ CONNECTION_TYPE ].indexOf( knownSlowConnections[ c ] ) > -1 ) {
+					foresight[ CONNECTION_TEST_RESULT ] = 'connTypeSlow';
 					speedConnectionStatus = STATUS_COMPLETE;
 					return;
 				}
@@ -535,12 +561,12 @@
 		try {
 			var fsData = JSON.parse( localStorage.getItem( LOCAL_STORAGE_KEY ) );
 			if ( fsData !== null ) {
-				if ( ( new Date() ).getTime() < fsData.expires ) {
+				if ( ( new Date() ).getTime() < fsData.exp ) {
 					// already have connection data within our desired timeframe
 					// use this recent data instead of starting another test
-					foresight.bandwidth = fsData.bandwidth;
-					foresight.connKbps = fsData.connKbps;
-					foresight.connTestResult = 'localStorage';
+					foresight[ BANDWIDTH ] = fsData.bw;
+					foresight[ CONNECTION_KBPS ] = fsData.kbps;
+					foresight[ CONNECTION_TEST_RESULT ] = 'localStorage';
 					speedConnectionStatus = STATUS_COMPLETE;
 					return;
 				}
@@ -561,9 +587,8 @@
 			var duration = ( endTime - startTime ) / 1000;
 			duration = ( duration > 1 ? duration : 1 ); // just to ensure we don't divide by 0
 
-			var bitsLoaded = ( speedTestKB * 1024 * 8 );
-			foresight.connKbps = ( bitsLoaded / duration ) / 1024;
-			foresight.bandwidth = ( foresight.connKbps >= minKbpsForHighBandwidth ? 'high' : 'low' );
+			foresight[ CONNECTION_KBPS ] = ( ( speedTestKB * 1024 * 8 ) / duration ) / 1024;
+			foresight[ BANDWIDTH ] = ( foresight[ CONNECTION_KBPS ] >= minKbpsForHighBandwidth ? 'high' : 'low' );
 
 			speedTestComplete( 'networkSuccess' );
 		};
@@ -590,9 +615,9 @@
 
 		// calculate the maximum number of milliseconds it 'should' take to download an XX Kbps file
 		// set a timeout so that if the speed test download takes too long
-		// than it isn't a high speed connection and ignore what the test image .onload has to say
+		// than it isn't a 'high-bandwidth' and ignore what the test image .onload has to say
 		// this is used so we don't wait too long on a speed test response 
-		// Adding 350ms to account for TCP slow start, quickAndDirty = true
+		// Adding 350ms to account for TCP slow start, quickAndDirty === TRUE
 		speedTestTimeoutMS = ( ( ( speedTestKB * 8 ) / minKbpsForHighBandwidth ) * 1000 ) + 350;
 		setTimeout( function () {
 			speedTestComplete( 'networkSlow' );
@@ -605,16 +630,16 @@
 
 		// first one with an answer wins
 		speedConnectionStatus = STATUS_COMPLETE;
-		foresight.connTestResult = connTestResult;
+		foresight[ CONNECTION_TEST_RESULT ] = connTestResult;
 
 		try {
 			if ( !expireMinutes ) {
 				expireMinutes = speedTestExpireMinutes;
 			}
 			var fsDataToSet = {
-				connKbps: foresight.connKbps,
-				bandwidth: foresight.bandwidth,
-				expires: ( new Date() ).getTime() + (expireMinutes / 60 / 1000)
+				kbps: foresight[ CONNECTION_KBPS ],
+				bw: foresight[ BANDWIDTH ],
+				exp: ( new Date() ).getTime() + (expireMinutes * 60000)
 			};
 			localStorage.setItem( LOCAL_STORAGE_KEY, JSON.stringify( fsDataToSet ) );
 		} catch( e ) { }
@@ -641,7 +666,7 @@
 	},
 
 	getWindowWidth = function () {
-		return document.documentElement.clientWidth || document.body && document.body.clientWidth || undefined;
+		return document.documentElement.clientWidth || document.body && document.body.clientWidth || 1024;
 	},
 
 	reloadTimeoutId,
@@ -657,27 +682,37 @@
 		// if the window resizes or this function is called by external events (like a changepage in jQuery Mobile)
 		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
 		window.clearTimeout( reloadTimeoutId ); 
-		reloadTimeoutId = window.setTimeout( executeReload, 300 ); 
+		reloadTimeoutId = window.setTimeout( executeReload, 250 ); 
 	};
 
 	// when the DOM is ready begin finding valid foresight <img>'s and updating their src's
-	window.foresightReady = function () {
+	foresight.ready = function () {
 		if ( !document.body ) {
-			return setTimeout( window.foresightReady, 1 );
+			return window.setTimeout( ready, 1 );
 		}
 		initForesight();
 	};
 	if ( document.readyState === STATUS_COMPLETE ) {
-		setTimeout( foresightReady, 1 );
+		setTimeout( fsReady, 1 );
 	} else {
 		if ( document.addEventListener ) {
-			document.addEventListener( "DOMContentLoaded", initForesight, FALSE );
-			window.addEventListener( "load", initForesight, FALSE );
+			document.addEventListener( "DOMContentLoaded", foresight.ready, FALSE );
+			window.addEventListener( "load", foresight.ready, FALSE );
 		} else if ( document.attachEvent ) {
-			document.attachEvent( "onreadystatechange", initForesight );
-			window.attachEvent( "onload", initForesight );
+			document.attachEvent( "onreadystatechange", foresight.ready );
+			window.attachEvent( "onload", foresight.ready );
 		}
 	}
+	
+	// get this device's pixel ratio
+	foresight[ DEVICE_PIXEL_RATIO ] = window[ DEVICE_PIXEL_RATIO ] ? window[ DEVICE_PIXEL_RATIO ] : 1;
+
+	if ( opts.forcedPixelRatio ) {
+		// force a certain device pixel ratio, used more so for debugging purposes
+		foresight[ DEVICE_PIXEL_RATIO ] = opts.forcedPixelRatio;
+	}
+	
+	foresight[ DEVICE_PIXEL_RATIO_ROUNDED ] = Math.round( foresight[ DEVICE_PIXEL_RATIO ] );
 
 	// DOM does not need to be ready to begin the network connection speed test
 	initSpeedTest();
@@ -685,4 +720,4 @@
 	// add a listener to the window.resize event
 	addWindowResizeEvent();
 
-} ( this.foresight = this.foresight || {}, this, document, navigator ) );
+} ( foresight = foresight || {}, this, document, navigator ) );
