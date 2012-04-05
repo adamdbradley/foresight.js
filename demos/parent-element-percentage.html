@@ -8,56 +8,64 @@
 	<style>
 		.fs-img {
 			width:100%;
-			max-width:640px;
+			max-width:1024px;
+			font-family: 'image-set( url({protocol}://{host}{directory}{requestWidth}px-{file}) 2x high-bandwidth )';
 			display:none;
+		}
+		#imgContainer {
+			text-align:center;
 		}
 	</style>
 
 	<script src="foresight-debugger.js"></script>
 	<script src="foresight.js"></script>
-	
+
 </head>
 <body>
 
 	<h2>
-		Demo 2: Parent Element Percentage
+		Parent Element Percentage
 	</h2>
 
 	<p>
 		This demo expands the image browser pixels to 100% of its parent element's width, and requests an image 
-		width adjusted to the device pixel ratio. In cases where this would be useful is for a homepage hero 
-		image which should span the width of the display. This example uses URI replacement to replace existing 
-		dimensions within the URI for the dimensions scaled to the device.
+		scale to the device pixel ratio and available width. In cases where this would be useful is for a homepage hero 
+		image which should span the width of the display. This example uses URI templates to request image 
+		dimensions scaled for the device the device. Using percentages works best with server-resized images.
 	</p>
 	<p>
-		This image also sets a max browser pixel width so images do not become too large. While a mobile phone may 
+		This image also has a max browser pixel width so images do not become too large. While a mobile phone may 
 		have a width of 320 browser pixels, a desktop monitor may have a 1200 browser pixel width. In this case 
-		we are setting a max width of 640 browser pixels.
+		we are setting a max width of 640 browser pixels so it cannot become too large
 	</p>
 	<p>
 		This example uses internal CSS within the head element to apply a width of 100% 
-		and a max-width of 640px to the image. Note that you do not set the percentage in the 
+		and a max-width of 1024px to the image. Note that you do not set the percentage in the 
 		'data-width' attribute because the width and height attributes should always have browser 
 		pixel dimensions. Without browser pixel dimensions we'd be unable to scale the image 
 		proportionately when adjusting the percentage.
 	</p>
 	<p>
 		If you adjust the width of the page you'll see that the image will scale according to
-		its available area within its parent element (and maxes out at 640px, which is set within the CSS).
+		its available area within its parent element (and maxes out at 1024px, which is set within the CSS).
 	</p>
 
-
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg" data-width="320" data-height="229" class="fs-img">
-	<noscript>
-		<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lakeside_of_Mono_Lake.jpg/320px-Lakeside_of_Mono_Lake.jpg">
-	</noscript>
-
-
+	<div id="imgContainer">
+		<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg" data-width="320" data-height="213" class="fs-img">
+		<noscript>
+			<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg">
+		</noscript>
+	</div>
+	
 	<p>
-		Photo by <a href="http://commons.wikimedia.org/wiki/User:Michael_G%C3%A4bler">Michael Gäbler</a>.
+		Photo by <a href="TODO">TODO</a>
 	</p>
+
+
 
 	<hr>
+
+
 
 	<ul>
 		<li><a href="index.html">Demo Homepage</a>

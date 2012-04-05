@@ -6,10 +6,28 @@
 	<link href="demo.css" type="text/css" rel="stylesheet" />
 
 	<style>
-		.fs-img { 
-			width:100%;
-			display:none; 
+
+		.exampleA {
+			/* Low-res uses the original src, which is the default because the 1x image-set is excluded */
+			/* Hi-res adds "w" and "h" querystrings representing request width and height */
+			font-family: 'image-set( url({src}?w={requestWidth)&h={requestHeight}) 2x high-bandwidth )';
+			display:none;
 		}
+
+		.exampleB {
+			/* Low-res uses the original src */
+			/* Hi-res adds request width and "px-" at the beginning of the filename */
+			font-family: 'image-set( url({src}) 1x low-bandwidth, url({protocol}://{host}{directory}{requestWidth)px-{file}) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleC {
+			/* Both low and hi-res images use the same image-set() item */
+			/* Adds a request width/height directory before the filename, ie: /320x240/ */
+			font-family: 'image-set( url(http://{host}{directory}{requestWidth}x{requestHeight}/{file}) )';
+			display:none;
+		}
+
 	</style>
 
 	<script src="foresight-debugger.js"></script>
@@ -19,20 +37,53 @@
 <body>
 
 	<h2>
-		Demo 4: Dynamic Image URI Template Examples
+		Dynamic Image URI Template Examples
 	</h2>
 	<p>
 		This demo uses images which can be dynamically resized by requesting specific 
 		dimensions directly within the image request. Common examples includes a directory 
-		with dimension values, such as /images/640x480/awesomeness.jpg,
-		or querystring values, such as /images/sweetness.png?w=640&amp;h=480.
+		with dimension values, such as /images/640x480/larry.jpg,
+		querystring values, such as /images/curley.png?w=640&amp;h=480, or filenames
+		prefixed with the width dimensions, such as /images/640px-moe.gif.
+	</p>
+	<p>
+		Foresightjs.appspot.com has a few methods available to dynamically server-resize images according
+		to the dimensions within the src URI. Each of the examples below use foresight's various
+		dynamic image resizing just as an example of the different formats possible.
 	</p>
 
 
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg" data-width="320" data-height="212" class="fs-img">
+	/dynamic-images/TODO.jpg?w=320&h=240
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg" data-width="320" data-height="213" class="exampleA">
 	<noscript>
-			<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg">
+		<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg">
 	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	/dynamic-images/320px-TODO.jpg
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg" data-width="320" data-height="213" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	/dynamic-images/320x240/TODO.jpg
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg" data-width="320" data-height="213" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
 
 
 	<hr>

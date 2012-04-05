@@ -15,9 +15,9 @@
 		}
 		
 		.exampleB {
-			/* Low-res uses the original src */
+			/* Low-res uses the original src (doesn't even have the 1x version appear in the image-set since its the default) */
 			/* Hi-res adds a "2X_" at the beginning of the filename */
-			font-family: 'image-set( url({src}) 1x low-bandwidth, url({protocol}://{host}{directory}2X_{file}) 2x high-bandwidth )';
+			font-family: 'image-set( url({protocol}://{host}{directory}2X_{file}) 2x high-bandwidth )';
 			display:none;
 		}
 		
@@ -31,7 +31,7 @@
 		.exampleD {
 			/* Low-res adds a "/low-res/" directory before the filename */
 			/* Hi-res adds a "/high-res/" directory before the filename */
-			font-family: 'image-set( url({protocol}://{host}{directory}low-res/{file}) 1x low-bandwidth, url({protocol}://{host}{directory}hi-res/{file}) 2x high-bandwidth )';
+			font-family: 'image-set( url(http://{host}{directory}low-res/{file}) 1x low-bandwidth, url(http://{host}{directory}hi-res/{file}) 2x high-bandwidth )';
 			display:none;
 		}
 		
@@ -44,13 +44,11 @@
 <body>
 
 	<h2>
-		Demo 3: Static Image URI Template Examples
+		Static Image URI Template Examples
 	</h2>
 	<p>
 		This example only uses static images and cannot be dynamically resized by the server.
 		Common examples includes hi-res image filenames ending with "-2x" or "-high-res".
-	</p>
-	<p>
 		View the source to see how the CSS is used to modify the img src attributes.
 	</p>
 

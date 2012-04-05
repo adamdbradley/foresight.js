@@ -4,7 +4,6 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>Foresight.js Demo: jQuery Mobile Demo Page 3</title>
-		
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
@@ -23,7 +22,7 @@
 		<script>
 			$(document).bind("pagechange", foresight.reload);
 		</script>
-		
+
 	</head>
 	<body>
 		<div data-role="page" id="page2">
@@ -41,24 +40,30 @@
 				</div>
 				<div style="text-align:center">
 
+
+					<!-- Foresight.js Image -->
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg/320px-Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg" data-width="320" data-height="427" class="fs-img">
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg/320px-Aloe_dichotoma_-Keetmanshoop%2C_Namibia-21Aug2009-2.jpg">
 					</noscript>
-
 					<p>
 						Photo by <a href="http://commons.wikimedia.org/wiki/File:Aloe_dichotoma_-Keetmanshoop,_Namibia-21Aug2009-2.jpg">Le Grand Portage</a>.
 					</p>
 
+
 				</div>
 				<div>
 					<b>
-						The second image manually instructs which image file should be used for high-resolution displays, using the data-src-high-resolution attribute.
-						It also uses inline CSS to override the CSS found in the head tag by applying a max-width of 380px.
+						The second image manually instructs which image file should be 
+						used for high-resolution displays, using the data-src-high-resolution 
+						attribute. It also uses inline CSS to override the CSS found in 
+						the head tag by applying a max-width of 380px.
 					</b>
 				</div>
 				<div style="text-align:center">
 
+
+					<!-- Foresight.js Image -->
 					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/320px-Kolob_Canyons_part_of_Zion_National_Park.JPG" 
 						 data-src-high-resolution="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/640px-Kolob_Canyons_part_of_Zion_National_Park.JPG"
 						 data-width="320" 
@@ -68,16 +73,15 @@
 					<noscript>
 						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Kolob_Canyons_part_of_Zion_National_Park.JPG/640px-Kolob_Canyons_part_of_Zion_National_Park.JPG">
 					</noscript>
-
 					<p>
 						Photo by <a href="http://commons.wikimedia.org/wiki/User:Michael_G%C3%A4bler">Michael Gäbler</a>.
 					</p>
-					
+
+
 				</div>
 				<a data-role="button" data-transition="fade" href="jquery-mobile-page-1.html" data-ajax="false" data-icon="arrow-l" data-iconpos="left">
 					Go Back
 				</a>
-				
 			</div>
 			<div data-theme="a" data-role="footer">
 				<div data-role="navbar" data-iconpos="top">

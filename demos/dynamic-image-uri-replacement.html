@@ -6,10 +6,31 @@
 	<link href="demo.css" type="text/css" rel="stylesheet" />
 
 	<style>
-		.fs-img { 
-			width:100%;
-			display:none; 
+
+		.exampleA {
+			/*
+			Hi-res replaces the browser width prefixing the filename with the request width
+			*/
+			font-family: 'image-set( url({browserWidth}px-|{requestWidth}px-) 2x high-bandwidth )';
+			display:none;
 		}
+
+		.exampleB {
+			/*
+			Hi-res replaces the browser width querystring with the request width
+			*/
+			font-family: 'image-set( url(w={browserWidth}|w={requestWidth}) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleC {
+			/*
+			Hi-res replaces the browser width/height directory for the request width/height
+			*/
+			font-family: 'image-set( url({browserWidth}x{browserHeight}|{requestWidth}x{requestHeight}) 2x high-bandwidth )';
+			display:none;
+		}
+
 	</style>
 
 	<script src="foresight-debugger.js"></script>
@@ -19,17 +40,75 @@
 <body>
 
 	<h2>
-		Demo 6: Dynamic Image URI Replacement Examples
+		Dynamic Image URI Replacement Examples
 	</h2>
 	<p>
-		This demo replaces existing dimensions and scale factors within dynamic image request URIs.
+		This demo replaces existing dimensions within image URIs with the updated
+		request dimensions. There are only 3 different CSS classes, but 6 images. This
+		shows that one CSS class can be applied to multiple images even though the src 
+		URI changes per image.
 	</p>
 
 
-	<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg" data-width="320" data-height="212" class="fs-img">
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/320px-TODO.jpg" data-width="320" data-height="213" class="exampleA">
 	<noscript>
-			<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jokulsarlon_lake%2C_Iceland.jpg/320px-Jokulsarlon_lake%2C_Iceland.jpg">
+		<img src="http://foresightjs.appspot.com/dynamic-images/320px-TODO.jpg">
 	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/460px-TODO.jpg" data-width="460" data-height="460" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/460px-TODO.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg?w=345" data-width="345" data-height="345" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg?w=345">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg?w=400" data-width="400" data-height="400" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg?w=400">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/320x240/TODO.jpg" data-width="320" data-height="213" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/320x240/TODO.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/355x240/TODO.jpg" data-width="355" data-height="355" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/355x240/TODO.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="TODO">TODO</a>
+	</p>
+
 
 
 	<hr>
