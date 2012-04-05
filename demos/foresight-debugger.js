@@ -12,20 +12,31 @@ var initForesightDebugger = function () {
 	if( foresight.connTestResult !== 'skip' && foresight.connTestResult !== 'forced' ) {
 		info.push( 'Connection Type: ' + foresight.connType );
 		info.push( 'Estimated Connection Speed: ' + foresight.connKbps + 'Kbps' );
+	} else if( foresight.connTestResult === 'skip' && foresight.devicePixelRatio == 1 ) {
+		info.push( 'Bandwidth test skipped because this display has a device pixel ratio of 1' );
 	}
-	info.push( 'Bandwidth: ' + foresight.bandwidth );
+
+	if( foresight.devicePixelRatio > 1 ) {
+		info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 1: <a href="?dpr=1">Force DPR 1</a>' );
+	} else {
+		info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 2: <a href="?dpr=2">Force DPR 2</a>' );
+	}
+
+	if ( foresight.bandwidth ) {
+		info.push( 'Bandwidth: ' + foresight.bandwidth );
+	}
 	info.push( '<hr>' );
 
 	// add in a <pre> element or use one already there for debugging info
 	var docPres = document.getElementsByTagName('pre');
-	if(docPres && docPres.length) {
-		var docPre = docPres[0];
+	if( docPres && docPres.length ) {
+		var docPre = docPres[ 0 ];
 	} else {
 		var docPre = document.createElement( 'pre' );
-		if(foresight.images.length) {
-			foresight.images[0].parentElement.insertBefore(docPre, foresight.images[0]);
+		if( foresight.images.length ) {
+			foresight.images[ 0 ].parentElement.insertBefore( docPre, foresight.images[ 0 ] );
 		} else {
-			document.body.appendChild(docPre);
+			document.body.appendChild( docPre );
 		}
 	}
 	docPre.innerHTML = info.join( '<br>' );
@@ -40,24 +51,30 @@ var initForesightDebugger = function () {
 		}
 		
 		var imgInfo = [];
-		imgInfo.push( 'Original: <a href="' + img.orgSrc + '">' + img.orgSrc + '</a>');
 		if ( img.computedWidth ) {
 			imgInfo.push( 'Computed Width: ' + img.computedWidth );
 		}
-		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + 'x' + img.browserHeight );
-		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + 'x' + img.requestHeight );
-		imgInfo.push( 'Unit Type: ' + img.unitType + ', Bandwidth: ' + img.bandwidth + ', Scale: ' + img.scale + ', Scale Rounded: ' + img.scaleRounded );
+		imgInfo.push( 'Browser Width/Height: ' + img.browserWidth + ' x ' + img.browserHeight );
+		imgInfo.push( 'Request Width/Height: ' + img.requestWidth + ' x ' + img.requestHeight );
+		if ( img.naturalWidth && img.naturalHeight ) {
+			imgInfo.push( 'Natural Width/Height: ' + img.naturalWidth + ' x ' + img.naturalHeight );
+		}
+		imgInfo.push( 'Unit Type: ' + img.unitType + ', Scale: ' + img.scale + ', Scale Rounded: ' + img.scaleRounded );
 
+		imgInfo.push( 'Original: ' + img.orgSrc);
 		imgInfo.push( 'Src Modification: ' + img.srcModification );
+		
 		if ( img.highResolutionSrc && foresight.hiResEnabled ) {
 			imgInfo.push( 'Hi-Res Src Attribute: ' + img.highResolutionSrc );
-		} else {
-			if( img.srcModification === 'src-uri-template' ) {
-				imgInfo.push( 'URI Template: ' + img.uriTemplate );
-			}
+		} else if( img.srcModification === 'src-uri-template' ) {
+			imgInfo.push( 'URI Template: ' + img.uriTemplate );
+		} else if( img.srcModification === 'src-uri-template' ) {
+			imgInfo.push( 'URI Template: ' + img.uriTemplate );
+		} else if( img.srcModification === 'response-error' ) {
+			imgInfo.push( 'Modified updated src had a response error, request the original src instead' );
 		}
 
-		imgInfo.push( 'Request: <a href="' + img.src + '">' + img.src + '</a>' );
+		imgInfo.push( 'Request: ' + img.src);
 
 		if ( !img.infoElement ) {
 			img.infoElement = document.createElement( 'div' );
@@ -65,7 +82,7 @@ var initForesightDebugger = function () {
 		}
 		
 		var newInfoElement = document.createElement( 'pre' );
-		newInfoElement.innerHTML = imgInfo.join( '<br>' ) + '<hr>';
+		newInfoElement.innerHTML = imgInfo.join( '<br>' );
 		img.infoElement.appendChild(newInfoElement);
 	}
 

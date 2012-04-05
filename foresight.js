@@ -18,6 +18,8 @@
 	speedTestKB = opts.speedTestKB || 50,
 	speedTestExpireMinutes = opts.speedTestExpireMinutes || 30,
 	knownSlowConnections = opts.knownSlowConnections || [ '2g', '3g' ],
+	hiResClassname =  opts.hiResClassname || 'fs-high-resolution',
+	lowResClassname = opts.lowResClassname || 'fs-standard-resolution',
 
 	// using property string references for minification purposes
 	DEVICE_PIXEL_RATIO = 'devicePixelRatio',
@@ -39,12 +41,15 @@
 	SCALE = 'scale',
 	SCALE_ROUNDED = 'scaleRounded',
 	URI_TEMPLATE = 'uriTemplate',
+	URI_FIND = 'uriFind',
+	URI_REPLACE = 'uriReplace',
 	SRC_MODIFICATION = 'srcModification',
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
 	LOCAL_STORAGE_KEY = 'fsjs',
 	TRUE = true,
 	FALSE = false,
+	imageSetItemRegex = /url\((?:([a-zA-Z-_0-9{}\\/.:\s]+)|([a-zA-Z-_0-9{}\\/.:\s]+)\|([a-zA-Z-_0-9{}\\/.:\s]+))\)/g,
 
 	// used to keep track of the progress status for finding foresight 
 	// images in the DOM and connection test results
@@ -104,6 +109,8 @@
 			
 			img.imageSet.push( { 
 				uriTemplate: null,
+				uriFind: null,
+				uriReplace: null,
 				scale: foresight[ DEVICE_PIXEL_RATIO ],
 				bandwidth: foresight[ BANDWIDTH ],
 				text: null
@@ -130,15 +137,16 @@
 		y,
 		imageSetValues = imageSetText.split( ',' ),
 		imageSetItem,
-		urlMatch,
-		cssRegex = /url\((?:([a-zA-Z-_0-9{}\\//.:\s]+))\)/g; // regex used to parse apart custom CSS
-		
+		urlMatch;
+
 		for ( y = 0; y < imageSetValues.length; y ++ ) {
 
 			// set the defaults for this image-set item
 			// scaleFactor and bandwidth initially are set to the device's info
 			imageSetItem = { 
 				uriTemplate: null,
+				uriFind: null,
+				uriReplace: null,
 				scale: null,
 				bandwidth: null,
 				text: imageSetValues[ y ]
@@ -149,6 +157,8 @@
 				imageSetItem[ SCALE ] = 2;
 			} else if ( imageSetItem.text.indexOf( ' 1.5x' ) > -1 ) {
 				imageSetItem[ SCALE ] = 1.5;
+			} else if ( imageSetItem.text.indexOf( ' 1x' ) > -1 ) {
+				imageSetItem[ SCALE ] = 1;
 			}
 
 			// get the image's bandwidth value if it was provided
@@ -158,11 +168,15 @@
 				imageSetItem[ BANDWIDTH ] = 'low';
 			}
 
-			// get the url's value (the URI template)
-			// ie:  url(URITEMPLATE)
-			while ( urlMatch = cssRegex.exec( imageSetItem.text ) ) {
+			// get the values pulled out of the image-set with a regex
+			while ( urlMatch = imageSetItemRegex.exec( imageSetItem.text ) ) {
 				if ( urlMatch[ 1 ] != null ) {
+					// url(URI_TEMPLATE)
 					imageSetItem[ URI_TEMPLATE ] = urlMatch[ 1 ];
+				} else if ( urlMatch[ 2 ] != null && urlMatch[ 3 ] != null ) {
+					// url-replace(URI_FIND|URI_REPLACE)
+					imageSetItem[ URI_FIND ] = urlMatch[ 2 ];
+					imageSetItem[ URI_REPLACE ] = urlMatch[ 3 ];
 				}
 			}
 
@@ -199,7 +213,6 @@
 		imgRequestHeight,
 		dimensionIncreased,
 		classNames,
-		hiResClassName,
 		dimensionClassName,
 		dimensionCssRules = [],
 		computedWidthValue,
@@ -242,22 +255,16 @@
 				imageSetItem = img.imageSet[ y ];
 				if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] && foresight[ DEVICE_PIXEL_RATIO ] === imageSetItem[ SCALE ] ) {
 					// this device has the exact bandwidth and device pixel ratio required
-					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
-					img[ SCALE ] = imageSetItem[ SCALE ];
-					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
+					setImageFromImageSet( img, imageSetItem );
 				} else if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] && foresight[ DEVICE_PIXEL_RATIO_ROUNDED ] === Math.round( imageSetItem[ SCALE ] ) ) {
 					// this device has the exact bandwidth and device pixel ratio required
-					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
-					img[ SCALE ] = imageSetItem[ SCALE ];
-					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
+					setImageFromImageSet( img, imageSetItem );
 				} else if ( foresight[ DEVICE_PIXEL_RATIO ] === imageSetItem[ SCALE ] ) {
 					// this device has the correct device pixel ratio required
-					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
-					img[ SCALE ] = imageSetItem[ SCALE ];
+					setImageFromImageSet( img, imageSetItem );
 				} else if ( foresight[ BANDWIDTH ] === imageSetItem[ BANDWIDTH ] ) {
 					// this device has the correct bandwidth required
-					img[ URI_TEMPLATE ] = imageSetItem[ URI_TEMPLATE ];
-					img[ BANDWIDTH ] = imageSetItem[ BANDWIDTH ];
+					setImageFromImageSet( img, imageSetItem );
 				}
 			}
 			img[ SCALE_ROUNDED ] = Math.round( img[ SCALE ] );
@@ -266,16 +273,14 @@
 			// both the bandwidth should be 'high' and the scale factor greater than 1
 			if ( img[ BANDWIDTH ] === 'high' && img[ SCALE ] > 1 ) {
 				// hi-res is good to go, figure out our request dimensions
-				imgRequestWidth = Math.round( img[ BROWSER_WIDTH ] * img[ SCALE ] );
-				imgRequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img[ SCALE ] );
+				imgRequestWidth = Math.ceil( img[ BROWSER_WIDTH ] * img[ SCALE ] );
+				imgRequestHeight = Math.ceil( img[ BROWSER_HEIGHT ] * img[ SCALE ] );
 				foresight.hiResEnabled = TRUE;
-				classNames.push( 'fs-high-resolution' );
 			} else {
 				// no-go on the hi-res, go with the default size
 				imgRequestWidth = img[ BROWSER_WIDTH ];
 				imgRequestHeight = img[ BROWSER_HEIGHT ];
 				foresight.hiResEnabled = FALSE;
-				classNames.push( 'fs-standard-resolution' );
 			}
 
 			// only update the request width/height when the new dimension is 
@@ -291,9 +296,7 @@
 					// this image has a hi-res src manually set and the device is hi-res enabled
 					// set the img src using the data-high-resolution-src attribute value
 					// begin the request for this image
-					if ( img[ HIGH_RES_SRC ] !== img.src ){ 
-						img.src = img[ HIGH_RES_SRC ];
-					}
+					img.src = img[ HIGH_RES_SRC ];
 					img[ SRC_MODIFICATION ] = 'src-hi-res';
 				} else if ( img[ URI_TEMPLATE ] ) {
 					// this image's src should be parsed a part then
@@ -301,19 +304,27 @@
 					// this allows you to place the dimensions where ever in the src
 					rebuildSrcFromUriTemplate( img );
 					img[ SRC_MODIFICATION ] = 'src-uri-template';
-				} else {
-					// default: replaceDimensions
-					// this image may already have its default dimensions
-					// directly within the src. Replace the default width/height
-					// with the new request width/height
-					replaceDimensions( img );
+				} else if ( img[ URI_FIND ] && img[ URI_REPLACE ] ) {
+					// this should find a certain values in the image's src 
+					// then replace the values with values given
+					replaceUriValues( img );
 					img[ SRC_MODIFICATION ] = 'src-replace-dimensions';
+				} else {
+					// make no changes from the original src
+					img.src = img.orgSrc;
+					img[ SRC_MODIFICATION ] = 'src-original';
 				}
 				img[ REQUEST_CHANGE ] = TRUE;
 			} else {
 				img[ REQUEST_CHANGE ] = FALSE;
 			}
 
+			// add a CSS classname if this img is hi-res or not
+			if ( foresight.hiResEnabled && img.src !== img.orgSrc ) {
+				classNames.push( hiResClassname );
+			} else {
+				classNames.push( lowResClassname );
+			}
 			classNames.push( 'fs-' + img[ SRC_MODIFICATION ] );
 
 			// assign the new CSS classnames to the img
@@ -334,6 +345,16 @@
 
 		// remember what the window width is to evaluate later when the window resizes
 		lastWindowWidth = getWindowWidth();
+	},
+
+	setImageFromImageSet = function ( img, imageSet ) {
+		// used as a common function to copy over imageSetItem values to the image
+		var
+		x,
+		propertyArr = [ URI_TEMPLATE, URI_FIND, URI_REPLACE, SCALE, BANDWIDTH ];
+		for ( x = 0; x < propertyArr.length; x++ ) {
+			img[ propertyArr[ x ] ] = imageSet[ propertyArr[ x ] ];
+		}
 	},
 
 	isParentVisible = function ( ele, parent ) {
@@ -462,9 +483,9 @@
 		for ( f = 0; f < formatReplace.length; f++ ) {
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
 		}
-		if ( newSrc !== img.src ) {
-			img.src = newSrc; // set the new src, begin the request for this image
-		}
+
+		// set the new src, begin the request for this image
+		img.src = newSrc; 
 	},
 
 	// parseUri 1.2.2
@@ -498,28 +519,34 @@
 		return uri;
 	},
 
-	replaceDimensions = function ( img, newSrc ) {
-		// replace image dimensions already in the src with new dimensions
-		// do this flip-flop replace so dimensions do step on one another after replacing
+	replaceUriValues = function ( img ) {
+		// replace values already in the image src with values coming from the url-replace() CSS
+		img[ URI_FIND ] = img[ URI_FIND ]
+							.replace( '{browserWidth}', img[ WIDTH_UNITS ] )
+							.replace( '{browserHeight}', img[ HEIGHT_UNITS ] );
+
+		var
+		f,
+		newSrc = img.orgSrc.replace( img[ URI_FIND ], img[ URI_REPLACE ] ),
+		formatReplace = [ REQUEST_WIDTH, REQUEST_HEIGHT, SCALE, SCALE_ROUNDED ];
+
+		// loop through all the possible format keys and 
+		// replace them with their respective value for this image
+		for ( f = 0; f < formatReplace.length; f++ ) {
+			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img[ formatReplace[ f ] ] );
+		}
+
 		// set the new src, begin the request for this image
-		newSrc = img.orgSrc;
-		if ( img[ WIDTH_UNITS ] !== img[ REQUEST_WIDTH ] ) {
-			newSrc = newSrc.replace( img[ WIDTH_UNITS ], '{requestWidth}' )
-						   .replace( img[ HEIGHT_UNITS ], '{requestHeight}' );
-			newSrc = newSrc.replace( '{requestWidth}', img[ REQUEST_WIDTH ] )
-						   .replace( '{requestHeight}', img[ REQUEST_HEIGHT ] );
-		}
-		if ( img.src !== newSrc ) {
-			img.src = newSrc;
-		}
+		img.src = newSrc; 
 	},
 
 	imgResponseError = function ( img ) {
 		img = this;
-		if ( img.hadError ) return;
-		img.hadError = TRUE;
-		img.src = img.orgSrc;
+		img.className = img.className.replace( hiResClassname, lowResClassname );
 		img[ SRC_MODIFICATION ] = 'response-error';
+		if ( img.hasError || img.src === img.orgSrc ) return;
+		img.hasError = TRUE;
+		img.src = img.orgSrc;
 	},
 
 	initSpeedTest = function () {
