@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Src URI Templates</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+
+		.exampleA {
+			/*
+			Hi-res replaces the browser width prefixing the filename with the request width
+			*/
+			font-family: 'image-set( url({browserWidth}px-|{requestWidth}px-) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleB {
+			/*
+			Hi-res replaces the browser width querystring with the request width
+			*/
+			font-family: 'image-set( url(w={browserWidth}|w={requestWidth}) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleC {
+			/*
+			Hi-res replaces the browser width/height directory for the request width/height
+			*/
+			font-family: 'image-set( url({browserWidth}x{browserHeight}|{requestWidth}x{requestHeight}) 2x high-bandwidth )';
+			display:none;
+		}
+
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Dynamic Image URI Replacement Examples
+	</h2>
+	<p>
+		This demo replaces existing dimensions within image URIs with the updated
+		request dimensions. There are only 3 different CSS classes, but 6 images. This
+		shows that one CSS class can be applied to multiple images even though the src 
+		URI changes per image.
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/320px-f-22-raptor.jpg" data-width="320" data-height="213" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/320px-f-22-raptor.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:F-22_Raptor_edit1.jpg">Master Sgt. Andy Dunaway</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/460px-lac-du-milieu.jpg" data-width="460" data-height="307" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/460px-lac-du-milieu.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Lac_du_Milieu_de_Bastan_Hautes_Pyr%C3%A9n%C3%A9es_02_BLS.JPG">Benh LIEU SONG</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/mont-blanc-du-tacul.jpg?w=345" data-width="345" data-height="229" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/mont-blanc-du-tacul.jpg?w=345">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Mont_Blanc_du_Tacul_depuis_l%27Aiguille_du_Midi.jpg">Alexandre Buisse</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/mosque.jpg?w=400" data-width="400" data-height="267" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/mosque.jpg?w=400">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Sultan_Omar_Ali_Saifuddin_Mosque_02.jpg">Sam Garza</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/320x212/spacewalk.jpg" data-width="320" data-height="212" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/320x212/spacewalk.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Piers_Sellers_spacewalk.jpg">NASA, Astronaut Michael Edward Fossum</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/355x270/wasp.jpg" data-width="355" data-height="270" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/355x270/wasp.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Wasp_August_2007-12.jpg">Alvesgaspar</a>
+	</p>
+
+
+
+	<hr>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>

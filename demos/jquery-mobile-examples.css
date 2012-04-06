@@ -1,0 +1,51 @@
+/*
+ * Shows foresight.js images can also be assigned
+ * CSS with external stylesheets
+ */
+
+
+.uri-template-querystring {
+    /*
+     * No matter what the pixel ratio or bandwidth is it will apply this image-set item.
+     * However, foresight.js will decide if this device should get high-res or not.
+     * This example uses adds a querystring at the end of the image src using the uri template method
+     */
+    width: 100%;
+    max-width: 640px;
+    font-family: 'image-set( url({src}?width={requestWidth}) )';
+    display: none;
+}
+
+
+.uri-find-replace-filename {
+    /* 
+     * No matter what the pixel ratio or bandwidth is it will apply this image-set item.
+     * However, foresight.js will decide if this device should get high-res or not.
+     * This example replaces the existing browser width value in the image src with
+     * the request width value by using the uri find/replace method
+     */
+    width: 100%;
+    max-width: 640px;
+    font-family: 'image-set( url(_px{browserWidth}|_px{requestWidth}) )';
+    display: none;
+}
+
+
+.uri-template-scale-ratio {
+    /* 
+     * This example has two items in the image-set. The first image-set item
+     * is the default and does not change the src. The second image-set item
+     * is applied when the device pixel ratio rounds to 2 and has a high-bandwidth.
+     */
+    font-family: 'image-set( url({directory}{filename}-low-res.{ext}) 1x, url({directory}{filename}-high-res.{ext}) 2x high-bandwidth )';
+    display:none;
+}
+
+
+
+
+
+
+/* Just for quick debuggin purposes to see if the hi or low res has been applied to an image */
+.fs-standard-resolution { border-top:5px solid red; border-bottom:5px solid red; }
+.fs-high-resolution { border-top:5px solid green; border-bottom:5px solid green; }

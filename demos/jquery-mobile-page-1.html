@@ -7,23 +7,17 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+
+		<!-- CSS applied to the Foresight images is in this external stylesheet -->
+		<link href="jquery-mobile-examples.css" rel="stylesheet" />
+
 		<script src="foresight-debugger.js"></script>
-		<script>
-			foresight = {
-				options: {
-					srcModification: 'replaceDimensions',
-					maxBrowserWidth: 750
-				},
-				updateComplete: foresight_debugger
-			};
-		</script>
 		<script src="../foresight.js"></script>
+
 		<script>
 			$(document).bind("pagechange", foresight.reload);
 		</script>
-		<style>
-			.fs-img { display:none; }
-		</style>
+
 	</head>
 	<body>
 		<div data-role="page" id="page1a">
@@ -35,25 +29,24 @@
 			<div data-role="content">
 				<div>
 					<b>
-						The image below will fill the width of the available space and has a max width of 750 browser pixels. 
+						The image below will fill the width of the available space and has a max width of 640 browser pixels. 
 						If you rotate the device the image will resize again.
 					</b>
 				</div>
 				<div style="text-align:center">
 
 
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" data-width="320" data-height="240" data-width-percent="100" class="fs-img" />
+					<!-- Foresight.js Image -->
+					<img data-src="http://foresightjs.appspot.com/dynamic-images/ducati.jpg" data-width="320" data-height="213" class="uri-template-querystring">
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG">
+						<img src="http://foresightjs.appspot.com/dynamic-images/ducati.jpg">
 					</noscript>
+					<p>
+						Photo by <a href="http://commons.wikimedia.org/wiki/File:Ducati_748_Studio.jpg">Stefan Krause</a>.
+					</p>
 
 
 				</div>
-
-				<p>
-					Photo by <a href="http://commons.wikimedia.org/wiki/File:ZugspitzeJubilaeumsgratHoellental.JPG">Christian Nawroth</a>.
-				</p>
-				
 				<div>
 					<b>
 						If the image resizes smaller than the file already loaded then it just does a browser resize (no extra image request).
@@ -112,19 +105,23 @@
 				<div>
 					<b>
 						This page was already in the DOM and loaded with the initial request.
+						It spans 100% of its parent's available width, but has a max width of 640px.
 					</b>
 				</div>
 				<div style="text-align:center">
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg" data-width="320" data-height="319" data-width-percent="100" class="fs-img" />
-					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg">
-					</noscript>
-				</div>
 
-				<p>
-					Photo courtesy of <a href="http://commons.wikimedia.org/wiki/File:Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg">NASA</a>.
-				</p>
-				
+
+					<!-- Foresight.js Image -->
+					<img data-src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa_px320.jpg" data-width="320" data-height="213" class="uri-find-replace-filename">
+					<noscript>
+						<img src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa_px320.jpg">
+					</noscript>
+					<p>
+						Photo courtesy of <a href="http://commons.wikimedia.org/wiki/File:Lake_Vuoksa_1.jpg">Dmitry A. Mottl</a>.
+					</p>
+
+
+				</div>
 				<a data-role="button" data-transition="fade" href="#page1a" data-icon="arrow-l" data-iconpos="left">
 					Go Back
 				</a>

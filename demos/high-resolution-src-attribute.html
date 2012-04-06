@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Src URI Templates</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+		.fs-img {
+			display:none; 
+		}
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Assigning High-Resolution Src in Img Attribute
+	</h2>
+	<p>
+		Aside from all of the CSS options available, this example simply assigns
+		the hi-res variants of each image as an attribute directly in the img element.
+		This is a quick and dirty method to specify an image's hi-res variant directly
+		in the HTML structure.
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/chateau-de-maintenon_1X.jpg" 
+		 data-high-resolution-src="http://foresightjs.appspot.com/static-images/chateau-de-maintenon_2X.jpg" 
+		 data-width="320" data-height="213" class="fs-img">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/chateau-de-maintenon_1X.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_de_Maintenon_2008.jpg">Eric Pouhier</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/320px-lac-du-Milieu.jpg"
+		 data-high-resolution-src="http://foresightjs.appspot.com/static-images/640px-lac-du-Milieu.jpg"
+		 data-width="320" data-height="213" class="fs-img">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/320px-lac-du-Milieu.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Lac_du_Milieu_de_Bastan_Hautes_Pyr%C3%A9n%C3%A9es_02_BLS.JPG">Benh LIEU SONG</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/nymphalis.jpg" 
+		 data-high-resolution-src="http://foresightjs.appspot.com/static-images/nymphalis-2x.jpg" 
+		 data-width="480" data-height="359" class="fs-img">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/nymphalis.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Nymphalis_io_Luc_Viatour.jpg">Luc Viatour</a>
+	</p>
+
+
+	<hr>
+
+
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>
