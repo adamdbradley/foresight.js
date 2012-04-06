@@ -246,7 +246,9 @@ The URI find/replace option keeps the original src URI in tact, but finds and re
 
 The image-set() provides a list of items which foresight.js can choose from to apply to an image. How foresight.js decides which image-set item to use is up to the device's pixel ratio and bandwidth. Below are a few examples of how image-sets would be applied according to the device.
 
-    Example A Image-Set: This image-set has one find/replace item, which is only for 2x and high-bandwidth devices
+#### Example A Image-Set: 
+
+    This image-set has one find/replace item, which is only for 2x and high-bandwidth devices
     image-set( url(_px{browserWidth}|_px{requestWidth}) 2x high-bandwidth )
     
     Test 1 for Example A:
@@ -273,6 +275,26 @@ The image-set() provides a list of items which foresight.js can choose from to a
 	End-state: This device has a device pixel ratio of 1.5, which rounds up to a 2. This 
 			   device also has a high-bandwidth. Since both apply, foresight.js will use 
 			   the find/replace image-set item.
+
+#### Example B Image-Set: 
+
+    This image-set has two URI template items:
+    image-set( url({directory}{filename}-low-res.{ext}), url({directory}{filename}-high-res.{ext}) 2x )
+
+    Test 1 for Example A:
+    Device Pixel Ratio: 1
+    Bandwidth: low
+    End-state: Since this device is not 2x then it will not apply the second image-set item, which
+			   is the hi-res version. Notice that the second image-set item actually doesn't care
+			   about bandwidth. Since the first image-set item will be applied the image will add
+			   "-low-res" to the end of the image filename.
+
+	Test 2 for Example A:
+	Device Pixel Ratio: 2
+	Bandwidth: low
+	End-state: This device has a 2x pixel ratio, but since the second image-set item doesn't
+			   care about bandwidth then the hi-res image-set item will be applied. The 
+			   resulting request source adds "-hi-res" at the end of the image filename.
 
 
 

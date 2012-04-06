@@ -10,7 +10,7 @@
 		.exampleA {
 			/* Low-res uses the original src */
 			/* Hi-res adds a "-2x" at the end of the filename */
-			font-family: 'image-set( url({src}) 1x low-bandwidth, url({protocol}://{host}{directory}{filename}-2x.{ext}) 2x high-bandwidth )';
+			font-family: 'image-set( url({src}), url({protocol}://{host}{directory}{filename}-2x.{ext}) 2x high-bandwidth )';
 			display:none;
 		}
 		
