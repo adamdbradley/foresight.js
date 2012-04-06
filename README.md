@@ -281,7 +281,7 @@ The image-set() provides a list of items which foresight.js can choose from to a
     This image-set has two URI template items:
     image-set( url({directory}{filename}-low-res.{ext}), url({directory}{filename}-high-res.{ext}) 2x )
 
-    Test 1 for Example A:
+    Test 1 for Example B:
     Device Pixel Ratio: 1
     Bandwidth: low
     End-state: Since this device is not 2x then it will not apply the second image-set item, which
@@ -289,7 +289,7 @@ The image-set() provides a list of items which foresight.js can choose from to a
 			   about bandwidth. Since the first image-set item will be applied the image will add
 			   "-low-res" to the end of the image filename.
 
-	Test 2 for Example A:
+	Test 2 for Example B:
 	Device Pixel Ratio: 2
 	Bandwidth: low
 	End-state: This device has a 2x pixel ratio, but since the second image-set item doesn't
