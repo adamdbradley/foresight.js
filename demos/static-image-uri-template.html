@@ -24,21 +24,21 @@
 		.exampleC {
 			/* Low-res adds a "-low-res" at the end of the filename */
 			/* Hi-res adds a "-high-res" at the end of the filename */
-			font-family: 'image-set( url({protocol}://{host}{directory}{filename}-low-res.{ext}) 1x low-bandwidth, url({protocol}://{host}{directory}{filename}-high-res.{ext}) 2x high-bandwidth )';
+			font-family: 'image-set( url({protocol}://{host}{directory}{filename}-low-res.{ext}), url({protocol}://{host}{directory}{filename}-high-res.{ext}) 2x high-bandwidth )';
 			display:none;
 		}
 		
 		.exampleD {
 			/* Low-res adds a "/low-res/" directory before the filename */
 			/* Hi-res adds a "/high-res/" directory before the filename */
-			font-family: 'image-set( url(http://{host}{directory}low-res/{file}) 1x low-bandwidth, url(http://{host}{directory}hi-res/{file}) 2x high-bandwidth )';
+			font-family: 'image-set( url(http://{host}{directory}low-res/{file}), url(http://{host}{directory}hi-res/{file}) 2x high-bandwidth )';
 			display:none;
 		}
 		
 	</style>
 
 	<script src="foresight-debugger.js"></script>
-	<script src="foresight.js"></script>
+	<script src="../foresight.js"></script>
 
 </head>
 <body>

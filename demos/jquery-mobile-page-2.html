@@ -8,16 +8,11 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 
-		<style>
-			.fs-img {
-				width:100%;
-				max-width:640px;
-				display:none;
-			}
-		</style>
+		<!-- CSS applied to the Foresight images is in this external stylesheet -->
+		<link href="jquery-mobile-examples.css" rel="stylesheet" />
 		
 		<script src="foresight-debugger.js"></script>
-		<script src="foresight.js"></script>
+		<script src="../foresight.js"></script>
 
 		<script>
 			$(document).bind("pagechange", foresight.reload);
@@ -34,44 +29,27 @@
 			<div data-role="content">
 				<div>
 					<b>
-						The global configuration sets the image's max width to 750 browser pixels. 
+						This are static images with a set width of 320 browser pixels, they do not 
+						adjust to the page width like page 1 of the jQuery mobile example does.
+						The CSS will decide what version of the image to show depending on
+						device pixel ratio and bandwidth.
 					</b>
 				</div>
 				<div style="text-align:center">
 
 
 					<!-- Foresight.js Image -->
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/320px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg" data-width="320" data-height="227" class="fs-img">
+					<img data-src="http://foresightjs.appspot.com/static-images/f-22-raptor.jpg" data-width="480" data-height="319" class="uri-template-scale-ratio">
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg/320px-Oxbow_Bend_outlook_in_the_Grand_Teton_National_Park.jpg">
+						<img src="http://foresightjs.appspot.com/static-images/f-22-raptor.jpg">
 					</noscript>
 					<p>
-						Photos by <a href="http://commons.wikimedia.org/wiki/User:Michael_G%C3%A4bler">Michael Gäbler</a>.
+						Photo by <a href="http://commons.wikimedia.org/wiki/File:F-22_Raptor_edit1.jpg">Master Sgt. Andy Dunaway</a>
 					</p>
 
 
 				</div>
-				<div>
-					<b>
-						The second image overrides the global config with its own data-max-width attribute, 
-						which is set at 640 browser pixels.
-					</b>
-				</div>
-				<div style="text-align:center">
-
-
-					<!-- Foresight.js Image -->
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Julian_Alps_with_Prisojnik_and_Razor.jpg/320px-Julian_Alps_with_Prisojnik_and_Razor.jpg" data-width="320" data-height="169" class="fs-img">
-					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Julian_Alps_with_Prisojnik_and_Razor.jpg/320px-Julian_Alps_with_Prisojnik_and_Razor.jpg">
-					</noscript>
-					<p>
-						Photos by <a href="http://commons.wikimedia.org/wiki/User:Michael_G%C3%A4bler">Michael Gäbler</a>.
-					</p>
-
-
-				</div>
-				<a data-role="button" data-transition="fade" href="#page1a" data-icon="arrow-l" data-iconpos="left">
+				<a data-role="button" data-transition="fade" href="jquery-mobile-page-1.html#page1a" data-icon="arrow-l" data-iconpos="left">
 					Go Back
 				</a>
 			</div>

@@ -7,18 +7,25 @@
 
 	<style>
 		.fs-img {
+			/*
+			 * The image will go 100% of the parent elements width
+			 * And will not get any wider than 1024px
+			 * For any device with a 1.5 or 2 pixel ratio and high-bandwidth
+			 */
 			width:100%;
 			max-width:1024px;
-			font-family: 'image-set( url({protocol}://{host}{directory}{requestWidth}px-{file}) 2x high-bandwidth )';
+			font-family: 'image-set( url({browserWidth}px-|{requestWidth}px-) 2x high-bandwidth )';
 			display:none;
 		}
+		
+		
 		#imgContainer {
 			text-align:center;
 		}
 	</style>
 
 	<script src="foresight-debugger.js"></script>
-	<script src="foresight.js"></script>
+	<script src="../foresight.js"></script>
 
 </head>
 <body>
@@ -51,14 +58,14 @@
 	</p>
 
 	<div id="imgContainer">
-		<img data-src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg" data-width="320" data-height="213" class="fs-img">
+		<img data-src="http://foresightjs.appspot.com/dynamic-images/1024px-wright-flyer.jpg" data-width="1024" data-height="611" class="fs-img">
 		<noscript>
-			<img src="http://foresightjs.appspot.com/dynamic-images/TODO.jpg">
+			<img src="http://foresightjs.appspot.com/dynamic-images/1024px-wright-flyer.jpg">
 		</noscript>
 	</div>
 	
 	<p>
-		Photo by <a href="TODO">TODO</a>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Wrightflyer.jpg">John T. Daniels</a>
 	</p>
 
 

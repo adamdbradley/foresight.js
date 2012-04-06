@@ -9,30 +9,30 @@
 
 		.exampleA {
 			/* 
-			Low-res is the original source, which is the default 
-			Hi-res replaces the browser width, in this case '320px', with the request width
-			*/
+			 * Low-res is the original source, which is the default 
+			 * Hi-res replaces the browser width, in this case '320px', with the request width
+			 */
 			font-family: 'image-set( url(320px-|{requestWidth}px-) 2x high-bandwidth )';
 			display:none;
 		}
 
 		.exampleB {
 			/* 
-			Low-res is the original source, which is the default 
-			Hi-res replaces the original scale factor, in this case '/1X-',
-			with the rounded scale factor tailored to the device
-			A device with a scale factor of 1.5 will be rounded to 2
-			*/
+			 * Low-res is the original source, which is the default 
+			 * Hi-res replaces the original scale factor, in this case '/1X-',
+			 * with the rounded scale factor tailored to the device
+			 * A device with a scale factor of 1.5 will be rounded to 2
+			 */
 			font-family: 'image-set( url(_1X|_2X) 2x high-bandwidth )';
 			display:none;
 		}
 
 		.exampleC {
 			/* 
-			Low-res is the original source, which is the default 
-			Hi-res finds the browser width, which is known from the img data-width attribute,
-			and replaces the browser width with the request width
-			*/
+			 * Low-res is the original source, which is the default 
+			 * Hi-res finds the browser width, which is known from the img data-width attribute,
+			 * and replaces the browser width with the request width
+			 */
 			font-family: 'image-set( url(_px{browserWidth}|_px{requestWidth}) 2x high-bandwidth )';
 			display:none;
 		}
@@ -40,7 +40,7 @@
 	</style>
 
 	<script src="foresight-debugger.js"></script>
-	<script src="foresight.js"></script>
+	<script src="../foresight.js"></script>
 
 </head>
 <body>

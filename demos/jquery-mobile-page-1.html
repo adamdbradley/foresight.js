@@ -8,16 +8,11 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
 
-		<style>
-			.fs-img {
-				width: 100%;
-				max-width: 640px;
-				display: none;
-			}
-		</style>
+		<!-- CSS applied to the Foresight images is in this external stylesheet -->
+		<link href="jquery-mobile-examples.css" rel="stylesheet" />
 
 		<script src="foresight-debugger.js"></script>
-		<script src="foresight.js"></script>
+		<script src="../foresight.js"></script>
 
 		<script>
 			$(document).bind("pagechange", foresight.reload);
@@ -42,12 +37,12 @@
 
 
 					<!-- Foresight.js Image -->
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG" data-width="320" data-height="240" class="fs-img">
+					<img data-src="http://foresightjs.appspot.com/dynamic-images/ducati.jpg" data-width="320" data-height="213" class="uri-template-querystring">
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/ZugspitzeJubilaeumsgratHoellental.JPG/320px-ZugspitzeJubilaeumsgratHoellental.JPG">
+						<img src="http://foresightjs.appspot.com/dynamic-images/ducati.jpg">
 					</noscript>
 					<p>
-						Photo by <a href="http://commons.wikimedia.org/wiki/File:ZugspitzeJubilaeumsgratHoellental.JPG">Christian Nawroth</a>.
+						Photo by <a href="http://commons.wikimedia.org/wiki/File:Ducati_748_Studio.jpg">Stefan Krause</a>.
 					</p>
 
 
@@ -110,18 +105,19 @@
 				<div>
 					<b>
 						This page was already in the DOM and loaded with the initial request.
+						It spans 100% of its parent's available width, but has a max width of 640px.
 					</b>
 				</div>
 				<div style="text-align:center">
 
 
 					<!-- Foresight.js Image -->
-					<img data-src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg" data-width="320" data-height="319" class="fs-img">
+					<img data-src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa_px320.jpg" data-width="320" data-height="213" class="uri-find-replace-filename">
 					<noscript>
-						<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg/320px-Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg">
+						<img src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa_px320.jpg">
 					</noscript>
 					<p>
-						Photo courtesy of <a href="http://commons.wikimedia.org/wiki/File:Michael_Gernhardt_in_space_during_STS-69_in_1995.jpg">NASA</a>.
+						Photo courtesy of <a href="http://commons.wikimedia.org/wiki/File:Lake_Vuoksa_1.jpg">Dmitry A. Mottl</a>.
 					</p>
 
 

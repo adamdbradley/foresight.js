@@ -51,6 +51,7 @@ var initForesightDebugger = function () {
 		}
 		
 		var imgInfo = [];
+		imgInfo.push( 'Dimension Unit Type: ' + img.unitType );
 		if ( img.computedWidth ) {
 			imgInfo.push( 'Computed Width: ' + img.computedWidth );
 		}
@@ -59,17 +60,17 @@ var initForesightDebugger = function () {
 		if ( img.naturalWidth && img.naturalHeight ) {
 			imgInfo.push( 'Natural Width/Height: ' + img.naturalWidth + ' x ' + img.naturalHeight );
 		}
-		imgInfo.push( 'Unit Type: ' + img.unitType + ', Scale: ' + img.scale + ', Scale Rounded: ' + img.scaleRounded );
 
 		imgInfo.push( 'Original: ' + img.orgSrc);
+		imgInfo.push( 'Applied Image-set item: Scale: ' + img.appliedImageSetItem.scale + ', Scale Rounded: ' + img.appliedImageSetItem.scaleRounded + ', Bandwidth: ' + img.appliedImageSetItem.bandwidth );
 		imgInfo.push( 'Src Modification: ' + img.srcModification );
 		
 		if ( img.highResolutionSrc && foresight.hiResEnabled ) {
 			imgInfo.push( 'Hi-Res Src Attribute: ' + img.highResolutionSrc );
 		} else if( img.srcModification === 'src-uri-template' ) {
-			imgInfo.push( 'URI Template: ' + img.uriTemplate );
-		} else if( img.srcModification === 'src-uri-template' ) {
-			imgInfo.push( 'URI Template: ' + img.uriTemplate );
+			imgInfo.push( 'URI Template: ' + img.appliedImageSetItem.uriTemplate );
+		} else if( img.srcModification === 'src-find-replace' ) {
+			imgInfo.push( 'URI Find/Replace: Find: ' + img.appliedImageSetItem.uriFind + ', Replace: ' + img.appliedImageSetItem.uriReplace );
 		} else if( img.srcModification === 'response-error' ) {
 			imgInfo.push( 'Modified updated src had a response error, request the original src instead' );
 		}
