@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Static Image URI Template Examples</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+		
+		.exampleA {
+			/* Low-res uses the original src */
+			/* Hi-res adds a "-2x" at the end of the filename */
+			font-family: 'image-set( url({src}) 1x low-bandwidth, url({protocol}://{host}{directory}{filename}-2x.{ext}) 2x high-bandwidth )';
+			display:none;
+		}
+		
+		.exampleB {
+			/* Low-res uses the original src (doesn't even have the 1x version appear in the image-set since its the default) */
+			/* Hi-res adds a "2X_" at the beginning of the filename */
+			font-family: 'image-set( url({protocol}://{host}{directory}2X_{file}) 2x high-bandwidth )';
+			display:none;
+		}
+		
+		.exampleC {
+			/* Low-res adds a "-low-res" at the end of the filename */
+			/* Hi-res adds a "-high-res" at the end of the filename */
+			font-family: 'image-set( url({protocol}://{host}{directory}{filename}-low-res.{ext}), url({protocol}://{host}{directory}{filename}-high-res.{ext}) 2x high-bandwidth )';
+			display:none;
+		}
+		
+		.exampleD {
+			/* Low-res adds a "/low-res/" directory before the filename */
+			/* Hi-res adds a "/high-res/" directory before the filename */
+			font-family: 'image-set( url(http://{host}{directory}low-res/{file}), url(http://{host}{directory}hi-res/{file}) 2x high-bandwidth )';
+			display:none;
+		}
+		
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Static Image URI Template Examples
+	</h2>
+	<p>
+		This example only uses static images and cannot be dynamically resized by the server.
+		Common examples includes hi-res image filenames ending with "-2x" or "-high-res".
+		View the source to see how the CSS is used to modify the img src attributes.
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/nymphalis.jpg" data-width="480" data-height="359" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/nymphalis.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Nymphalis_io_Luc_Viatour.jpg">Luc Viatour</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/pfau-imponierend.jpg" data-width="480" data-height="360" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/pfau-imponierend.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Pfau_imponierend.jpg">BS Thurner Hof</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/f-22-raptor.jpg" data-width="480" data-height="319" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/f-22-raptor.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:F-22_Raptor_edit1.jpg">Master Sgt. Andy Dunaway</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/bmw-s1000.jpg" data-width="480" data-height="319" class="exampleD">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/bmw-s1000.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:BMW_S1000_RR_Studio.JPG">Stefan Krause</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Static Image URI Replacement Examples</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+
+		.exampleA {
+			/* 
+			 * Low-res is the original source, which is the default 
+			 * Hi-res replaces the browser width, in this case '320px', with the request width
+			 */
+			font-family: 'image-set( url(320px-|{requestWidth}px-) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleB {
+			/* 
+			 * Low-res is the original source, which is the default 
+			 * Hi-res replaces the original scale factor, in this case '/1X-',
+			 * with the rounded scale factor tailored to the device
+			 * A device with a scale factor of 1.5 will be rounded to 2
+			 */
+			font-family: 'image-set( url(_1X|_2X) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleC {
+			/* 
+			 * Low-res is the original source, which is the default 
+			 * Hi-res finds the browser width, which is known from the img data-width attribute,
+			 * and replaces the browser width with the request width
+			 */
+			font-family: 'image-set( url(_px{browserWidth}|_px{requestWidth}) 2x high-bandwidth )';
+			display:none;
+		}
+		
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Static Image URI Replacement Examples
+	</h2>
+	<p>
+		This demo replaces existing scale factors and browser width/height within static image request URIs.
+		If foresight.js does not see a change from the browser width/height to the request width/height it
+		will not do any dimension replacing. If the browser width/height is different than the request
+		width/height than it will find and replace those dimensions within the img src. View the source CSS
+		to see how it works.
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/320px-lac-du-Milieu.jpg" data-width="320" data-height="213" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/320px-lac-du-Milieu.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Lac_du_Milieu_de_Bastan_Hautes_Pyr%C3%A9n%C3%A9es_02_BLS.JPG">Benh LIEU SONG</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/chateau-de-maintenon_1X.jpg" data-width="320" data-height="213" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/chateau-de-maintenon_1X.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_de_Maintenon_2008.jpg">Eric Pouhier</a>
+	</p>
+
+
+
+	<img data-src="http://foresightjs.appspot.com/static-images/mosque_px420.jpg" data-width="420" data-height="280" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/static-images/mosque_px420.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Sultan_Omar_Ali_Saifuddin_Mosque_02.jpg">Sam Garza</a>
+	</p>
+
+
+
+	<hr>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>

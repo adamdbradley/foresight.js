@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Dynamic Image URI Template Examples</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+
+		.exampleA {
+			/* Low-res uses the original src, which is the default because the 1x image-set is excluded */
+			/* Hi-res adds "w" and "h" querystrings representing request width and height */
+			font-family: 'image-set( url({src}?w={requestWidth}&h={requestHeight}) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleB {
+			/* Low-res uses the original src */
+			/* Hi-res adds request width and "px-" at the beginning of the filename */
+			font-family: 'image-set( url({src}) 1x, url({protocol}://{host}{directory}{requestWidth}px-{file}) 2x high-bandwidth )';
+			display:none;
+		}
+
+		.exampleC {
+			/* Both low and hi-res images use the same image-set() item */
+			/* Adds a request width/height directory before the filename, ie: /320x240/ */
+			font-family: 'image-set( url(http://{host}{directory}{requestWidth}x{requestHeight}/{file}) )';
+			display:none;
+		}
+
+	</style>
+
+	<script src="foresight-debugger.js"></script>
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<h2>
+		Dynamic Image URI Template Examples
+	</h2>
+	<p>
+		This demo uses images which can be dynamically resized by requesting specific 
+		dimensions directly within the image request. Common examples includes a directory 
+		with dimension values, such as /images/640x480/larry.jpg,
+		querystring values, such as /images/curley.png?w=640&amp;h=480, or filenames
+		prefixed with the width dimensions, such as /images/640px-moe.gif.
+	</p>
+	<p>
+		Foresightjs.appspot.com has a few methods available to dynamically server-resize images according
+		to the dimensions within the src URI. Each of the examples below use foresight's various
+		dynamic image resizing just as an example of the different formats possible.
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa.jpg" data-width="320" data-height="213" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/lake-vuoksa.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Lake_Vuoksa_1.jpg">Dmitry A. Mottl</a>
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/bmw-s1000.jpg" data-width="320" data-height="213" class="exampleA">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/bmw-s1000.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:BMW_S1000_RR_Studio.JPG">Stefan Krause</a>
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/castle-neuschwanstein.jpg" data-width="320" data-height="210" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/castle-neuschwanstein.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Castle_Neuschwanstein.jpg">Softeis</a>
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/colorado-river.jpg" data-width="320" data-height="213" class="exampleB">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/colorado-river.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Colorado_River_edit.jpg">Adrille</a>
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/dew-on-grass.jpg" data-width="320" data-height="230" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/dew-on-grass.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Dew_on_grass_Luc_Viatour.jpg">Luc Viatour</a>
+	</p>
+
+
+	<img data-src="http://foresightjs.appspot.com/dynamic-images/dreilanderbrucke.jpg" data-width="320" data-height="230" class="exampleC">
+	<noscript>
+		<img src="http://foresightjs.appspot.com/dynamic-images/dreilanderbrucke.jpg">
+	</noscript>
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Weil_am_Rhein_-_Dreil%C3%A4nderbr%C3%BCcke10.jpg">Taxiarchos228</a>
+	</p>
+
+
+
+	<hr>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>
