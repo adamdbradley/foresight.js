@@ -75,13 +75,13 @@ As pointed out, the image-set() function is great because it keeps everything to
 
 The latest version of foresight.js is combining its original idea from the first version, which is the use of URI templates and URI find/replace, and applying them to the _image-set()_ concept. This way you can use just one, or any number of CSS rules to control images throughout your site instead of creating a CSS rule for every image. _Check out the URI Template and URI Find/Replace sections for more info._
 
-The basic format is that the image-set() function can contain one, or many, image-set items, each separated by a comma. __Each image-set item can have up to three arguments__:
+The basic format is that the image-set() function can contain one, or many, image-set variants, each separated by a comma. __Each image-set variant can have up to three arguments__:
 
 1. __url(*)__: Similar to the background-image url() function, the image-set url() function contains a URI to the image to download. What's different, however, is that the image-set url() can contain an actual URI, a URI templates, or a URI Find/Replace. Check out the URI Template and URI Find/Replace sections and examples for more info.
-2. __Scale Factor__: The scale factor argument is used as a multiplier for the image's dimensions. If an image has a browser width/height off 100x100 pixels, and the applied scale factor is 2x, then the requested image size would be 200x200 pixels. If a device has a pixel ratio of 1.5, and there is no image-set item with a 1.5 scale factor, then it will round up and use and image-set item with scale factor of 2.
+2. __Scale Factor__: The scale factor argument is used as a multiplier for the image's dimensions. If an image has a browser width/height off 100x100 pixels, and the applied scale factor is 2x, then the requested image size would be 200x200 pixels. If a device has a pixel ratio of 1.5, and there is no image-set variant with a 1.5 scale factor, then it will round up and use and image-set variant with scale factor of 2.
 3. __Bandwidth__: The bandwidth argument can either be 'low-bandwidth' or 'high-bandwidth'.
 
-A common format is to set the first image-set item as the default, and the second image-set item as the one which gets applied to a device with a pixel ratio of 1.5 and a high-bandwidth. The example below is basically saying, if this device has a pixel ratio of 2 (which includes pixel ratios of 1.5), _AND_ this device has a high-bandwidth, then apply the second image-set item to this image. However, if this device does not have a high-resolution display, _OR_ it does not have a high-bandwidth, then go with the default image-set item, which happens to be the first one in the list.
+A common format is to set the first image-set variant as the default, and the second image-set variant as the one which gets applied to a device with a pixel ratio of 1.5 and a high-bandwidth. The example below is basically saying, if this device has a pixel ratio of 2 (which includes pixel ratios of 1.5), _AND_ this device has a high-bandwidth, then apply the second image-set variant to this image. However, if this device does not have a high-resolution display, _OR_ it does not have a high-bandwidth, then go with the default image-set variant, which happens to be the first one in the list.
 
     image-set( url(foo.png), url(foo_2x.png) 2x high-bandwidth )
 
@@ -100,9 +100,9 @@ In the example below you'll see we're using the _font-family_ property to hold t
         }
     </style>
 
-This is good, except now my CSS class _fs-img_ only lets me request the image variants of foo.png and foo_2x.png. However, we'd rather not create a CSS rule for each image on the page _(and I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all browsers)_.
+This is good, except now my CSS class _fs-img_ only lets me request the image variants of foo.png and foo\_2x.png. However, we'd rather not create a CSS rule for each image on the page _(and I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all browsers)_.
 
-Now let's take this one step further and allow each image-set item's url() to have its own URI template, such as:
+Now let's take this one step further and allow each image-set variant's url() to have its own URI template, such as:
 
     <style>
         .fs-img {
@@ -244,17 +244,17 @@ The URI find/replace option keeps the original src URI in tact, but finds and re
 
 ## image-set() Examples
 
-The image-set() provides a list of items which foresight.js can choose from to apply to an image. How foresight.js decides which image-set item to use is up to the device's pixel ratio and bandwidth. Below are a few examples of how image-sets would be applied according to the device.
+The image-set() provides a list of variants which foresight.js can choose from to apply to an image. How foresight.js decides which image-set variant to use is up to the device's pixel ratio and bandwidth. Below are a few examples of how image-sets would be applied according to the device.
 
 #### Example A Image-Set: 
 
-    This image-set has one find/replace item, which is only for 2x and high-bandwidth devices
+    Example image-set has one find/replace variant, which is only for 2x and high-bandwidth devices:
     image-set( url(_px{browserWidth}|_px{requestWidth}) 2x high-bandwidth )
     
     Test 1 for Example A:
     Device Pixel Ratio: 1
     Bandwidth: low
-    End-state: Since this device is neither 2x or high-bandwidth then the single image-set item 
+    End-state: Since this device is neither 2x or high-bandwidth then the single image-set variant 
                does not apply. Since none apply, foresight.js will use the original src.
 
 	Test 2 for Example A:
@@ -267,35 +267,58 @@ The image-set() provides a list of items which foresight.js can choose from to a
 	Device Pixel Ratio: 2
 	Bandwidth: high
 	End-state: This device has both a 2x pixel ratio and high-bandwidth.
-		       Since both apply, foresight.js will use the find/replace image-set item.
+		       Since both apply, foresight.js will use the find/replace image-set variant.
 
 	Test 4 for Example A:
 	Device Pixel Ratio: 1.5
 	Bandwidth: high
 	End-state: This device has a device pixel ratio of 1.5, which rounds up to a 2. This 
 			   device also has a high-bandwidth. Since both apply, foresight.js will use 
-			   the find/replace image-set item.
+			   the find/replace image-set variant.
 
 #### Example B Image-Set: 
 
-    This image-set has two URI template items:
+    Example image-set has two URI templates:
     image-set( url({directory}{filename}-low-res.{ext}), url({directory}{filename}-high-res.{ext}) 2x )
 
     Test 1 for Example B:
     Device Pixel Ratio: 1
     Bandwidth: low
     End-state: Since this device is not 2x then it will not apply the second image-set item, which
-			   is the hi-res version. Notice that the second image-set item actually doesn't care
-			   about bandwidth. Since the first image-set item will be applied the image will add
+			   is the hi-res version. Notice that the second image-set variant actually doesn't care
+			   about bandwidth. Since the first image-set variant will be applied the image will add
 			   "-low-res" to the end of the image filename.
 
 	Test 2 for Example B:
 	Device Pixel Ratio: 2
 	Bandwidth: low
-	End-state: This device has a 2x pixel ratio, but since the second image-set item doesn't
-			   care about bandwidth then the hi-res image-set item will be applied. The 
+	End-state: This device has a 2x pixel ratio, but since the second image-set variant doesn't
+			   care about bandwidth then the hi-res image-set variant will be applied. The 
 			   resulting request source adds "-hi-res" at the end of the image filename.
 
+#### Example C Image-Set: 
+
+    Example image-set has three variants (on separate lines just so its easier to read, but sadly separate lines not allowed):
+    image-set( 
+    		    url(/images/small/{file}), 
+    		    url(/images/medium/{file}) 1.5x, 
+    		    url(/images/large/{file}) 2x high-bandwidth
+              )
+
+    Test 1 for Example C:
+    Device Pixel Ratio: 1
+    Bandwidth: low
+    End-state: Since this device is not 1.5x or 2x then it will not apply the second or third image-set variant.
+               Because the second and third do not apply, then the default variant, which is the first one,
+               will be applied, resulting in requesting the file from the /images/small/ directory.
+
+    Test 2 for Example C:
+    Device Pixel Ratio: 2
+    Bandwidth: low
+    End-state: This device has a 2x pixel ratio, but it has a low-bandwidth, so the third variant does not apply.
+               However, second image-set variant does apply because the device pixel ratio is greater than 1.5x
+               and the second variant does not care which type of bandwidth the device has. The resulting
+               request would be a file in the /images/medium/ directory.
 
 
 ## Foresight.js Options
@@ -426,6 +449,12 @@ __Contact Me__
 
 * [@adamdbradley](https://twitter.com/adamdbradley)
 
+
+## Bug tracker
+
+Find a bug? Please create an issue here on GitHub!
+
+[Submit an issue](https://github.com/adamdbradley/foresight.js/issues)
 
 
 ## License
