@@ -100,7 +100,9 @@ In the example below you'll see we're using the _font-family_ property to hold t
         }
     </style>
 
-This is good, except now my CSS class _fs-img_ only lets me request the image variants of foo.png and foo\_2x.png. However, we'd rather not create a CSS rule for each image on the page _(and I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all browsers)_.
+This is good, except now my CSS class _fs-img_ only lets me request the image variants of foo.png and foo\_2x.png. However, we'd rather not create a CSS rule for each image on the page.
+
+_And I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all of today's browsers. Ideally a new or existing CSS property will be able to contain the image-set() values. [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/)._
 
 Now let's take this one step further and allow each image-set variant's url() to have its own URI template, such as:
 
