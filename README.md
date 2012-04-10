@@ -40,7 +40,7 @@ One concept change is that both the _data-width_ and _data-height_ attributes sh
 
 Until the web community completes a new standard to hi-res context images, and it becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, the approach by foresight.js is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). 
 
-_There is hope however as the web community continues to work on a solution for high-resolution images. These resources offer a glimpse about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117), [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/) and [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html).
+_There is hope however as the web community continues to work on a solution for high-resolution images. These resources offer a glimpse about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117), [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/) and [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html)._
 
 
 
