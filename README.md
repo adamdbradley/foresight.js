@@ -459,6 +459,15 @@ Find a bug? Please create an issue here on GitHub!
 [Submit an issue](https://github.com/adamdbradley/foresight.js/issues)
 
 
+## References
+
+* [-webkit-image-set Changeset](http://trac.webkit.org/changeset/113490)
+* [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/)
+* [Responsive Images Community Group](http://www.w3.org/community/respimg/)
+* [Adaptive Image Element](https://gist.github.com/2159117)
+* [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)
+* [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html)
+
 ## License
 
 Copyright (c) 2012 Adam Bradley
