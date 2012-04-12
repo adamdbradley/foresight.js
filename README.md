@@ -195,7 +195,7 @@ _Again, not all of these keys are required inside your template. URI template is
 
     Example B: Scale factor in the filename
     Original Src:     http://images.example.com/home/images/hero.jpg
-    Uri Template:     url({protocol}://{host}{directory}{file}@{scaleFactor}x.jpg)
+    Uri Template:     url({protocol}://{host}{directory}{filename}_{scaleRounded}x.{ext})
     Request Src:      http://images.example.com/home/images/hero_2x.jpg
 
     Example C: Width and height in their own directory
