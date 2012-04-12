@@ -51,7 +51,7 @@ __Other speed test notes:__
 
 * If the response takes longer than it "should" take to download the test file, then foresight.js will not wait any longer  on the test response and automatically consider the connection "slow"
 * If the device has a pixel ratio of _1_, then the display in unable to view hi-res anyways. In these cases (which is just about all traditional computers at the moment), it doesn't bother doing a speed test because it already knows its a waste of time since the display can't view hi-res.
-* If the device implements _navigator.connection.type_, and the known connection type is either _2g_ or _3g_, then it doesn't bother doing the speed test since it already knows its too slow. _Android is currently seems to be the only one implementing navigator.connection.type, and even then it may not always have the info (but when it does the info save us time, and for 2g that's pretty valuable info).
+* If the device implements _navigator.connection.type_, and the known connection type is either _2g_ or _3g_, then it doesn't bother doing the speed test since it already knows its too slow. _Android currently seems to be the only one implementing navigator.connection.type, and even then it may not always have the info (but when it does the info save us time, and for 2g that's pretty valuable info)._
 * Foresight's publicly available speed test file is hosted by Google App Engine, which is a cloud-based service.
 * If the page requesting the speed test is SSL, foresight.js will ensure the speed test image is downloaded using the _https_ protocol.
 
