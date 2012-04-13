@@ -67,6 +67,12 @@
 
 		initImageRebuild();
 	},
+	
+	triggerImageEvent = function(eventName, img){
+		var event = document.createEvent("Event");
+		event.initEvent("foresight-" + eventName, true, true);
+		img.dispatchEvent(event);
+	},
 
 	initImages = function () {
 		// loop through each of the document.images and find valid foresight images
@@ -83,6 +89,8 @@
 			// only gather the images that haven't already been initialized
 			if ( img.initalized ) continue;
 
+			triggerImageEvent("imageInitStart", img);
+
 			img.initalized = TRUE;
 
 			img.orgSrc = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
@@ -92,7 +100,7 @@
 			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
 
 			 // missing required info
-			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
+			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || img[ WIDTH_UNITS] == 'auto' || !img[ HEIGHT_UNITS ] ) continue;
 
 			img[ REQUEST_WIDTH ] = 0;
 			img[ REQUEST_HEIGHT ] = 0;
@@ -115,6 +123,8 @@
 			// handle any response errors which may happen with this image
 			img.onerror = imgResponseError;
 
+			triggerImageEvent("imageInitEnd", img);
+			
 			// add this image to the collection
 			foresight.images.push( img );
 		}
@@ -210,6 +220,7 @@
 			if ( !isNaN( value ) ) {
 				return parseInt( value, 10 );
 			}
+			if( value == 'auto') return 'auto';
 			return 0;
 		}
 		return value;
@@ -240,6 +251,8 @@
 				// parent element is not visible (yet anyways) so don't continue with this img
 				continue;
 			}
+			
+			triggerImageEvent("imageRebuildStart", img);
 
 			// build a list of CSS Classnames for the <img> which may be useful
 			classNames = img.orgClassName.split( ' ' );
@@ -255,7 +268,7 @@
 
 				// build a list of CSS rules for all the different dimensions
 				// ie:  .fs-640x480{width:640px;height:480px}
-				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' );
+				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + (img[ BROWSER_HEIGHT ] == "auto" ? "auto}" : img[ BROWSER_HEIGHT ] + 'px}') );
 			}
 
 			// show the display to inline so it flows in the webpage like a normal img
@@ -327,6 +340,8 @@
 
 			// assign the new CSS classnames to the img
 			img.className = classNames.join( ' ' );
+			
+			triggerImageEvent("imageRebuildEnd", img);
 		}
 
 		// if there were are imgs that need width/height assigned to them then
