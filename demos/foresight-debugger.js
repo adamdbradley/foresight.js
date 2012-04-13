@@ -16,11 +16,11 @@ var initForesightDebugger = function () {
 		info.push( 'Bandwidth test skipped because this display has a device pixel ratio of 1' );
 	}
 
-	if( foresight.devicePixelRatio > 1 ) {
-		info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 1: <a href="?dpr=1">Force DPR 1</a>' );
-	} else {
-		info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 2: <a href="?dpr=2">Force DPR 2</a>' );
-	}
+	//if( foresight.devicePixelRatio > 1 ) {
+	//	info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 1: <a href="?dpr=1">Force DPR 1</a>' );
+	//} else {
+	//	info.push( 'Force this page to <em>think</em> it has a device pixel ratio of 2: <a href="?dpr=2">Force DPR 2</a>' );
+	//}
 
 	if ( foresight.bandwidth ) {
 		info.push( 'Bandwidth: ' + foresight.bandwidth );
