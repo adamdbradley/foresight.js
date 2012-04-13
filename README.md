@@ -149,7 +149,7 @@ __src-uri-template__: Rebuild the src by parsing apart the current URI and restr
 
 __src-find-replace__: The current src may already have dimensions within the URI. Instead of rebuilding the src entirely, just find and replace the original values within the URI the new values. Review the URI Find/Replace section and examples to see how to format the image-set() url values.
 
-__src-hi-res__: The _data-src-high-resolution_ attribute can be used to identify which _src_ to use when the device is hi-res ready. See the definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. The first two Src Modification types should be used when dynamically building the img src, while the _data-src-high-resolution_ attribute is used if you want to manually tell foresight.js which image to use when hi-res is enabled.
+__src-hi-res__: The _data-high-resolution-src_ attribute can be used to identify which _src_ to use when the device is hi-res ready. See the definition under the Img Attributes section to read more about manually setting which file to use when the hi-res image should be shown instead. The first two Src Modification types should be used when dynamically building the img src, while the _data-high-resolution-src_ attribute is used if you want to manually tell foresight.js which image to use when hi-res is enabled.
 
 
 
@@ -359,7 +359,7 @@ __data-width__: _(Required)_ The pixel width according to the browser. Any adjus
 
 __data-height__: _(Required)_ The pixel height according to the browser. Any adjustments to the device pixel ratio will take care of the request image height automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
 
-__data-src-high-resolution__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-src-high-resolution_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
+__data-high-resolution-src__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-high-resolution-src_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
 
 
 
