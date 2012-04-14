@@ -33,6 +33,7 @@ var initForesightDebugger = function () {
 		var docPre = docPres[ 0 ];
 	} else {
 		var docPre = document.createElement( 'pre' );
+        docPre.className = "foresight-debug global";
 		if( foresight.images.length ) {
 			foresight.images[ 0 ].parentElement.insertBefore( docPre, foresight.images[ 0 ] );
 		} else {
@@ -83,6 +84,7 @@ var initForesightDebugger = function () {
 		}
 		
 		var newInfoElement = document.createElement( 'pre' );
+        newInfoElement.className = "foresight-debug local";
 		newInfoElement.innerHTML = imgInfo.join( '<br>' );
 		img.infoElement.appendChild(newInfoElement);
 	}
