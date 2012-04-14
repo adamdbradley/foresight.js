@@ -787,12 +787,12 @@
 	// when the DOM is ready begin finding valid foresight <img>'s and updating their src's
 	foresight.ready = function () {
 		if ( !document.body ) {
-			return window.setTimeout( ready, 1 );
+			return window.setTimeout( foresight.ready, 1 );
 		}
 		initForesight();
 	};
 	if ( document.readyState === STATUS_COMPLETE ) {
-		setTimeout( fsReady, 1 );
+		setTimeout( foresight.ready, 1 );
 	} else {
 		if ( document.addEventListener ) {
 			document.addEventListener( "DOMContentLoaded", foresight.ready, FALSE );
