@@ -428,7 +428,7 @@
 			return TRUE;
 		}
 		if ( getComputedStyleValue( parent, 'display' ) === 'inline' ) {
-			// if its an inline element then we won't get a good clientWidth
+			// if its parent is an inline element then we won't get a good clientWidth
 			// so try again with this element's parent
 			return isParentVisible( parent );
 		}
@@ -464,8 +464,12 @@
 			img[ BROWSER_WIDTH ] = img.computedWidth;
 			img[ BROWSER_HEIGHT ] = Math.round( img[ HEIGHT_UNITS ] * ( img.computedWidth / img[ WIDTH_UNITS ] ) );
 
-			// manually assign what the calculated height pixels should be
-			img.style.height = img[ BROWSER_HEIGHT ] + 'px';
+			if ( navigator.appVersion.indexOf( 'MSIE' ) > -1 ) {
+				// manually assign what the calculated height pixels should be
+				// do this only for our friend IE, the rest of the browsers can gracefully
+				// resize of the image without manually setting the height in pixels
+				img.style.height = img[ BROWSER_HEIGHT ] + 'px';
+			}
 		}
 	},
 
