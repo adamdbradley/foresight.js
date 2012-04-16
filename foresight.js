@@ -35,6 +35,7 @@
 	REQUEST_HEIGHT = 'requestHeight',
 	DIMENSION_WIDTH = 'width',
 	DIMENSION_HEIGHT = 'height',
+	MAX_DIMENSION_WIDTH = 'max-width',
 	WIDTH_UNITS = 'widthUnits',
 	HEIGHT_UNITS = 'heightUnits',
 	APPLIED_IMAGE_SET_ITEM = 'appliedImageSetItem',
@@ -100,7 +101,7 @@
 			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
 
 			 // missing required info
-			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || img[ WIDTH_UNITS] == 'auto' || !img[ HEIGHT_UNITS ] ) continue;
+			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
 
 			img[ REQUEST_WIDTH ] = 0;
 			img[ REQUEST_HEIGHT ] = 0;
@@ -220,7 +221,7 @@
 			if ( !isNaN( value ) ) {
 				return parseInt( value, 10 );
 			}
-			if( value == 'auto') return 'auto';
+			if( value == 'auto' || value == 'max-width') return value;
 			return 0;
 		}
 		return value;
@@ -265,10 +266,13 @@
 				// we can then add those CSS dimension classnames to the document and do less repaints
 				dimensionClassName = 'fs-' + img[ BROWSER_WIDTH ] + 'x' + img[ BROWSER_HEIGHT ];
 				classNames.push( dimensionClassName );
-
+				
+				if(dimensionCssRules[dimensionClassName] == undefined){
 				// build a list of CSS rules for all the different dimensions
 				// ie:  .fs-640x480{width:640px;height:480px}
-				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + (img[ BROWSER_HEIGHT ] == "auto" ? "auto}" : img[ BROWSER_HEIGHT ] + 'px}') );
+					dimensionCssRules[dimensionClassName] = true;
+					dimensionCssRules.push('.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' ); 
+				}
 			}
 
 			// show the display to inline so it flows in the webpage like a normal img
@@ -451,12 +455,16 @@
 	},
 
 	fillComputedPixelDimensions = function ( img, computedWidthValue ) {
+		
 		// get the computed pixel width according to the browser
 		// this is most important for images set by percents
 		// and images with a max-width set
 		if ( !img.unitType ) {
 			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
-			if ( computedWidthValue.indexOf( '%' ) > 0 ) {
+			if(img[ WIDTH_UNITS ] == 'max-width'){
+				// If max-width was specified then we pull from the CSS max width every time
+				img.unitType = 'max-width';
+			} else if ( computedWidthValue.indexOf( '%' ) > 0 ) {
 				// if the width has a percent value then change the display to
 				// display:block to help get correct browser pixel width
 				img.unitType = 'percent';
@@ -481,6 +489,11 @@
 
 			// manually assign what the calculated height pixels should be
 			img.style.height = img[ BROWSER_HEIGHT ] + 'px';
+		} else if(img.unitType == 'max-width'){
+			// We need to get the pixel width that is the largest the style can get, height is not important so we will let that stay at auto
+			img.computedWidth = parseInt( getComputedStyleValue(img, MAX_DIMENSION_WIDTH).replace("px", "") , 10 );
+			img[ BROWSER_WIDTH ] = img.computedWidth;
+			img[ BROWSER_HEIGHT ] = 'auto';
 		}
 	},
 
