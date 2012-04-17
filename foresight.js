@@ -252,10 +252,13 @@
 				// we can then add those CSS dimension classnames to the document and do less repaints
 				dimensionClassName = 'fs-' + img[ BROWSER_WIDTH ] + 'x' + img[ BROWSER_HEIGHT ];
 				classNames.push( dimensionClassName );
-
+				
+				if(dimensionCssRules[dimensionClassName] == undefined){
 				// build a list of CSS rules for all the different dimensions
 				// ie:  .fs-640x480{width:640px;height:480px}
-				dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' );
+					dimensionCssRules[dimensionClassName] = true;
+					dimensionCssRules.push('.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' ); 
+				}
 			}
 
 			// show the display to inline so it flows in the webpage like a normal img
