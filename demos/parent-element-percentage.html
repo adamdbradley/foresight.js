@@ -10,11 +10,14 @@
 			/*
 			 * The image will go 100% of the parent elements width
 			 * And will not get any wider than 1024px
-			 * For any device with a 1.5 or 2 pixel ratio and high-bandwidth
+			 * This has one image-set variant applies to all scenarios
+			 * If the device pixel ratio is greater than 1 and the
+			 * device is not high-speed, foresight.js will
+			 * know not to request the hi-res image
 			 */
 			width:100%;
 			max-width:1024px;
-			font-family: 'image-set( url({browserWidth}px-|{requestWidth}px-) 2x high-bandwidth )';
+			font-family: 'image-set( url({browserWidth}px-|{requestWidth}px-) )';
 			display:none;
 		}
 		
@@ -31,7 +34,7 @@
 <body>
 
 	<h2>
-		Responsive Image Adjusting to Parent Element Width
+		Dynamically Resized Responsive Image
 	</h2>
 
 	<p>

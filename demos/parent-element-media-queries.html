@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: Media Queries</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+
+	<style>
+		article {
+			float:left;
+			width:60%;
+		}
+		aside {
+			float:left;
+			width:40%;
+		}
+		
+		.fs-img {
+			/* Image will default to the 240px CSS wide image */
+			width:100%;
+			font-family: 'image-set( url(-small|-small-2x) 2x high-bandwidth )';
+			display:none;
+			border-left:4px solid yellow;
+		}
+		@media (min-width:600px) {
+			/* If the window's width is at least 600px wide then it should show the 320px CSS wide image */
+			.fs-img {
+				font-family: 'image-set( url(-small|-medium), url(-small|-medium-2x) 2x high-bandwidth )';
+				border-left:4px solid blue;
+			}
+		}
+		@media (min-width:800px) {
+			/* If the window's width is at least 800px wide then it should show the 480px CSS wide image, but set the image's max-width to 480px */
+			.fs-img {
+				font-family: 'image-set( url(-small|-large), url(-small|-large-2x) 2x high-bandwidth )';
+				max-width:480px;
+				border-left:4px solid green;
+			}
+		}
+	</style>
+
+	<script src="../foresight.js"></script>
+
+</head>
+<body>
+
+	<section>
+	
+		<h2>
+			Static Responsive Image using Media Queries 
+		</h2>
+
+		<article>
+			<p>
+				This demo shows image-set() CSS can work with existing media queries, however this method
+				is really only useful for static images. Dynamically resized images are able fill the exact
+				width of the parent's available width.
+			</p>
+			<p>
+				The primary content on the left side take 60% of the available width. 
+				The content on the right side containing the image takes 40% of the available width.
+			</p>
+			<p>
+				Adjusting the width of the browser will request various static images.
+			</p>
+		</article>
+	
+		<aside>
+			<img data-src="http://foresightjs.appspot.com/static-images/castle-small.jpg" data-width="240" data-height="157" class="fs-img">
+			<noscript>
+				<img src="http://foresightjs.appspot.com/static-images/castle-small.jpg">
+			</noscript>
+			<p>
+				Photo by <a href="http://commons.wikimedia.org/wiki/User:Softeis">Softeis</a>
+			</p>
+		</aside>
+	
+	</section>
+
+
+	<hr style="clear:both">
+
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>
