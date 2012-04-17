@@ -67,6 +67,12 @@
 
 		initImageRebuild();
 	},
+	
+	triggerImageEvent = function(eventName, img){
+		var event = document.createEvent("Event");
+		event.initEvent("foresight-" + eventName, true, true);
+		img.dispatchEvent(event);
+	},
 
 	initImages = function () {
 		// loop through each of the document.images and find valid foresight images
@@ -82,6 +88,8 @@
 			// initialize properties the image will use
 			// only gather the images that haven't already been initialized
 			if ( img.initalized ) continue;
+
+			triggerImageEvent("imageInitStart", img);
 
 			img.initalized = TRUE;
 
@@ -115,6 +123,8 @@
 			// handle any response errors which may happen with this image
 			img.onerror = imgResponseError;
 
+			triggerImageEvent("imageInitEnd", img);
+			
 			// add this image to the collection
 			foresight.images.push( img );
 		}
@@ -240,6 +250,8 @@
 				// parent element is not visible (yet anyways) so don't continue with this img
 				continue;
 			}
+			
+			triggerImageEvent("imageRebuildStart", img);
 
 			// build a list of CSS Classnames for the <img> which may be useful
 			classNames = img.orgClassName.split( ' ' );
@@ -330,6 +342,8 @@
 
 			// assign the new CSS classnames to the img
 			img.className = classNames.join( ' ' );
+			
+			triggerImageEvent("imageRebuildEnd", img);
 		}
 
 		// if there were are imgs that need width/height assigned to them then
