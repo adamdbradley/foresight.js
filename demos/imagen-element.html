@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demo: imageN Element</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+
+	<section>
+		
+		<h2>
+			imageN Element
+		</h2>
+
+		<p>
+			As in, an image has N number of sources/variants.
+		</p>
+
+		<p>
+			Test to see if child elements within the &lt;imagen&gt; element appear in the DOM.
+		</p>
+
+		<imagen>
+			<source src="http://foresightjs.appspot.com/static-images/castle-small.jpg">
+			<source src="http://foresightjs.appspot.com/static-images/castle-medium.jpg" media="(min-width: 320px)">
+			<source src="http://foresightjs.appspot.com/static-images/castle-large.jpg" media="(min-width: 480px)">
+			<noscript><img src="http://foresightjs.appspot.com/static-images/castle-small.jpg"></noscript>
+		</imagen>
+
+	</section>
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+</body>
+</html>
