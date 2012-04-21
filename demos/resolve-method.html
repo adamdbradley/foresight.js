@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+	<title>Foresight.js Demos</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<link href="demo.css" type="text/css" rel="stylesheet" />
+	<script src="../foresight.js"></script>
+	<script>
+		
+		function resolveInput() {
+			var imageSetValue = document.getElementById('imageSet').value;
+			
+			// set required properties in imageData
+			var imageData = {
+				defaultSrc : document.getElementById('defaultSrc').value,
+				browserWidth : parseInt( document.getElementById('browserWidth').value, 10),
+				browserHeight : parseInt( document.getElementById('browserHeight').value, 10)
+			};
+			
+			// force a device pixel ratio
+			var dprEle = document.getElementById('dpr');
+			foresight.devicePixelRatio = parseFloat( dprEle.options[dprEle.selectedIndex].value, 10);
+			
+			// force a bandwidth speed
+			var bandwidthEle = document.getElementById('bandwidth');
+			foresight.bandwidth = bandwidthEle.options[bandwidthEle.selectedIndex].value;
+			
+			foresight.resolve ( imageSetValue, imageData );
+			
+			// print out the resolved imageData src
+			document.getElementById('output').innerHTML = imageData.src;
+		}
+		
+	</script>
+	<style>
+		label { font-weight: bold; width:160px; float:left; padding:3px 5px; }
+		input { font-family:Courier; }
+		div { clear:both; padding:5px; }
+		pre { height:100px; padding-left:160px; font-size:1.2em; }
+	</style>
+</head>
+<body class="index">
+
+	<h1>
+		Foresight.resolve()
+	</h1>
+
+	<p>
+		Testing page shows how the public foresight.resolve() method can be used. Also useful for testing various scenarios.
+	</p>
+
+	<div>
+		<label>Image-set value:</label>
+		<input value="url({directory}{requestWidth}x{requestHeight}/{file}) 2x high-bandwidth" id="imageSet" style="width:600px;">
+	</div>
+
+	<div>
+		<label>Device Pixel Ratio:</label>
+		<select id="dpr">
+			<option>2</option>
+			<option>1.5</option>
+			<option>1</option>
+		</select>
+	</div>
+
+	<div>
+		<label>Device Bandwidth:</label>
+		<select id="bandwidth">
+			<option>high</option>
+			<option>low</option>
+		</select>
+	</div>
+
+	<div>
+		<label>Default Src:</label>
+		<input value="/images/myfile.jpg" id="defaultSrc" style="width:600px;">
+	</div>
+	
+	<div>
+		<label>Image's Browser Width:</label>
+		<input value="640" id="browserWidth" style="width:40px;">
+	</div>
+	
+	<div>
+		<label>Image's Browser Height:</label>
+		<input value="480" id="browserHeight" style="width:40px;">
+	</div>
+	
+	<div>
+		<button onclick="resolveInput()">Resolve</button>
+	</div>
+
+
+	<pre id="output">
+		
+	</pre>
+
+
+	<hr>
+
+
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+	
+</body>
+</html>

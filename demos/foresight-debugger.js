@@ -62,7 +62,7 @@ var initForesightDebugger = function () {
 			imgInfo.push( 'Natural Width/Height: ' + img.naturalWidth + ' x ' + img.naturalHeight );
 		}
 
-		imgInfo.push( 'Original: ' + img.orgSrc);
+		imgInfo.push( 'Default: ' + img.defaultSrc);
 		imgInfo.push( 'Applied Image-set item: Scale: ' + img.appliedImageSetItem.scale + ', Scale Rounded: ' + img.appliedImageSetItem.scaleRounded + ', Bandwidth: ' + img.appliedImageSetItem.bandwidth );
 		imgInfo.push( 'Src Modification: ' + img.srcModification );
 		

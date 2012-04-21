@@ -28,6 +28,7 @@
 	CONNECTION_TEST_RESULT = 'connTestResult',
 	CONNECTION_KBPS = 'connKbps',
 	REQUEST_CHANGE = 'requestChange',
+	DEFAULT_SRC = 'defaultSrc',
 	HIGH_RES_SRC = 'highResolutionSrc',
 	BROWSER_WIDTH = 'browserWidth',
 	BROWSER_HEIGHT = 'browserHeight',
@@ -69,9 +70,9 @@
 	},
 	
 	triggerImageEvent = function(eventName, img){
-		var event = document.createEvent("Event");
-		event.initEvent("foresight-" + eventName, true, true);
-		img.dispatchEvent(event);
+		var event = document.createEvent( 'Event' );
+		event.initEvent( 'foresight-' + eventName, TRUE, TRUE );
+		img.dispatchEvent( event );
 	},
 
 	initImages = function () {
@@ -89,21 +90,19 @@
 			// only gather the images that haven't already been initialized
 			if ( img.initalized ) continue;
 
-			triggerImageEvent("imageInitStart", img);
+			triggerImageEvent( 'imageInitStart', img );
 
 			img.initalized = TRUE;
 
-			img.orgSrc = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
+			img[ DEFAULT_SRC ] = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
 
 			// always set the img's data-width & data-height attributes so we always know its aspect ratio
 			img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
 			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
 
 			 // missing required info
-			if ( !img.orgSrc || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
+			if ( !img[ DEFAULT_SRC ] || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
 
-			img[ REQUEST_WIDTH ] = 0;
-			img[ REQUEST_HEIGHT ] = 0;
 			img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
 			img.orgClassName = ( img.className ? img.className : '' );
 
@@ -123,8 +122,8 @@
 			// handle any response errors which may happen with this image
 			img.onerror = imgResponseError;
 
-			triggerImageEvent("imageInitEnd", img);
-			
+			triggerImageEvent( 'imageInitEnd', img );
+
 			// add this image to the collection
 			foresight.images.push( img );
 		}
@@ -138,24 +137,22 @@
 		y,
 		imageSetValues = imageSetText.split( ',' ),
 		imageSetItem,
-		urlMatch,
-		weight;
+		urlMatch;
 
 		for ( y = 0; y < imageSetValues.length; y ++ ) {
 
 			// set the defaults for this image-set item
 			// scaleFactor and bandwidth initially are set to the device's info
-			imageSetItem = {
-				text: imageSetValues[ y ]
-			};
-
 			// the more specific an image-set item is then the more weight
 			// it will receive so we can decide later which one to apply to the image
-			weight = 0;
+			imageSetItem = {
+				text: imageSetValues[ y ],
+				weight: 0
+			};
 
 			// get the image's scale factor if it was provided
 			if ( imageSetItem.text.indexOf( ' 1.5x' ) > -1 ) {
-				weight++; // gets more weight if its looking for an exact pixel ratio
+				imageSetItem.weight++; // gets more weight if its looking for an exact pixel ratio
 				imageSetItem[ SCALE ] = 1.5;
 			} else if ( imageSetItem.text.indexOf( ' 2x' ) > -1 ) {
 				imageSetItem[ SCALE ] = 2;
@@ -175,23 +172,22 @@
 				if ( urlMatch[ 1 ] != null && urlMatch[ 1 ] !== '' ) {
 					// url(URI_TEMPLATE)
 					imageSetItem[ URI_TEMPLATE ] = urlMatch[ 1 ];
-					weight++;
+					imageSetItem.weight++;
 				} else if ( urlMatch[ 2 ] != null && urlMatch[ 2 ] !== '' ) {
 					// url-replace(URI_FIND|URI_REPLACE)
 					imageSetItem[ URI_FIND ] = urlMatch[ 2 ];
 					imageSetItem[ URI_REPLACE ] = urlMatch[ 3 ];
-					weight++;
+					imageSetItem.weight++;
 				}
 			}
 
 			// give more weight to item-set items that have BOTH scale and bandwidth
 			// give 1 more weight if they have EITHER a scale or bandwidth
 			if( imageSetItem[ SCALE ] && imageSetItem[ BANDWIDTH ] ) {
-				weight += 2;
+				imageSetItem.weight += 2;
 			} else if( imageSetItem[ SCALE ] || imageSetItem[ BANDWIDTH ] ) {
-				weight++;
+				imageSetItem.weight++;
 			}
-			imageSetItem.weight = weight;
 
 			// each img keeps an array containing each of its image-set items
 			// this array is used later when foresight decides which image to request
@@ -201,7 +197,7 @@
 		// now that we have an array of imageSet items, sort them so the 
 		// image-set items with the most weight are first in the array's order
 		// this is used later when deciding which image-set item to apply
-		img.imageSet.sort(compareImageSets);
+		img.imageSet.sort( compareImageSets );
 	},
 
 	compareImageSets = function ( a, b ) {
@@ -235,8 +231,6 @@
 		x,
 		imagesLength = foresight.images.length,
 		img,
-		imgRequestWidth,
-		imgRequestHeight,
 		dimensionIncreased,
 		classNames,
 		dimensionClassName,
@@ -250,8 +244,8 @@
 				// parent element is not visible (yet anyways) so don't continue with this img
 				continue;
 			}
-			
-			triggerImageEvent("imageRebuildStart", img);
+
+			triggerImageEvent( 'imageRebuildStart', img );
 
 			// build a list of CSS Classnames for the <img> which may be useful
 			classNames = img.orgClassName.split( ' ' );
@@ -264,12 +258,13 @@
 				// we can then add those CSS dimension classnames to the document and do less repaints
 				dimensionClassName = 'fs-' + img[ BROWSER_WIDTH ] + 'x' + img[ BROWSER_HEIGHT ];
 				classNames.push( dimensionClassName );
-				
-				if(dimensionCssRules[dimensionClassName] == undefined){
-				// build a list of CSS rules for all the different dimensions
-				// ie:  .fs-640x480{width:640px;height:480px}
-					dimensionCssRules[dimensionClassName] = true;
-					dimensionCssRules.push('.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' ); 
+
+				if ( dimensionCssRules[ dimensionClassName ] == undefined ){
+					// build a list of CSS rules for all the different dimensions
+					// ie:  .fs-640x480{width:640px;height:480px}
+					// ensure no duplicates are added to the CSS rules array
+					dimensionCssRules[ dimensionClassName ] = TRUE;
+					dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' ); 
 				}
 			}
 
@@ -282,58 +277,10 @@
 			// assign which one to apply to the image src
 			assignImageSetItem( img );
 
-			// decide if this image should be hi-res or not
-			// both the scale factor should be greater than 1 and the bandwidth should be 'high'
-			if ( img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] > 1 && img[ APPLIED_IMAGE_SET_ITEM ][ BANDWIDTH ] === 'high' ) {
-				// hi-res is good to go, figure out our request dimensions
-				imgRequestWidth = Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
-				imgRequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
-				foresight.hiResEnabled = TRUE;
-			} else {
-				// no-go on the hi-res, go with the default size
-				imgRequestWidth = img[ BROWSER_WIDTH ];
-				imgRequestHeight = img[ BROWSER_HEIGHT ];
-				foresight.hiResEnabled = FALSE;
-			}
-
-			// only update the request width/height when the new dimension is 
-			// larger than the one already loaded (this will always be needed on first load)
-			// if the new request size is smaller than the image already loaded then there's 
-			// no need to request another image, just let the browser shrink the current img
-			if ( imgRequestWidth > img[ REQUEST_WIDTH ] ) {
-				img[ REQUEST_WIDTH ] = imgRequestWidth;
-				img[ REQUEST_HEIGHT ] = imgRequestHeight;
-
-				// decide how the img src should be modified for the image request
-				if ( img[ HIGH_RES_SRC ] && foresight.hiResEnabled ) {
-					// this image has a hi-res src manually set and the device is hi-res enabled
-					// set the img src using the data-high-resolution-src attribute value
-					// begin the request for this image
-					img.src = img[ HIGH_RES_SRC ];
-					img[ SRC_MODIFICATION ] = 'src-hi-res';
-				} else if ( img[ APPLIED_IMAGE_SET_ITEM ][ URI_TEMPLATE ] ) {
-					// this image's src should be parsed a part then
-					// rebuilt using the supplied URI template
-					// this allows you to place the dimensions where ever in the src
-					rebuildSrcFromUriTemplate( img );
-					img[ SRC_MODIFICATION ] = 'src-uri-template';
-				} else if ( img[ APPLIED_IMAGE_SET_ITEM ][ URI_FIND ] && img[ APPLIED_IMAGE_SET_ITEM ][ URI_REPLACE ] ) {
-					// this should find a certain values in the image's src 
-					// then replace the values with values given
-					replaceUriValues( img );
-					img[ SRC_MODIFICATION ] = 'src-find-replace';
-				} else {
-					// make no changes from the original src
-					img.src = img.orgSrc;
-					img[ SRC_MODIFICATION ] = 'src-original';
-				}
-				img[ REQUEST_CHANGE ] = TRUE;
-			} else {
-				img[ REQUEST_CHANGE ] = FALSE;
-			}
+			setRequestDimensions( img );
 
 			// add a CSS classname if this img is hi-res or not
-			if ( foresight.hiResEnabled && img.src !== img.orgSrc ) {
+			if ( foresight.hiResEnabled && img.src !== img[ DEFAULT_SRC ] ) {
 				classNames.push( hiResClassname );
 			} else {
 				classNames.push( lowResClassname );
@@ -342,8 +289,8 @@
 
 			// assign the new CSS classnames to the img
 			img.className = classNames.join( ' ' );
-			
-			triggerImageEvent("imageRebuildEnd", img);
+
+			triggerImageEvent( 'imageRebuildEnd', img );
 		}
 
 		// if there were are imgs that need width/height assigned to them then
@@ -359,6 +306,68 @@
 
 		// remember what the window width is to evaluate later when the window resizes
 		lastWindowWidth = getWindowWidth();
+	},
+	
+	setRequestDimensions = function ( img ) {
+		// decide if this image should be hi-res or not
+		// both the scale factor should be greater than 1 and the bandwidth should be 'high'
+		var
+		imgRequestWidth,
+		imgRequestHeight;
+		
+		if ( img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] > 1 && img[ APPLIED_IMAGE_SET_ITEM ][ BANDWIDTH ] === 'high' ) {
+			// hi-res is good to go, figure out our request dimensions
+			imgRequestWidth = Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			imgRequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			foresight.hiResEnabled = TRUE;
+		} else {
+			// no-go on the hi-res, go with the default size
+			imgRequestWidth = img[ BROWSER_WIDTH ];
+			imgRequestHeight = img[ BROWSER_HEIGHT ];
+			foresight.hiResEnabled = FALSE;
+		}
+
+		// only update the request width/height when the new dimension is 
+		// larger than the one already loaded (this will always be needed on first load)
+		// if the new request size is smaller than the image already loaded then there's 
+		// no need to request another image, just let the browser shrink the current img
+		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] ) {
+			img[ REQUEST_WIDTH ] = imgRequestWidth;
+			img[ REQUEST_HEIGHT ] = imgRequestHeight;
+
+			// decide how the img src should be modified for the image request
+			if ( img[ HIGH_RES_SRC ] && foresight.hiResEnabled ) {
+				// this image has a hi-res src manually set and the device is hi-res enabled
+				// set the img src using the data-high-resolution-src attribute value
+				// begin the request for this image
+				img.src = img[ HIGH_RES_SRC ];
+				img[ SRC_MODIFICATION ] = 'src-hi-res';
+			} else {
+				img.src = setSrc( img );
+			}
+			img[ REQUEST_CHANGE ] = TRUE;
+		} else {
+			img[ REQUEST_CHANGE ] = FALSE;
+		}
+	},
+
+	setSrc = function ( img ) {
+		// decide how the img src should be modified for the image request
+		if ( img[ APPLIED_IMAGE_SET_ITEM ][ URI_TEMPLATE ] ) {
+			// this image's src should be parsed a part then
+			// rebuilt using the supplied URI template
+			// this allows you to place the dimensions where ever in the src
+			img[ SRC_MODIFICATION ] = 'src-uri-template';
+			return rebuildSrcFromUriTemplate( img );
+		} else if ( img[ APPLIED_IMAGE_SET_ITEM ][ URI_FIND ] && img[ APPLIED_IMAGE_SET_ITEM ][ URI_REPLACE ] ) {
+			// this should find a certain values in the image's src 
+			// then replace the values with values given
+			img[ SRC_MODIFICATION ] = 'src-find-replace';
+			return replaceUriValues( img );
+		}
+		// make no changes from the default src
+		img[ SRC_MODIFICATION ] = 'src-default';
+		return img[ DEFAULT_SRC ];
 	},
 
 	assignImageSetItem = function ( img ) {
@@ -549,15 +558,15 @@
 	rebuildSrcFromUriTemplate = function ( img ) {
 		// rebuild the <img> src using the supplied URI template and image data
 		var
-		f,
+		x,
 		formatReplace = [ 'src', 'protocol', 'host', 'port', 'directory', 'file', 'filename', 'ext', 'query', REQUEST_WIDTH, REQUEST_HEIGHT, SCALE, SCALE_ROUNDED ],
 		newSrc = img[ APPLIED_IMAGE_SET_ITEM ][ URI_TEMPLATE ];
 
 		// parse apart the original src URI
-		img.uri = parseUri( img.orgSrc );
+		img.uri = parseUri( img[ DEFAULT_SRC ] );
 
 		// add in a few more properties we'll need for the find/replace later
-		img.uri.src = img.orgSrc;
+		img.uri.src = img[ DEFAULT_SRC ];
 		img.uri[ REQUEST_WIDTH ] = img[ REQUEST_WIDTH ];
 		img.uri[ REQUEST_HEIGHT ] = img[ REQUEST_HEIGHT ];
 		img.uri[ SCALE ] = img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ];
@@ -565,12 +574,12 @@
 
 		// loop through all the possible format keys and 
 		// replace them with their respective value for this image
-		for ( f = 0; f < formatReplace.length; f++ ) {
-			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img.uri[ formatReplace[ f ] ] );
+		for ( x = 0; x < formatReplace.length; x++ ) {
+			newSrc = newSrc.replace( '{' + formatReplace[ x ] + '}', img.uri[ formatReplace[ x ] ] );
 		}
 
-		// set the new src, begin the request for this image
-		img.src = newSrc; 
+		// return the new src, begin the request for this image
+		return newSrc; 
 	},
 
 	// parseUri 1.2.2
@@ -613,7 +622,7 @@
 
 		var
 		f,
-		newSrc = img.orgSrc.replace( findValue, img[ APPLIED_IMAGE_SET_ITEM ][ URI_REPLACE ] ),
+		newSrc = img[ DEFAULT_SRC ].replace( findValue, img[ APPLIED_IMAGE_SET_ITEM ][ URI_REPLACE ] ),
 		formatReplace = [ REQUEST_WIDTH, REQUEST_HEIGHT, SCALE, SCALE_ROUNDED ];
 
 		// loop through all the possible format keys and 
@@ -622,17 +631,17 @@
 			newSrc = newSrc.replace( '{' + formatReplace[ f ] + '}', img[ formatReplace[ f ] ] );
 		}
 
-		// set the new src, begin the request for this image
-		img.src = newSrc; 
+		// return the new src, begin the request for this image
+		return newSrc; 
 	},
 
 	imgResponseError = function ( img ) {
 		img = this;
 		img.className = img.className.replace( hiResClassname, lowResClassname );
 		img[ SRC_MODIFICATION ] = 'response-error';
-		if ( img.hasError || img.src === img.orgSrc ) return;
+		if ( img.hasError || img.src === img[ DEFAULT_SRC ] ) return;
 		img.hasError = TRUE;
-		img.src = img.orgSrc;
+		img.src = img[ DEFAULT_SRC ];
 	},
 
 	initSpeedTest = function () {
@@ -798,9 +807,19 @@
 		initImageRebuild();
 	};
 
+	foresight.resolve = function ( imageSetValue, imageData ) {
+		// public method so you can pass in an image-set value along with image data
+		// then return the image data which now has the src property filled in
+		imageData.imageSet = [];
+		parseImageSet( imageData, imageSetValue );
+		assignImageSetItem( imageData );
+		setRequestDimensions( imageData )
+		imageData.src = setSrc( imageData );
+	};
+
 	foresight.reload = function () {
-		// if the window resizes or this function is called by external events (like a changepage in jQuery Mobile)
-		// then it should reload foresight. Uses a timeout so it can govern how many times the reload executes
+		// public method available for if the DOM changes since the initial load (like a changepage in jQuery Mobile)
+		// Uses a timeout so it can govern how many times the reload executes without goin nuts
 		window.clearTimeout( reloadTimeoutId ); 
 		reloadTimeoutId = window.setTimeout( executeReload, 250 ); 
 	};
