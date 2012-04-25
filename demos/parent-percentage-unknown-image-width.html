@@ -33,14 +33,14 @@
 	<section>
 	
 		<h2>
-			Parent Percentage with unknown Image Width
+			Parent Percentage with Unknown Image Width
 		</h2>
 
 		<article>
 			<p>
 				This demo shows image-set() CSS can work with percentage css width and an unknown aspect ratio. 
 				Obviously this will not allow you to specify the height on the URL for dynamic images so your 
-				server side component should determine the aspect ratio itself.
+				server side component should determine the aspect ratio or you should set the aspect ratio not to auto.
 			</p>
 			<p>
 				The primary content on the left side take 60% of the available width. 
@@ -52,7 +52,7 @@
 		</article>
 	
 		<aside>
-			<img data-src="http://foresightjs.appspot.com/dynamic-images/px-wright-flyer.jpg" data-width="1" data-height="1" class="fs-img">
+			<img data-src="http://foresightjs.appspot.com/dynamic-images/px-wright-flyer.jpg" data-aspect-ratio="auto" class="fs-img">
 			<noscript>
 				<img src="http://foresightjs.appspot.com/dynamic-images/1024px-wright-flyer.jpg">
 			</noscript>
