@@ -38,6 +38,7 @@
 	DIMENSION_HEIGHT = 'height',
 	WIDTH_UNITS = 'widthUnits',
 	HEIGHT_UNITS = 'heightUnits',
+	ASPECT_RATIO = 'aspectRatio',
 	APPLIED_IMAGE_SET_ITEM = 'appliedImageSetItem',
 	SCALE = 'scale',
 	SCALE_ROUNDED = 'scaleRounded',
@@ -99,9 +100,15 @@
 			// always set the img's data-width & data-height attributes so we always know its aspect ratio
 			img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
 			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
+			
+			// if the aspect ratio was set then let's use that
+			var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
+			img[ ASPECT_RATIO ] = tmpAspectRatio === 'auto' 
+				? tmpAspectRatio 
+				: ( !isNaN( tmpAspectRatio ) ? parseInt( tmpAspectRatio, 10 ) : 0 );
 
 			 // missing required info
-			if ( !img[ DEFAULT_SRC ] || !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) continue;
+			if ( !img[ DEFAULT_SRC ] || (( !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) && !img[ ASPECT_RATIO ])) continue;
 
 			img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
 			img.orgClassName = ( img.className ? img.className : '' );
@@ -317,13 +324,13 @@
 		
 		if ( img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] > 1 && img[ APPLIED_IMAGE_SET_ITEM ][ BANDWIDTH ] === 'high' ) {
 			// hi-res is good to go, figure out our request dimensions
-			imgRequestWidth = Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
-			imgRequestHeight = Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? 'auto' : Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? 'auto' : Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
 			foresight.hiResEnabled = TRUE;
 		} else {
 			// no-go on the hi-res, go with the default size
-			imgRequestWidth = img[ BROWSER_WIDTH ];
-			imgRequestHeight = img[ BROWSER_HEIGHT ];
+			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? 'auto' : img[ BROWSER_WIDTH ];
+			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? 'auto' : img[ BROWSER_HEIGHT ];
 			foresight.hiResEnabled = FALSE;
 		}
 
@@ -476,8 +483,21 @@
 				// assign the browser pixels to equal the width and height units
 				// this only needs to happen the first time
 				img.unitType = 'pixel';
-				img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
-				img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+				// If the aspect ratio is set then we will get the other value off the
+				// aspect ratio 'auto' is not a valid aspect ratio for non percent based 
+				// widths so we are going to ignore it if the value is that
+				if( img[ ASPECT_RATIO ] && img[ ASPECT_RATIO ] != 'auto' ) {
+					if( img[ WIDTH_UNITS ] ){
+						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+						img[ BROWSER_HEIGHT ] =  Math.round( img[ WIDTH_UNITS ] / img[ ASPECT_RATIO ] );
+					} else if( img[ HEIGHT_UNITS ] ){
+						img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
+						img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+					}
+				} else {
+					img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+					img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+				}
 			}
 		}
 
@@ -488,14 +508,24 @@
 			// this should be re-ran every time the window width changes
 			img.computedWidth = getComputedPixelWidth( img );
 			img[ BROWSER_WIDTH ] = img.computedWidth;
-			img[ BROWSER_HEIGHT ] = Math.round( img[ HEIGHT_UNITS ] * ( img.computedWidth / img[ WIDTH_UNITS ] ) );
+			
 
-			if ( navigator.appVersion.indexOf( 'MSIE' ) > -1 ) {
+			if( img[ ASPECT_RATIO ] != 'auto' ){
+				//if aspect ratio is auto then we will not set the height in the request off the width
+				img[ BROWSER_HEIGHT ] = Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
+			} else if(img[ HEIGHT_UNITS ]) {
+				//If we set the height to fixed then use that for the request height
+				img[ BROWSER_HEIGHT ] = Math.round( img[ HEIGHT_UNITS ] * ( img.computedWidth / img[ WIDTH_UNITS ] ) );
+			}
+			
+			if( img[ BROWSER_HEIGHT ] && navigator.appVersion.indexOf( 'MSIE' ) > -1 ) {
 				// manually assign what the calculated height pixels should be
 				// do this only for our friend IE, the rest of the browsers can gracefully
 				// resize of the image without manually setting the height in pixels
 				img.style.height = img[ BROWSER_HEIGHT ] + 'px';
 			}
+			
+			
 		}
 	},
 
