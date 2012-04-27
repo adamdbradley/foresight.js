@@ -38,6 +38,10 @@ Notice how the first image is missing the _src_ attribute, but instead has a _da
 
 One concept change is that both the _data-width_ and _data-height_ attributes should not be seen as the image's physical dimensions in the traditional sense, but rather a way for the browser to know the image's aspect ratio as its size is scaled up and down. Foresight.js decides the image's actual dimensions, while the _data-width_ and _data-height_ attributes help to maintain its correct aspect ratio.
 
+It is possible to use a numeric aspect ratio instead of _data-width_ and _data-height_ by specifying it on the _data-aspect-ratio_ attribute.  This value is used to determine the height or the width from the opposite value.  If this is done then both _data-width_ and _data-height_ should be left blank.  
+
+The _aspect-ratio_ attribute also allows the height value to be determined naturally by the image returned from the server.  This occurs when the value of _data-aspect-ratio_ is "auto".  Note that in this case the the value replaced in the url for _requestHeight_ will always be "auto" when building the src image.
+
 Until the web community completes a new standard to hi-res context images, and it becomes widely adopted by all the major browsers, and the updated browsers are installed on the billions of devices in the world, the approach by foresight.js is one of the few that answers each of the [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). 
 
 _There is hope however as the web community continues to work on a solution for high-resolution images. These resources offer a glimpse about what's currently being worked on (and be sure to read the comments too) [Adaptive Image Element](https://gist.github.com/2159117), [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/) and [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html)._
@@ -355,9 +359,11 @@ __foresight.options.forcedBandwidth__: You can override what the network bandwid
 ## Img Attributes
 __data-src__: _(Required)_ The src attribute of the image, which is the location image on the server. Note that the img element should not set the _src_ attribute, but instead it sets a _data-src_ attribute.
 
-__data-width__: _(Required)_ The pixel width according to the browser. Any adjustments to the device pixel ratio will take care of the request image width automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
+__data-width__: _(Required if data-aspect-ratio not set)_ The pixel width according to the browser. Any adjustments to the device pixel ratio will take care of the request image width automatically. Either both _data-width_ and _data-height_ or _data-aspect-ratio_ are required so we can always proportionally scale the image.
 
-__data-height__: _(Required)_ The pixel height according to the browser. Any adjustments to the device pixel ratio will take care of the request image height automatically. Both _data-width_ and _data-height_ are required so we can always proportionally scale the image.
+__data-height__: _(Required if data-aspect-ratio not set)_ The pixel height according to the browser. Any adjustments to the device pixel ratio will take care of the request image height automatically. Either both _data-width_ and _data-height_ or _data-aspect-ratio_ are required so we can always proportionally scale the image.
+
+__data-aspect-ratio__: _(Required if data-width and data-height not set)_ The aspect ratio of the expected image. This will calculate the height from the width to keep the aspect ratio of the returned image the same.  If the value is set to "auto" then the height will be allowed to follow the natural height of the returned image and the _requestHeight_ value will be "auto" for the image request. Either both _data-width_ and _data-height_ or _data-aspect-ratio_ are required so we can always proportionally scale the image.
 
 __data-high-resolution-src__: _(Optional)_ Alternatively to dynamically building the img's _src_, you can manually set the _data-high-resolution-src_ attribute which is used when the device is high-resolution enabled. Any device pixel ratio greater than 1 is considered high-resolution. For example, devices with a pixel ratio of 1.5 and 2 will both receive the same image.
 
