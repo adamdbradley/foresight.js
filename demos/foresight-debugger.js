@@ -35,7 +35,7 @@ var initForesightDebugger = function () {
 		var docPre = document.createElement( 'pre' );
 		docPre.className = "foresight-debug global";
 		if( foresight.images.length ) {
-			foresight.images[ 0 ].parentElement.insertBefore( docPre, foresight.images[ 0 ] );
+			foresight.images[ 0 ].parentNode.insertBefore( docPre, foresight.images[ 0 ] );
 		} else {
 			document.body.appendChild( docPre );
 		}
@@ -80,7 +80,7 @@ var initForesightDebugger = function () {
 
 		if ( !img.infoElement ) {
 			img.infoElement = document.createElement( 'div' );
-			img.parentElement.insertBefore(img.infoElement, img);
+			img.parentNode.insertBefore(img.infoElement, img);
 		}
 		
 		var newInfoElement = document.createElement( 'pre' );
