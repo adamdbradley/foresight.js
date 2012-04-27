@@ -71,9 +71,11 @@
 	},
 	
 	triggerImageEvent = function(eventName, img){
-		var event = document.createEvent( 'Event' );
-		event.initEvent( 'foresight-' + eventName, TRUE, TRUE );
-		img.dispatchEvent( event );
+		try {
+			var event = document.createEvent( 'Event' );
+			event.initEvent( 'foresight-' + eventName, TRUE, TRUE );
+			img.dispatchEvent( event );
+		} catch(e){}
 	},
 
 	initImages = function () {
@@ -573,7 +575,7 @@
 
 		// add all of the dimension CSS rules to the style element
 		try {
-			dimensionStyleEle.innerText = cssRules;
+			dimensionStyleEle.innerHTML = cssRules;
 		} catch( e ) {
 			// our trusty friend IE has their own way of doing things, weird I know
 			dimensionStyleEle.styleSheet.cssText = cssRules;

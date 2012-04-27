@@ -442,9 +442,10 @@ Foresight's goal has always been to work on the major browsers, both desktop and
 * iOS 5.1 (iPad3 & iPhone4)
 * Android 2.3 (Samsung Charge)
 * Chrome 17 (Mac)
-* Chrome 19 (Win)
+* Chrome 20 (Win)
 * Safari 5.1 (Mac)
-* Firefox 11 (Mac)
+* Firefox 3.6 (Mac)
+* Firefox 12 (Mac)
 * Firefox 10 (Win)
 * IE8
 
