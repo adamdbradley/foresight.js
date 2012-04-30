@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Foresight.js Demo: Smooth Scaling Static Responsive Image using Media Queries (Conditional CSS)</title>
+	<title>Foresight.js Demo: Block Scaling Static Responsive Image using Media Queries (Conditional CSS)</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link href="demo.css" type="text/css" rel="stylesheet" />
 
@@ -16,22 +16,27 @@
 		}
 		
 		.fs-img {
-			/* Image will default to the 240px CSS wide image */
-			width:100%;
-			font-family: 'image-set( url(-small|-small-2x) 2x high-bandwidth )';
+			/* Image will default to the 240px CSS wide image
+			width:240px;
+			height:157px;
+			font-family: 'image-set( url(-small|-small-2x) 2x high-bandwidth )'; */
 			display:none;
 			border-left:4px solid yellow;
 		}
-		@media (min-width:600px) {
+		@media (min-width:800px) {
 			/* If the window's width is at least 600px wide then it should show the 320px CSS wide image */
 			.fs-img {
+				width:320px;
+				height:210px;
 				font-family: 'image-set( url(-small|-medium), url(-small|-medium-2x) 2x high-bandwidth )';
 				border-left:4px solid blue;
 			}
 		}
-		@media (min-width:800px) {
+		@media (min-width:1200px) {
 			/* If the window's width is at least 800px wide then it should show the 480px CSS wide image, but set the image's max-width to 480px */
 			.fs-img {
+				width:480px;
+				height:314px;
 				font-family: 'image-set( url(-small|-large), url(-small|-large-2x) 2x high-bandwidth )';
 				max-width:480px;
 				border-left:4px solid green;
@@ -47,14 +52,14 @@
 	<section>
 	
 		<h2>
-			Smooth Scaling Static Responsive Image using Media Queries (Conditional CSS)
+			Block Scaling Static Responsive Image using Media Queries (Conditional CSS)
 		</h2>
 
 		<article>
 			<p>
 				This demo shows image-set() CSS can work with existing media queries, however this method
-				is really only useful for static images. Dynamically resized images are able fill the exact
-				width of the parent's available width. View demo 9 to see the images block scale.
+				is really only useful for static images. Dynamically resized images are able fill the
+				width of the parent's available width. View demo 8 to see the images scale to the exact available width.
 			</p>
 			<p>
 				The primary content on the left side take 60% of the available width. 
@@ -62,23 +67,22 @@
 			</p>
 			<p>
 				Adjusting the width of the browser will request various static images. The left border color of the 
-				image will change according to the applied media query. Smooth scaling static images
-				fills up the available width the browser provides the image. However, the quality
-				of the image is only dependant on how well the browser scales the given image.
-				View the source to see how the media queries are doing this.
+				image will change according to the applied media query. Images will not fill up the available
+				width like Demo 8, but instead adjust to specific sizes when the available width is large enough.
+				View the source to see how the media queries are doing this. 
 			</p>
 			<ul>
-				<li><strong>Green left border</strong>: The window's width is at least 800px wide, 
+				<li><strong>Green left border</strong>: The window's width is at least 1200px wide, 
 					showing the 480px CSS wide image.</li>
-				<li><strong>Blue left border</strong>: The window's width is at least 600px wide, 
+				<li><strong>Blue left border</strong>: The window's width is at least 800px wide, 
 					showing the 320px CSS wide image.</li>
-				<li><strong>Yellow left border</strong>: The window's width is less than 600px wide, 
+				<li><strong>Yellow left border</strong>: The window's width is less than 800px wide, 
 					showing the 240px CSS wide image.</li>
 			</ul>
 		</article>
 	
 		<aside>
-			<img data-src="http://foresightjs.appspot.com/static-images/castle-small.jpg" data-width="240" data-height="157" class="fs-img">
+			<img data-src="http://foresightjs.appspot.com/static-images/castle-small.jpg" data-aspect-ratio="auto" class="fs-img">
 			<noscript>
 				<img src="http://foresightjs.appspot.com/static-images/castle-small.jpg">
 			</noscript>

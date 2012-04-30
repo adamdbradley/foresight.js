@@ -83,58 +83,65 @@
 		var
 		x,
 		img,
-		customCss,
-		imageSetText;
+		customCss;
 
 		for ( x = 0; x < document.images.length; x ++ ) {
 			img = document.images[ x ];
 
+			// if we've already said to ignore this img then don't bother doing any more
+			if ( img.ignore ) continue;
+
 			// initialize properties the image will use
 			// only gather the images that haven't already been initialized
-			if ( img.initalized ) continue;
-
-			triggerImageEvent( 'imageInitStart', img );
-
-			img.initalized = TRUE;
-
-			img[ DEFAULT_SRC ] = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
-
-			// always set the img's data-width & data-height attributes so we always know its aspect ratio
-			img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
-			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
+			if ( !img.initalized ) {
+				img.initalized = TRUE;
+				
+				triggerImageEvent( 'imageInitStart', img );
+	
+				img[ DEFAULT_SRC ] = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
+	
+				// always set the img's data-width & data-height attributes so we always know its aspect ratio
+				img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
+				img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
+				
+				// if the aspect ratio was set then let's use that
+				var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
+				img[ ASPECT_RATIO ] = tmpAspectRatio === 'auto' 
+					? tmpAspectRatio 
+					: ( !isNaN( tmpAspectRatio ) ? parseInt( tmpAspectRatio, 10 ) : 0 );
+	
+				 // missing required info
+				if ( !img[ DEFAULT_SRC ] || (( !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) && !img[ ASPECT_RATIO ])) {
+					img.ignore = TRUE;
+					continue;
+				}
+	
+				img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
+				img.orgClassName = ( img.className ? img.className : '' );
+	
+				// handle any response errors which may happen with this image
+				img.onerror = imgResponseError;
+	
+				triggerImageEvent( 'imageInitEnd', img );
+	
+				// add this image to the collection
+				foresight.images.push( img );
+			}
 			
-			// if the aspect ratio was set then let's use that
-			var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
-			img[ ASPECT_RATIO ] = tmpAspectRatio === 'auto' 
-				? tmpAspectRatio 
-				: ( !isNaN( tmpAspectRatio ) ? parseInt( tmpAspectRatio, 10 ) : 0 );
-
-			 // missing required info
-			if ( !img[ DEFAULT_SRC ] || (( !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) && !img[ ASPECT_RATIO ])) continue;
-
-			img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
-			img.orgClassName = ( img.className ? img.className : '' );
-
+			// Conditional CSS
 			// font-family will be the hacked CSS property which contains the image-set() CSS value
+			// using font-family allows us to access values within CSS, which may change per media query
 			// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
 			// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
 			// http://trac.webkit.org/changeset/111637
-			imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
-
+			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
+			
 			img.imageSet = [];
 
-			if ( imageSetText.length > 1 ) {
+			if ( img.imageSetText.length > 1 ) {
 				// parse apart the custom CSS image-set() text
-				parseImageSet( img, imageSetText[ 1 ] );
+				parseImageSet( img, img.imageSetText[ 1 ] );
 			}
-
-			// handle any response errors which may happen with this image
-			img.onerror = imgResponseError;
-
-			triggerImageEvent( 'imageInitEnd', img );
-
-			// add this image to the collection
-			foresight.images.push( img );
 		}
 	},
 
@@ -340,7 +347,9 @@
 		// larger than the one already loaded (this will always be needed on first load)
 		// if the new request size is smaller than the image already loaded then there's 
 		// no need to request another image, just let the browser shrink the current img
-		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] ) {
+		// or if the file has changed due to conditional CSS (media query changed which image-set to use)
+		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] || img.activeImageSet !== img.imageSetText ) {
+			 	
 			img[ REQUEST_WIDTH ] = imgRequestWidth;
 			img[ REQUEST_HEIGHT ] = imgRequestHeight;
 
@@ -355,6 +364,10 @@
 				img.src = setSrc( img );
 			}
 			img[ REQUEST_CHANGE ] = TRUE;
+			
+			// remember which image-set we used to apply this image
+			// this is useful if the window changes width and a media query applies another image-set
+			img.activeImageSet = img.imageSetText;
 		} else {
 			img[ REQUEST_CHANGE ] = FALSE;
 		}
