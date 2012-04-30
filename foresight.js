@@ -71,11 +71,11 @@
 	},
 	
 	triggerImageEvent = function(eventName, img){
-		try {
+		if(document.createEvent){
 			var event = document.createEvent( 'Event' );
-			event.initEvent( 'foresight-' + eventName, TRUE, TRUE );
+			event.initEvent( 'foresight-' + eventName , TRUE, TRUE );
 			img.dispatchEvent( event );
-		} catch(e){}
+		} 
 	},
 
 	initImages = function () {
