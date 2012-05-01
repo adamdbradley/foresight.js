@@ -1,7 +1,7 @@
 ## Introduction
 __Foresight.js__ gives webpages the ability to tell if the user's device is capable of viewing high-resolution images (such as the 3rd generation iPad) before the image has been requested from the server. Additionally, it judges if the user's device currently has a fast enough network connection for high-resolution images. Depending on device display and network connectivity, __foresight.js__ will request the appropriate image for the webpage. By customizing the _img_ _src_ attribute using methods such as URI templates, or finding and replacing values within the URI, it is able to form requests built for your image's resolution variants. Media queries however, could be used when dealing with CSS background-images, while foresight.js is used to handle inline _img_ elements (or until current web standards are improved).
 
-Foresight.js has made significant improvements over its previous versions, specifically the implementation of the CSS image-set() function. The latest version lets the browser take control of the image's browser dimensions completely, while the original foresight.js release only worried about which image to request according to the network connection and device pixel ratio. Additionally, foresight.js was previously centered around requesting dynamically sized images, and while this is still possible, it also ensures its easy to request static based images (such as images with "_2x" or "-highres" in the filename). For a more in-depth write-up on foresight's concept please review my article: [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/).
+Foresight.js has made significant improvements over its previous versions, specifically the implementation of the CSS image-set() function. The latest version lets the browser take control of the image's browser dimensions completely, while the original foresight.js release only worried about which image to request according to the network connection and device pixel ratio. Additionally, foresight.js was previously centered around requesting dynamically sized images, and while this is still possible, it also ensures its easy to request static based images (such as images with "_2x" or "-highres" in the filename). For a more in-depth write-up on foresight's concept please review: [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/) and [Syntax issue with displaying high-resolution images in the picture element](http://www.w3.org/community/respimg/2012/04/26/syntax-issue-with-displaying-high-resolution-images-in-the-picture-element-how-a-mole-hill-could-turn-into-a-mountain/#comment-525).
 
 This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. 
 
@@ -108,7 +108,7 @@ This is good, except now my CSS class _fs-img_ only lets me request the image va
 
 _And I know you may be hung up on the font-family property, but until a better idea comes around its a workable solution for all of today's browsers. Ideally a new or existing CSS property will be able to contain the image-set() values. [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/)._
 
-Now let's take this one step further and allow each image-set variant's url() to have its own URI template, such as:
+Now let's take this one step further and allow each image-set variant's url() to have its own [URI Template (recently published RFC 6570)](http://tools.ietf.org/html/rfc6570), such as:
 
     <style>
         .fs-img {
@@ -158,7 +158,7 @@ __src-hi-res__: The _data-high-resolution-src_ attribute can be used to identify
 
 
 ## URI Template
-The src URI template provides foresight.js with how the request should be built for the image. Each server's image request is different and the URI template can be customized to meet each server's format. Below are the various format keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the format keys that help build the src request for the server. 
+The src [URI Template (recently published RFC 6570)](http://tools.ietf.org/html/rfc6570) provides foresight.js with how the request should be built for the image. Each server's image request is different and the URI template can be customized to meet each server's format. Below are the various format keys that are used to rebuild the src to request the correct image from the server. Each one is not required, and you should only use the format keys that help build the src request for the server. 
 
 __{src}__: The original src value. Use this if you do not want to make any changes to the src from the one already supplied in the _data-src_ attribute. This would be used mostly for the 1x scale factors and low-bandwidth image-sets, mainly stating that the default image should be requested instead of modifying the src. This is also useful if you are adding querystrings at the end of the original src.
 
@@ -474,6 +474,7 @@ Find a bug? Please create an issue here on GitHub!
 * [Adaptive Image Element](https://gist.github.com/2159117)
 * [Polyfilling picture without the overhead](http://www.w3.org/community/respimg/2012/03/15/polyfilling-picture-without-the-overhead/)
 * [The image-set() function (for responsive images)](http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html)
+* [URI Template: RFC 6570](http://tools.ietf.org/html/rfc6570)
 
 ## License
 
