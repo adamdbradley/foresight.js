@@ -134,13 +134,13 @@
 			// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
 			// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
 			// http://trac.webkit.org/changeset/111637
-			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
+			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' )
 			
 			img.imageSet = [];
 
 			if ( img.imageSetText.length > 1 ) {
 				// parse apart the custom CSS image-set() text
-				parseImageSet( img, img.imageSetText[ 1 ] );
+				parseImageSet( img, img.imageSetText.split( 'image-set(' )[ 1 ] );
 			}
 		}
 	},
@@ -348,7 +348,7 @@
 		// if the new request size is smaller than the image already loaded then there's 
 		// no need to request another image, just let the browser shrink the current img
 		// or if the file has changed due to conditional CSS (media query changed which image-set to use)
-		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] || img.activeImageSet !== img.imageSetText ) {
+		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] || img.activeImageSetText !== img.imageSetText ) {
 			 	
 			img[ REQUEST_WIDTH ] = imgRequestWidth;
 			img[ REQUEST_HEIGHT ] = imgRequestHeight;
@@ -367,7 +367,7 @@
 			
 			// remember which image-set we used to apply this image
 			// this is useful if the window changes width and a media query applies another image-set
-			img.activeImageSet = img.imageSetText;
+			img.activeImageSetText = img.imageSetText;
 		} else {
 			img[ REQUEST_CHANGE ] = FALSE;
 		}
