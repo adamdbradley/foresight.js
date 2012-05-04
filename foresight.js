@@ -49,6 +49,11 @@
 	STATUS_LOADING = 'loading',
 	STATUS_COMPLETE = 'complete',
 	LOCAL_STORAGE_KEY = 'fsjs',
+	ASPECT_RATIO_AUTO = 'auto',
+	UNIT_TYPE_PERCENT = 'percent',
+	UNIT_TYPE_AUTO = 'auto',
+	UNIT_TYPE_PIXEL = 'pixel',
+	STYLE_VALUE_AUTO = 'auto',
 	TRUE = true,
 	FALSE = false,
 	imageSetItemRegex = /url\((?:([a-zA-Z-_0-9{}\?=&\\/.:\s]+)|([a-zA-Z-_0-9{}\?=&\\/.:\s]+)\|([a-zA-Z-_0-9{}\?=&\\/.:\s]+))\)/g,
@@ -106,7 +111,7 @@
 				
 				// if the aspect ratio was set then let's use that
 				var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
-				img[ ASPECT_RATIO ] = tmpAspectRatio === 'auto' 
+				img[ ASPECT_RATIO ] = tmpAspectRatio === ASPECT_RATIO_AUTO
 					? tmpAspectRatio 
 					: ( !isNaN( tmpAspectRatio ) ? parseInt( tmpAspectRatio, 10 ) : 0 );
 	
@@ -134,13 +139,13 @@
 			// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
 			// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
 			// http://trac.webkit.org/changeset/111637
-			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' ).split( 'image-set(' );
+			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' )
 			
 			img.imageSet = [];
 
 			if ( img.imageSetText.length > 1 ) {
 				// parse apart the custom CSS image-set() text
-				parseImageSet( img, img.imageSetText[ 1 ] );
+				parseImageSet( img, img.imageSetText.split( 'image-set(' )[ 1 ] );
 			}
 		}
 	},
@@ -268,7 +273,7 @@
 
 			// get the computed pixel width according to the browser
 			fillComputedPixelDimensions( img );
-			if ( img.unitType == 'pixel' ) {
+			if ( img.unitType == UNIT_TYPE_PIXEL ) {
 				// instead of manually assigning width, then height, for every image and doing many repaints
 				// create a classname from its dimensions and when we're all done
 				// we can then add those CSS dimension classnames to the document and do less repaints
@@ -333,13 +338,13 @@
 		
 		if ( img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] > 1 && img[ APPLIED_IMAGE_SET_ITEM ][ BANDWIDTH ] === 'high' ) {
 			// hi-res is good to go, figure out our request dimensions
-			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? 'auto' : Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
-			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? 'auto' : Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? STYLE_VALUE_AUTO : Math.round( img[ BROWSER_WIDTH ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
+			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? STYLE_VALUE_AUTO : Math.round( img[ BROWSER_HEIGHT ] * img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ] );
 			foresight.hiResEnabled = TRUE;
 		} else {
 			// no-go on the hi-res, go with the default size
-			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? 'auto' : img[ BROWSER_WIDTH ];
-			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? 'auto' : img[ BROWSER_HEIGHT ];
+			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? STYLE_VALUE_AUTO : img[ BROWSER_WIDTH ];
+			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? STYLE_VALUE_AUTO : img[ BROWSER_HEIGHT ];
 			foresight.hiResEnabled = FALSE;
 		}
 
@@ -348,7 +353,7 @@
 		// if the new request size is smaller than the image already loaded then there's 
 		// no need to request another image, just let the browser shrink the current img
 		// or if the file has changed due to conditional CSS (media query changed which image-set to use)
-		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] || img.activeImageSet !== img.imageSetText ) {
+		if ( !img[ REQUEST_WIDTH ] || imgRequestWidth > img[ REQUEST_WIDTH ] || img.activeImageSetText !== img.imageSetText ) {
 			 	
 			img[ REQUEST_WIDTH ] = imgRequestWidth;
 			img[ REQUEST_HEIGHT ] = imgRequestHeight;
@@ -367,7 +372,7 @@
 			
 			// remember which image-set we used to apply this image
 			// this is useful if the window changes width and a media query applies another image-set
-			img.activeImageSet = img.imageSetText;
+			img.activeImageSetText = img.imageSetText;
 		} else {
 			img[ REQUEST_CHANGE ] = FALSE;
 		}
@@ -488,35 +493,40 @@
 		// this is most important for images set by percents
 		// and images with a max-width set
 		if ( !img.unitType ) {
-			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
-			if ( computedWidthValue.indexOf( '%' ) > 0 ) {
-				// if the width has a percent value then change the display to
-				// display:block to help get correct browser pixel width
-				img.unitType = 'percent';
+			if( img[ ASPECT_RATIO ] === ASPECT_RATIO_AUTO ) {
+				img.unitType = UNIT_TYPE_AUTO;
 			} else {
-				// the browser already knows the exact pixel width
-				// assign the browser pixels to equal the width and height units
-				// this only needs to happen the first time
-				img.unitType = 'pixel';
-				// If the aspect ratio is set then we will get the other value off the
-				// aspect ratio 'auto' is not a valid aspect ratio for non percent based 
-				// widths so we are going to ignore it if the value is that
-				if( img[ ASPECT_RATIO ] && img[ ASPECT_RATIO ] != 'auto' ) {
-					if( img[ WIDTH_UNITS ] ){
+				computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
+
+				if ( computedWidthValue.indexOf( '%' ) > 0 ) {
+					// if the width has a percent value then change the display to
+					// display:block to help get correct browser pixel width
+					img.unitType = UNIT_TYPE_PERCENT;
+				} else {
+					// the browser already knows the exact pixel width
+					// assign the browser pixels to equal the width and height units
+					// this only needs to happen the first time
+					img.unitType = UNIT_TYPE_PIXEL;
+					// If the aspect ratio is set then we will get the other value off the
+					// aspect ratio
+					if( img[ ASPECT_RATIO ] ) {
+						if( img[ WIDTH_UNITS ] ){
+							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+							img[ BROWSER_HEIGHT ] =  Math.round( img[ WIDTH_UNITS ] / img[ ASPECT_RATIO ] );
+						} else if( img[ HEIGHT_UNITS ] ){
+							img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
+							img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+						}
+					} else {
 						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
-						img[ BROWSER_HEIGHT ] =  Math.round( img[ WIDTH_UNITS ] / img[ ASPECT_RATIO ] );
-					} else if( img[ HEIGHT_UNITS ] ){
-						img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
 						img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
 					}
-				} else {
-					img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
-					img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
 				}
 			}
 		}
 
-		if ( img.unitType === 'percent' ) {
+
+		if ( img.unitType === UNIT_TYPE_AUTO || img.unitType === UNIT_TYPE_PERCENT ) {
 			// the computed width is probably getting controlled by some applied width property CSS
 			// since we now know what the pixel width the browser wants it to be, calculate its height
 			// the height should be calculated with the correct aspect ratio
@@ -525,7 +535,7 @@
 			img[ BROWSER_WIDTH ] = img.computedWidth;
 			
 
-			if( img[ ASPECT_RATIO ] != 'auto' ){
+			if( img[ ASPECT_RATIO ] != ASPECT_RATIO_AUTO ){
 				//if aspect ratio is auto then we will not set the height in the request off the width
 				img[ BROWSER_HEIGHT ] = Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
 			} else if(img[ HEIGHT_UNITS ]) {
@@ -543,7 +553,7 @@
 			
 		}
 	},
-
+	
 	getComputedPixelWidth = function ( img ) {
 		// code is a slimmed down version of jQuery getWidthOrHeight() and css swap()
 		if ( img.offsetWidth !== 0 ) {
