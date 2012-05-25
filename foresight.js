@@ -233,7 +233,7 @@
 	getDataAttribute = function ( img, attribute, getInt, value ) {
 		// get an <img> element's data- attribute value
 		value = img.getAttribute( 'data-' + attribute );
-		if ( getInt ) {
+		if ( getInt  && value!==null) {
 			if ( !isNaN( value ) ) {
 				return parseInt( value, 10 );
 			}
@@ -346,6 +346,13 @@
 			imgRequestWidth = img[ BROWSER_WIDTH ] === undefined ? STYLE_VALUE_AUTO : img[ BROWSER_WIDTH ];
 			imgRequestHeight = img[ BROWSER_HEIGHT ] === undefined ? STYLE_VALUE_AUTO : img[ BROWSER_HEIGHT ];
 			foresight.hiResEnabled = FALSE;
+		}
+
+        // if one dimension is undefined (e.g., only width is specified) then use aspect to determine it
+		if (imgRequestHeight===0){
+			imgRequestHeight=Math.round(imgRequestWidth/img[ ASPECT_RATIO ] );
+		} else if (imgRequestHeight===0){
+			imgRequestWidth=Math.round(imgRequestHeight*img[ ASPECT_RATIO] );
 		}
 
 		// only update the request width/height when the new dimension is 
