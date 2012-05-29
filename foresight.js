@@ -57,6 +57,7 @@
 	TRUE = true,
 	FALSE = false,
 	imageSetItemRegex = /url\((?:([a-zA-Z-_0-9{}\?=&\\/.:\s]+)|([a-zA-Z-_0-9{}\?=&\\/.:\s]+)\|([a-zA-Z-_0-9{}\?=&\\/.:\s]+))\)/g,
+	STRIP_UNITS_REGEX =	/[^\d]+/,
 
 	// used to keep track of the progress status for finding foresight 
 	// images in the DOM and connection test results
@@ -348,13 +349,6 @@
 			foresight.hiResEnabled = FALSE;
 		}
 
-        // if one dimension is undefined (e.g., only width is specified) then use aspect to determine it
-		if (imgRequestHeight===0){
-			imgRequestHeight=Math.round(imgRequestWidth/img[ ASPECT_RATIO ] );
-		} else if (imgRequestHeight===0){
-			imgRequestWidth=Math.round(imgRequestHeight*img[ ASPECT_RATIO] );
-		}
-
 		// only update the request width/height when the new dimension is 
 		// larger than the one already loaded (this will always be needed on first load)
 		// if the new request size is smaller than the image already loaded then there's 
@@ -517,12 +511,12 @@
 					// If the aspect ratio is set then we will get the other value off the
 					// aspect ratio
 					if( img[ ASPECT_RATIO ] ) {
-						if( img[ WIDTH_UNITS ] ){
-							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
-							img[ BROWSER_HEIGHT ] =  Math.round( img[ WIDTH_UNITS ] / img[ ASPECT_RATIO ] );
-						} else if( img[ HEIGHT_UNITS ] ){
+						if( img[ HEIGHT_UNITS ] ){						
 							img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
 							img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+						} else {
+							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ] || computedWidthValue.replace(STRIP_UNITS_REGEX, "");
+							img[ BROWSER_HEIGHT ] =  Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
 						}
 					} else {
 						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
