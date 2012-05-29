@@ -8,25 +8,18 @@
 	<style>
 		article {
 			float:left;
+			width:60%;
 		}
 		aside {
 			float:right;
-			width:300px;
+			width:40%;
 		}
-		
 		
 		.fs-img {
 			width:100%;
 			font-family: 'image-set( url(dynamic-images/|dynamic-images/{requestWidth}) )';
 			display:inline-block;
 			border-left:4px solid yellow;
-		}
-		
-		.fs-img2 {
-			width:100%;
-			font-family: 'image-set( url(dynamic-images/|dynamic-images/{requestWidth}x{requestHeight}/) )';
-			display: inline-block;
-			border-left: 4px solid yellow;
 		}
 	
 	</style>
@@ -65,41 +58,6 @@
 			</noscript>
 			<p>
 				Photo by <a href="http://commons.wikimedia.org/wiki/File:Wrightflyer.jpg">John T. Daniels</a>
-			</p>
-		</aside>
-	
-	</section>
-	
-	
-		<section>
-	
-		<h2>
-			Parent Percentage with Unknown Image Width and known aspect ratio
-		</h2>
-
-		<article>
-			<p>
-				This demo shows image-set() CSS can work with percentage css width and an known aspect ratio. 
-				Obviously this will not allow you to specify the height on the URL for dynamic images so your 
-				server side component should determine the aspect ratio or you should set the aspect ratio not to auto.
-			</p>
-			<p>
-				The primary content on the left side take of the available width. 
-				The content on the right side containing the image takes 300px of the available width.
-			</p>
-			<p>
-				Adjusting the width of the browser will request various static images.
-			</p>
-		</article>
-	
-		<aside>
-			<!-- Generated src of image should be http://foresightjs.appspot.com/dynamic-images/300x300/dew-on-grass.jpg -->
-			<img data-src="http://foresightjs.appspot.com/dynamic-images/dew-on-grass.jpg" data-aspect-ratio="1" class="fs-img2">
-			<noscript>
-				<img src="http://foresightjs.appspot.com/dynamic-images/dew-on-grass.jpg">
-			</noscript>
-			<p>
-				Photo by <a href="http://commons.wikimedia.org/wiki/File:Dew_on_grass_Luc_Viatour.jpg">Luc Viatour</a>
 			</p>
 		</aside>
 	
