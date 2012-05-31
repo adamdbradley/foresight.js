@@ -57,6 +57,7 @@
 	TRUE = true,
 	FALSE = false,
 	imageSetItemRegex = /url\((?:([a-zA-Z-_0-9{}\?=&\\/.:\s]+)|([a-zA-Z-_0-9{}\?=&\\/.:\s]+)\|([a-zA-Z-_0-9{}\?=&\\/.:\s]+))\)/g,
+	STRIP_UNITS_REGEX =	/[^\d]+/,
 
 	// used to keep track of the progress status for finding foresight 
 	// images in the DOM and connection test results
@@ -233,7 +234,7 @@
 	getDataAttribute = function ( img, attribute, getInt, value ) {
 		// get an <img> element's data- attribute value
 		value = img.getAttribute( 'data-' + attribute );
-		if ( getInt ) {
+		if ( getInt  && value!==null) {
 			if ( !isNaN( value ) ) {
 				return parseInt( value, 10 );
 			}
@@ -510,12 +511,12 @@
 					// If the aspect ratio is set then we will get the other value off the
 					// aspect ratio
 					if( img[ ASPECT_RATIO ] ) {
-						if( img[ WIDTH_UNITS ] ){
-							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
-							img[ BROWSER_HEIGHT ] =  Math.round( img[ WIDTH_UNITS ] / img[ ASPECT_RATIO ] );
-						} else if( img[ HEIGHT_UNITS ] ){
+						if( img[ HEIGHT_UNITS ] ){						
 							img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
 							img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+						} else {
+							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ] || computedWidthValue.replace(STRIP_UNITS_REGEX, "");
+							img[ BROWSER_HEIGHT ] =  Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
 						}
 					} else {
 						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
