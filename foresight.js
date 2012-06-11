@@ -158,7 +158,7 @@
 		// the array will be used later when deciding what image to request
 		var
 		y,
-		imageSetValues = imageSetText.split( ',' ),
+		imageSetValues = imageSetText !== undefined  && imageSetText !== null ? imageSetText.split( ',' ) : [],
 		imageSetItem,
 		urlMatch;
 
