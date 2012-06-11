@@ -495,44 +495,40 @@
 		// this is most important for images set by percents
 		// and images with a max-width set
 		if ( !img.unitType ) {
-			if( img[ ASPECT_RATIO ] === ASPECT_RATIO_AUTO ) {
-				img.unitType = UNIT_TYPE_AUTO;
-			} else {
-				//Get computed style value but to get valid width we need to have the display set to none
-				var oldDisplay = img.style[ STYLE_ATTRIBUTE_DISPLAY ];
-				img.style[ STYLE_ATTRIBUTE_DISPLAY ] = 'none';
-				computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
-				img.style[ STYLE_ATTRIBUTE_DISPLAY ] = oldDisplay;
+			//Get computed style value but to get valid width we need to have the display set to none
+			var oldDisplay = img.style[ STYLE_ATTRIBUTE_DISPLAY ];
+			img.style[ STYLE_ATTRIBUTE_DISPLAY ] = 'none';
+			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
+			img.style[ STYLE_ATTRIBUTE_DISPLAY ] = oldDisplay;
 
-				if ( computedWidthValue.indexOf( '%' ) > 0 ) {
-					// if the width has a percent value then change the display to
-					// display:block to help get correct browser pixel width
-					img.unitType = UNIT_TYPE_PERCENT;
-				} else {
-					// the browser already knows the exact pixel width
-					// assign the browser pixels to equal the width and height units
-					// this only needs to happen the first time
-					img.unitType = UNIT_TYPE_PIXEL;
-					// If the aspect ratio is set then we will get the other value off the
-					// aspect ratio
-					if( img[ ASPECT_RATIO ] ) {
-						if( img[ HEIGHT_UNITS ] ){						
-							img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
-							img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
-						} else {
-							img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ] || computedWidthValue.replace(STRIP_UNITS_REGEX, "");
-							img[ BROWSER_HEIGHT ] =  Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
-						}
-					} else {
-						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+			if ( computedWidthValue === 'auto' || computedWidthValue.indexOf( '%' ) > 0 ) {
+				// if the width has a percent value then change the display to
+				// display:block to help get correct browser pixel width
+				img.unitType = UNIT_TYPE_PERCENT;
+			} else {
+				// the browser already knows the exact pixel width
+				// assign the browser pixels to equal the width and height units
+				// this only needs to happen the first time
+				img.unitType = UNIT_TYPE_PIXEL;
+				// If the aspect ratio is set then we will get the other value off the
+				// aspect ratio
+				if( img[ ASPECT_RATIO ] && img[ ASPECT_RATIO ] !== ASPECT_RATIO_AUTO ) {
+					if( img[ HEIGHT_UNITS ] ){						
+						img[ BROWSER_WIDTH ] = Math.round( img[ HEIGHT_UNTIS ] / img[ ASPECT_RATIO ] );
 						img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
+					} else {
+						img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ] || computedWidthValue.replace(STRIP_UNITS_REGEX, "");
+						img[ BROWSER_HEIGHT ] =  Math.round( img[ BROWSER_WIDTH ] / img[ ASPECT_RATIO ] );
 					}
+				} else {
+					img[ BROWSER_WIDTH ] = img[ WIDTH_UNITS ];
+					img[ BROWSER_HEIGHT ] = img[ HEIGHT_UNITS ];
 				}
 			}
 		}
 
 
-		if ( img.unitType === UNIT_TYPE_AUTO || img.unitType === UNIT_TYPE_PERCENT ) {
+		if ( img.unitType === UNIT_TYPE_PERCENT || img[ ASPECT_RATIO ] ) {
 			// the computed width is probably getting controlled by some applied width property CSS
 			// since we now know what the pixel width the browser wants it to be, calculate its height
 			// the height should be calculated with the correct aspect ratio
