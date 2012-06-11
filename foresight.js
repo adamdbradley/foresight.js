@@ -53,6 +53,7 @@
 	UNIT_TYPE_PERCENT = 'percent',
 	UNIT_TYPE_AUTO = 'auto',
 	UNIT_TYPE_PIXEL = 'pixel',
+	STYLE_ATTRIBUTE_DISPLAY = 'display',
 	STYLE_VALUE_AUTO = 'auto',
 	TRUE = true,
 	FALSE = false,
@@ -497,7 +498,11 @@
 			if( img[ ASPECT_RATIO ] === ASPECT_RATIO_AUTO ) {
 				img.unitType = UNIT_TYPE_AUTO;
 			} else {
+				//Get computed style value but to get valid width we need to have the display set to none
+				var oldDisplay = img.style[ STYLE_ATTRIBUTE_DISPLAY ];
+				img.style[ STYLE_ATTRIBUTE_DISPLAY ] = 'none';
 				computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
+				img.style[ STYLE_ATTRIBUTE_DISPLAY ] = oldDisplay;
 
 				if ( computedWidthValue.indexOf( '%' ) > 0 ) {
 					// if the width has a percent value then change the display to
