@@ -115,7 +115,7 @@
 				var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
 				img[ ASPECT_RATIO ] = tmpAspectRatio === ASPECT_RATIO_AUTO
 					? tmpAspectRatio 
-					: ( !isNaN( tmpAspectRatio ) ? parseFloat( tmpAspectRatio) : 0 );
+					: ( !isNaN( tmpAspectRatio ) && tmpAspectRatio !== null ? parseFloat( tmpAspectRatio) : 0 );
 	
 				 // missing required info
 				if ( !img[ DEFAULT_SRC ] || (( !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) && !img[ ASPECT_RATIO ])) {
