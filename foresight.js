@@ -501,7 +501,7 @@
 			computedWidthValue = getComputedStyleValue( img, DIMENSION_WIDTH );
 			img.style[ STYLE_ATTRIBUTE_DISPLAY ] = oldDisplay;
 
-			if ( computedWidthValue === 'auto' || computedWidthValue.indexOf( '%' ) > 0 ) {
+			if ( ( img[ ASPECT_RATIO] && computedWidthValue === 'auto' ) || computedWidthValue.indexOf( '%' ) > 0 ) {
 				// if the width has a percent value then change the display to
 				// display:block to help get correct browser pixel width
 				img.unitType = UNIT_TYPE_PERCENT;
