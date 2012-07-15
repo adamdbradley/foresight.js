@@ -122,7 +122,9 @@ Values within url() can be fully customized to your website's image request form
 
 
 ## NoScript Element
-Immediately you'll notice that HTML structure also includes a _noscript_ element and has a child _img_ element. Obviously this is redundant, but with today's standards this is one of the issues we'll have to dance with. _However, if your website has no reason to care about SEO or support browsers without javascript than feel free to omit the noscript elements and display:none CSS all together._
+Immediately you'll notice that HTML structure also includes a _noscript_ element and has a child _img_ element. Obviously this is redundant, but with today's standards this is one of the issues we'll have to dance with. _However, if your website has no reason to ~~care about SEO or~~ support browsers without javascript than feel free to omit the noscript elements and display:none CSS all together._ 
+
+**UPDATE:** _Placing img tags within a noscript element with the intent that the image will be indexed by google for SEO purposes is not a recommended practice. According to Matt Cutts, head of Google’s Webspam team, "We essentially ignore anything inside of noscript just because so many badly behaved SEOs/webmasters abused it (much like meta tags)."_
 
 If javascript is not enabled then the browser will show the _noscript_ _img_ instead. In this case the webpage should also hide the foresight.js _img_ so it's not seen as a broken image (since it doesn't have a valid src attribute). The CSS rule applied to foresight.js images should contain the _display:none_ CSS property, such as:
 
