@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+	<title>Image Resolution Compare</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<style>
+		body {
+			font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		h1,h2,h3,h4,p {
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+		.high-resolution {
+			border: 8px solid green;
+			border-left: 0;
+			border-right: 0;
+		}
+		.standard-resolution {
+			border: 8px solid red;
+			border-left: 0;
+			border-right: 0;
+		}
+	</style>
+</head>
+<body>
+
+	<h2>
+		Image Resolution Compare
+	</h2>
+
+	<h2>Your Device Pixel Ratio: <span id="dprOutput"></span></h2>
+	<span id="msg"></span>
+	<script>
+		var dpr = window.devicePixelRatio ? window.devicePixelRatio : 1;
+		document.getElementById('dprOutput').innerText = dpr;
+		if(dpr == 1) {
+			document.getElementById('msg').innerHTML = '<h2 style="color:maroon">This display only has a device ratio of 1. You will barely, to not at all, be able to see resolution differences.</h2>';
+		}
+	</script>
+
+	<p>
+		Images with a <span style="font-weight: bold; color:green">green border are the high-resolution</span>, and images with the <span style="font-weight:bold; color: red">red border are the 
+		standard-resolution</span>.
+	</p>
+	<p>
+		Below are some examples of high-resolution and standard-resolution images so you can compare their quality 
+		side-by-side. This page does not use javascript to change the image's src, but instead has hard coded src values for the different resolutions for each image.
+	</p>
+
+	<img src="http://foresightjs.appspot.com/static-images/rail-2x.jpg" width="320" height="240" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/rail.jpg" width="320" height="240" class="standard-resolution">
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:%C5%A0koda_15T,_smy%C4%8Dka_Radlick%C3%A1.jpg">Honza Groh</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/rally-2x.jpg" width="320" height="213" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/rally.jpg" width="320" height="213" class="standard-resolution">
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/File:Neste_Oil_Rally_2010_-_Jari-Matti_Latvala_in_shakedown.jpg">Kallerna</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/vday-2x.jpg" width="320" height="260" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/vday.jpg" width="320" height="260" class="standard-resolution">
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/jobs-and-gates-2x.jpg" width="320" height="228" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/jobs-and-gates.jpg" width="320" height="228" class="standard-resolution">
+	<p>
+		Photo by <a href="http://www.flickr.com/people/35034362831@N01">Joi Ito</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/neuschwanstein-2x.jpg" width="320" height="209" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/neuschwanstein.jpg" width="320" height="209" class="standard-resolution">
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/User:Softeis">Softeis</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/drop-impact-2x.jpg" width="320" height="309" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/drop-impact.jpg" width="320" height="309" class="standard-resolution">
+	<p>
+		Photo by <a href="http://commons.wikimedia.org/wiki/User:Roger_McLassus">Roger McLassus</a>
+	</p>
+
+
+
+	<hr>
+
+
+
+	<img src="http://foresightjs.appspot.com/static-images/born-to-the-west-2x.jpg" width="320" height="245" class="high-resolution">
+
+	<img src="http://foresightjs.appspot.com/static-images/born-to-the-west.jpg" width="320" height="245" class="standard-resolution">
+	<p>
+		<em>Born to the West</em> (Paramount Pictures)
+	</p>
+	<hr>
+
+
+
+	<ul>
+		<li><a href="index.html">Demo Homepage</a>
+		<li><a href="https://github.com/adamdbradley/foresight.js">Foresight.js Homepage</a>
+	</ul>
+
+
+</body>
+</html>
