@@ -468,6 +468,10 @@ Find a bug? Please create an issue here on GitHub!
 [Submit an issue](https://github.com/adamdbradley/foresight.js/issues)
 
 
+## Presentation
+
+* [Responding to the New High-Resolution Web](http://goo.gl/Zo4XF) from [That Conference](http://www.thatconference.com/)
+
 ## References
 
 * [-webkit-image-set Changeset](http://trac.webkit.org/changeset/113490)
