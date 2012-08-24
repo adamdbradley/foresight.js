@@ -3,7 +3,7 @@ __Foresight.js__ gives webpages the ability to tell if the user's device is capa
 
 Foresight.js has made significant improvements over its previous versions, specifically the implementation of the CSS image-set() function. The latest version lets the browser take control of the image's browser dimensions completely, while the original foresight.js release only worried about which image to request according to the network connection and device pixel ratio. Additionally, foresight.js was previously centered around requesting dynamically sized images, and while this is still possible, it also ensures its easy to request static based images (such as images with "_2x" or "-highres" in the filename). For a more in-depth write-up on foresight's concept please review: [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/) and [Syntax issue with displaying high-resolution images in the picture element](http://www.w3.org/community/respimg/2012/04/26/syntax-issue-with-displaying-high-resolution-images-in-the-picture-element-how-a-mole-hill-could-turn-into-a-mountain/#comment-525).
 
-This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. 
+This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a high-resolution web. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. I also put together this slide deck to help explain hi-res: [Responding to the New High-Resolution Web: Considerations for High-Density Displays](http://goo.gl/Zo4XF).
 
 
 
@@ -470,7 +470,7 @@ Find a bug? Please create an issue here on GitHub!
 
 ## Presentation
 
-* [Responding to the New High-Resolution Web](http://goo.gl/Zo4XF) from [That Conference](http://www.thatconference.com/)
+* [Responding to the New High-Resolution Web: Considerations for High-Density Displays](http://goo.gl/Zo4XF) from [That Conference](http://www.thatconference.com/)
 
 ## References
 
