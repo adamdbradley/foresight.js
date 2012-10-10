@@ -118,7 +118,7 @@
 					: ( !isNaN( tmpAspectRatio ) && tmpAspectRatio !== null ? parseFloat( tmpAspectRatio) : 0 );
 	
 				 // missing required info
-				if ( !img[ DEFAULT_SRC ] || (( !img[ WIDTH_UNITS ] || !img[ HEIGHT_UNITS ] ) && !img[ ASPECT_RATIO ])) {
+				if ( !img[ DEFAULT_SRC ] ) {
 					img.ignore = TRUE;
 					continue;
 				}
@@ -287,7 +287,7 @@
 					// ie:  .fs-640x480{width:640px;height:480px}
 					// ensure no duplicates are added to the CSS rules array
 					dimensionCssRules[ dimensionClassName ] = TRUE;
-					dimensionCssRules.push( '.' + dimensionClassName + '{width:' + img[ BROWSER_WIDTH ] + 'px;height:' + img[ BROWSER_HEIGHT ] + 'px}' ); 
+					dimensionCssRules.push( '.' + dimensionClassName + '{width:' + ( (img[ BROWSER_WIDTH ]>0) ? (img[ BROWSER_WIDTH ] + 'px;') : 'inherit;' ) + ' height:' + ( (img[ BROWSER_HEIGHT ]>0) ? (img[ BROWSER_HEIGHT ] + 'px;') : 'auto;' ) + '}' ); 
 				}
 			}
 
