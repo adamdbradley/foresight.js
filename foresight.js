@@ -152,6 +152,80 @@
 		}
 	},
 
+	// Added by Adrian Mayoral
+	initImagesByContainer = function (theID) {
+		if ( theID == '' || typeof theID == undefined ) return ;
+
+		// loop through each of the document.getElementById(id) and find valid foresight images
+		var
+		x,
+		img,
+		customCss;
+
+		var target = document.getElementById(theID);
+		var images = target.getElementsByTagName("img");
+		for( x = 0; x < images.length; x ++ ){
+			img = images[x];
+			
+			// if we've already said to ignore this img then don't bother doing any more
+			if ( img.ignore ) continue;
+
+			// Render ALL images in that ID
+			img.initalized = TRUE;
+			
+			triggerImageEvent( 'imageInitStart', img );
+			
+			img[ DEFAULT_SRC ] = getDataAttribute( img, 'src' );  // important, do not set the src attribute yet!
+			
+			// always set the img's data-width & data-height attributes so we always know its aspect ratio
+			img[ WIDTH_UNITS ] = getDataAttribute( img, DIMENSION_WIDTH, TRUE );
+			img[ HEIGHT_UNITS ] = getDataAttribute( img, DIMENSION_HEIGHT, TRUE );
+			
+			// if the aspect ratio was set then let's use that
+			var tmpAspectRatio = getDataAttribute( img, 'aspect-ratio', FALSE);
+			img[ ASPECT_RATIO ] = tmpAspectRatio === ASPECT_RATIO_AUTO
+				? tmpAspectRatio 
+				: ( !isNaN( tmpAspectRatio ) && tmpAspectRatio !== null ? parseFloat( tmpAspectRatio) : 0 );
+			
+			 // missing required info
+			if ( !img[ DEFAULT_SRC ] ) {
+				img.ignore = TRUE;
+				continue;
+			}
+			img[ HIGH_RES_SRC ] = getDataAttribute( img, 'high-resolution-src' );
+			img.orgClassName = ( img.className ? img.className : '' );
+			
+			// handle any response errors which may happen with this image
+			img.onerror = imgResponseError;
+			
+			triggerImageEvent( 'imageInitEnd', img );
+			
+			// add this image to the collection
+			foresight.images.push( img );
+
+
+
+			
+			// Conditional CSS
+			// font-family will be the hacked CSS property which contains the image-set() CSS value
+			// using font-family allows us to access values within CSS, which may change per media query
+			// image-set(url(foo-lowres.png) 1x low-bandwidth, url(foo-highres.png) 2x high-bandwidth);
+			// http://lists.w3.org/Archives/Public/www-style/2012Feb/1103.html
+			// http://trac.webkit.org/changeset/111637
+			img.imageSetText = getComputedStyleValue( img, 'font-family', 'fontFamily' )
+			
+			img.imageSet = [];
+
+			if ( img.imageSetText.length > 1 ) {
+				// parse apart the custom CSS image-set() text
+				parseImageSet( img, img.imageSetText.split( 'image-set(' )[ 1 ] );
+			}
+			
+
+		}
+
+	},
+
 	parseImageSet = function ( img, imageSetText ) {
 		// parse apart the custom CSS image-set() text
 		// add each image-set item to the img.imageSet array
@@ -888,6 +962,19 @@
 		}
 		initForesight();
 	};
+
+	// Added by Adrian Mayoral
+	/**
+		This function try to sync images from "X div (container)" loaded before DOM.
+	*/
+	foresight.async = function(theID){
+		if ( theID == '' || typeof theID == undefined ) return ;
+		imageIterateStatus = STATUS_LOADING;
+		initImagesByContainer(theID);
+		imageIterateStatus = STATUS_COMPLETE;
+		initImageRebuild();
+	};
+
 	if ( document.readyState === STATUS_COMPLETE ) {
 		setTimeout( foresight.ready, 1 );
 	} else {
