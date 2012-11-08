@@ -5,7 +5,7 @@ Foresight's methods centralizes how to configure image variants across your enti
 
 This project's overall goal is to tackle these current issues faced by web developers designing for hi-res: [Challenges for High-Resolution Images](//github.com/adamdbradley/foresight.js/wiki/Challenges-for-High-Resolution-Images). Foresight.js aims at providing a lightweight, cross-browser and framework independent tool for a __high-resolution web on today's browsers__. Please feel free to contact me ([@adamdbradley](https://twitter.com/adamdbradley)) or contribute to this project to help improve it. I also put together this slide deck to help explain hi-res: [Responding to the New High-Resolution Web: Considerations for High-Density Displays](http://goo.gl/Zo4XF).
 
-
+For a small set of CSS classnames to help keep images cropped on the focal point check out [Focal Point](https://github.com/adamdbradley/focal-point).
 
 ## Features
 * Request hi-res images according to device pixel ratio
@@ -474,6 +474,7 @@ Find a bug? Please create an issue here on GitHub!
 
 ## References
 
+* [Focal Point](https://github.com/adamdbradley/focal-point): A small set of CSS classnames to help keep images cropped on the focal point for responsive designs
 * [Safari 6 and Chrome 21 add image-set to support retina images](http://blog.cloudfour.com/safari-6-and-chrome-21-add-image-set-to-support-retina-images/)
 * [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/)
 * [Responsive Images Community Group](http://www.w3.org/community/respimg/)
