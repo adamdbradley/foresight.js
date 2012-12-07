@@ -756,6 +756,9 @@
 		newSrc = img[ DEFAULT_SRC ].replace( findValue, img[ APPLIED_IMAGE_SET_ITEM ][ URI_REPLACE ] ),
 		formatReplace = [ REQUEST_WIDTH, REQUEST_HEIGHT, SCALE, SCALE_ROUNDED ];
 
+		img[ SCALE ] = img[ APPLIED_IMAGE_SET_ITEM ][ SCALE ];
+		img[ SCALE_ROUNDED ] = img[ APPLIED_IMAGE_SET_ITEM ][ SCALE_ROUNDED ];
+
 		// loop through all the possible format keys and 
 		// replace them with their respective value for this image
 		for ( f = 0; f < formatReplace.length; f++ ) {
