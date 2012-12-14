@@ -472,8 +472,9 @@ Find a bug? Please create an issue here on GitHub!
 
 * [Responding to the New High-Resolution Web: Considerations for High-Density Displays](http://goo.gl/Zo4XF) from [That Conference](http://www.thatconference.com/)
 
-## References
+## References/Resources
 
+* [CDNConnect](http://www.cdnconnect.com/): Production File Management & Fast Content Delivery For The Team
 * [Focal Point](https://github.com/adamdbradley/focal-point): A small set of CSS classnames to help keep images cropped on the focal point for responsive designs
 * [Safari 6 and Chrome 21 add image-set to support retina images](http://blog.cloudfour.com/safari-6-and-chrome-21-add-image-set-to-support-retina-images/)
 * [Using CSS to control image variants](http://www.w3.org/community/respimg/2012/04/08/using-css-to-control-image-variants/)
