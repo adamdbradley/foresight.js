@@ -810,7 +810,7 @@
 		var connection = navigator.connection || { type: 'unknown' }; // polyfill
 		var isSlowConnection = connection.type == 3 // connection.CELL_2G 
 							   || connection.type == 4 // connection.CELL_3G
-							   || /^[23]g$/.test( connection.type ); // string value in new spec
+							   || connection.bandwidth <= 0.125; // integer value in new spec (MB)
 		foresight[ CONNECTION_TYPE ] = connection.type;
 		if ( isSlowConnection ) {
 			// we know this connection is slow, don't bother even doing a speed test
