@@ -553,6 +553,9 @@
 	isParentVisible = function ( ele, parent ) {
 		// test to see if this element's parent is currently visible in the DOM
 		parent = ele.parentNode;
+        if (parent == null) {
+            return FALSE;
+        }
 		if ( parent.clientWidth ) {
 			return TRUE;
 		}
