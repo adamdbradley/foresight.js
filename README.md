@@ -30,13 +30,6 @@ __Contact Me__
 
 * [@adamdbradley](https://twitter.com/adamdbradley)
 
-
-## Bug tracker
-
-Find a bug? Please create an issue here on GitHub!
-
-[Submit an issue](https://github.com/adamdbradley/foresight.js/issues)
-
 ## References/Resources
 
 * [Focal Point](https://github.com/adamdbradley/focal-point): A small set of CSS classnames to help keep images cropped on the focal point for responsive designs
